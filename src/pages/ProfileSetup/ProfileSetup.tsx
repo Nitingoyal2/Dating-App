@@ -20,19 +20,6 @@ import StepPhotos from './steps/StepPhotos';
 import StepWelcome from './steps/StepWelcome';
 import StepSuccess from './steps/StepSuccess';
 
-// Step configuration for API payload mapping
-const STEP_CONFIG: Record<number, { errorMessage: string }> = {
-    1: { errorMessage: 'Failed to create draft' },
-    2: { errorMessage: 'Failed to update name' },
-    3: { errorMessage: 'Failed to update location' },
-    4: { errorMessage: 'Failed to update gender' },
-    5: { errorMessage: 'Failed to update seeking' },
-    6: { errorMessage: 'Failed to update birthday' },
-    7: { errorMessage: 'Failed to upload photos' },
-    8: { errorMessage: 'Failed to accept rules' },
-    9: { errorMessage: 'Failed to complete profile' },
-};
-
 const ProfileSetup = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
@@ -53,29 +40,25 @@ const ProfileSetup = () => {
         setProfileData((prev) => ({ ...prev, [key]: value }));
     };
 
-    // Get API payload based on step
+    // Get API payload based on step (object map approach)
     const getStepPayload = (
         step: number,
         extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
     ): ProfileUpdateRequest | null => {
-        switch (step) {
-            case 2:
-                return { first_name: profileData.firstName };
-            case 3:
+        const payloadMap: Record<number, () => ProfileUpdateRequest | null> = {
+            2: () => ({ first_name: profileData.firstName }),
+            3: () => {
                 if (extraData?.locationSkipped) return { location_skipped: true };
                 if (extraData?.location) return { latitude: extraData.location.lat, longitude: extraData.location.lng };
                 return null;
-            case 4:
-                return profileData.gender ? { gender: profileData.gender } : null;
-            case 5:
-                return profileData.seeking ? { seeking: profileData.seeking } : null;
-            case 6:
-                return { date_of_birth: profileData.dateOfBirth };
-            case 8:
-                return { rules_accepted: true };
-            default:
-                return null;
-        }
+            },
+            4: () => (profileData.gender ? { gender: profileData.gender } : null),
+            5: () => (profileData.seeking ? { seeking: profileData.seeking } : null),
+            6: () => ({ date_of_birth: profileData.dateOfBirth }),
+            8: () => ({ rules_accepted: true }),
+        };
+
+        return payloadMap[step]?.() ?? null;
     };
 
     // Unified step submit handler
@@ -83,8 +66,6 @@ const ProfileSetup = () => {
         step: number,
         extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
     ) => {
-        const config = STEP_CONFIG[step];
-
         // Step 7 (Photos): Just move to next step, photos are handled in component
         if (step === 7) {
             setCurrentStep(8);
@@ -141,7 +122,7 @@ const ProfileSetup = () => {
             setCurrentStep(step + 1);
         } catch (error) {
             const err = error as Error;
-            message.error(err.message || config.errorMessage);
+            message.error(err.message);
         } finally {
             setIsLoading(false);
         }
