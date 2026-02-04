@@ -1,73 +1,173 @@
-# React + TypeScript + Vite
+# 💜 Prosto - Love Made Simple
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="public/favicon.svg" alt="Prosto Logo" width="120" height="120" />
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+  <strong>Dating made simple. No complications, just love.</strong>
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#getting-started">Getting Started</a> •
+  <a href="#project-structure">Project Structure</a> •
+  <a href="#documentation">Documentation</a>
+</p>
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🎨 **Beautiful UI** - Modern, clean interface with smooth animations
+- 📱 **Mobile-First Design** - Optimized for mobile with responsive layout
+- 🔐 **Authentication** - Secure login, register, and password recovery
+- 🛡️ **Protected Routes** - Route guards for authenticated content
+- 🌙 **Theme Support** - Light/dark theme ready
+- ⚡ **Fast Performance** - Built with Vite for lightning-fast dev experience
+- 🔄 **State Management** - Redux Toolkit for predictable state
+- 📝 **TypeScript** - Full type safety throughout the app
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠 Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Technology | Purpose |
+|------------|---------|
+| ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white) | UI Framework |
+| ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white) | Type Safety |
+| ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white) | Build Tool |
+| ![Redux](https://img.shields.io/badge/Redux_Toolkit-2-764ABC?logo=redux&logoColor=white) | State Management |
+| ![React Router](https://img.shields.io/badge/React_Router-7-CA4245?logo=reactrouter&logoColor=white) | Routing |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Nitingoyal2/Dating-App.git
+   cd Dating-App/dating-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser**
+   ```
+   http://localhost:5173
+   ```
+
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+│   ├── Layout      # Main app layout (phone frame)
+│   └── AuthLayout  # Auth pages layout
+├── pages/          # Page components
+│   ├── Splash/     # Loading screen
+│   ├── Home/       # Landing page
+│   ├── Login/      # Login form
+│   ├── Register/   # Registration form
+│   ├── ForgotPassword/
+│   └── Dashboard/  # Main app (protected)
+├── routes/         # Routing configuration
+├── store/          # Redux state management
+│   └── slices/     # Redux slices
+├── types/          # TypeScript types & enums
+└── utils/          # Utilities
+    └── svg/        # SVG icon components
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📖 Documentation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+For detailed documentation, see **[PROJECT_DOCUMENTATION.md](./PROJECT_DOCUMENTATION.md)**
+
+This includes:
+- Complete folder structure explanation
+- Application flow diagrams
+- Component documentation
+- Redux state management guide
+- How to add new features
+- Code examples and patterns
+
+---
+
+## 🎨 Brand Colors
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Primary Purple | `#6C5CE7` | Main brand color |
+| Secondary Purple | `#a855f7` | Gradients, accents |
+| Pink Accent | `#ec4899` | Highlights |
+
+---
+
+## 🔒 Route Protection
+
+| Route | Access |
+|-------|--------|
+| `/` | Public |
+| `/login` | Non-authenticated only |
+| `/register` | Non-authenticated only |
+| `/forgot-password` | Non-authenticated only |
+| `/dashboard` | Authenticated only |
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 💜 Made with Love
+
+Built with ❤️ for people looking for meaningful connections.
+
+**Prosto** - Because love should be simple.
+
+---
+
+<p align="center">
+  <strong>Prosto - Love Made Simple</strong>
+</p>

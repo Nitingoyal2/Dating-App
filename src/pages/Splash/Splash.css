@@ -1,0 +1,106 @@
+.splash-screen {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%);
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.5s ease-out;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+}
+
+/* Background hearts */
+.splash-bg-hearts {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-heart {
+  position: absolute;
+  font-size: 80px;
+  opacity: 0.1;
+}
+
+.bg-heart-1 {
+  bottom: -20px;
+  left: -20px;
+  transform: rotate(-15deg);
+  font-size: 120px;
+}
+
+.bg-heart-2 {
+  bottom: 10px;
+  right: 20px;
+  transform: rotate(10deg);
+  font-size: 100px;
+}
+
+.bg-heart-3 {
+  bottom: -10px;
+  right: 100px;
+  transform: rotate(-5deg);
+  font-size: 80px;
+  opacity: 0.06;
+}
+
+/* Main content */
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.splash-logo {
+  margin-bottom: 16px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.splash-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #6C5CE7, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.splash-tagline {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: #888;
+  margin: 8px 0 0 0;
+  letter-spacing: 1px;
+}

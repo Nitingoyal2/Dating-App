@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6C5CE7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#gradient)"/>
+  <!-- P letter stylized -->
+  <text x="50" y="68" font-family="Arial, sans-serif" font-size="55" font-weight="bold" fill="white" text-anchor="middle">P</text>
+  <!-- Small heart -->
+  <path d="M72 25 C72 25 68 20 64 20 C60 20 57 23 57 26 C57 30 72 40 72 40 C72 40 87 30 87 26 C87 23 84 20 80 20 C76 20 72 25 72 25 Z" fill="#ff6b9d"/>
+</svg>

@@ -1,8 +1,31 @@
 {
-  "name": "dating-app",
+  "name": "prosto-dating-app",
+  "displayName": "Prosto - Love Made Simple",
+  "description": "Prosto is a modern dating app that makes finding meaningful connections simple. No complications, just love.",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "author": {
+    "name": "Prosto Dating App Team"
+  },
+  "license": "MIT",
+  "keywords": [
+    "dating",
+    "app",
+    "react",
+    "typescript",
+    "redux",
+    "vite",
+    "prosto",
+    "love",
+    "relationships",
+    "simple",
+    "connections"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nitingoyal2/Dating-App.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,8 +33,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.11.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

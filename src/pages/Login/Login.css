@@ -1,0 +1,19 @@
+.login-footer {
+  text-align: center;
+  margin-top: 24px;
+  color: #666;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-footer .form-link {
+  color: #ff6b6b;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.login-footer .form-link:hover {
+  color: #e84393;
+}
+
