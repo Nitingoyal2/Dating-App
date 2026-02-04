@@ -1,0 +1,86 @@
+.step-success {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.step-success-content {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    z-index: 1;
+}
+
+.step-success .success-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.step-success .password-form {
+    width: 100%;
+}
+
+.step-success .password-form .ant-form-item {
+    margin-bottom: 16px;
+}
+
+.step-success .password-form .ant-input-password {
+    border-radius: 12px;
+}
+
+/* Hearts background animation */
+.step-success .success-hearts-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.step-success .heart {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+    animation: float 6s ease-in-out infinite;
+}
+
+.step-success .heart-1 {
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.step-success .heart-2 {
+    top: 20%;
+    right: 15%;
+    animation-delay: 1s;
+}
+
+.step-success .heart-3 {
+    bottom: 30%;
+    left: 20%;
+    animation-delay: 2s;
+}
+
+.step-success .heart-4 {
+    bottom: 15%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-20px) rotate(10deg);
+    }
+}
+

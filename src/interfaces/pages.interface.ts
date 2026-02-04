@@ -12,6 +12,7 @@ export interface ProfileData {
 export interface StepProps {
   onNext: () => void;
   onBack: () => void;
+  isLoading?: boolean;
 }
 
 export interface StepEmailProps extends StepProps {
@@ -28,6 +29,7 @@ export interface StepLocationProps {
   onBack: () => void;
   onAllow: (location: { lat: number; lng: number }) => void;
   onSkip: () => void;
+  isLoading?: boolean;
 }
 
 export interface StepGenderProps extends StepProps {
@@ -48,10 +50,12 @@ export interface StepBirthdayProps extends StepProps {
 export interface StepPhotosProps extends StepProps {
   value: string[];
   onChange: (value: string[]) => void;
+  userId: string | null;
 }
 
 export interface StepSuccessProps {
-  onComplete: () => void;
+  onComplete: (password: string) => void;
+  isLoading?: boolean;
 }
 
 // Splash interfaces

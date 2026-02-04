@@ -44,3 +44,19 @@ export type {
   StepSuccessProps,
   SplashProps,
 } from './pages.interface';
+
+// API interfaces
+export type {
+  ApiResponse as ApiResponseType,
+  DraftRequest,
+  DraftResponse,
+  ProfileUpdateRequest,
+  ProfileUpdateResponse,
+  Photo,
+  PhotoUploadResponse,
+  PhotoDeleteResponse,
+  CompleteRequest,
+  CompleteUser,
+  CompleteTokens,
+  CompleteResponse,
+} from './api.interface';

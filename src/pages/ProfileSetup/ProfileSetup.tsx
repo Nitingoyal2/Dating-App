@@ -4,7 +4,12 @@ import { message } from 'antd';
 import { useAppDispatch } from '@store/hooks';
 import { loginSuccess } from '@store/slices';
 import { Routes } from '@/types';
-import type { ProfileData } from '@interfaces';
+import type { ProfileData, ProfileUpdateRequest } from '@interfaces';
+import {
+    registrationDraftApi,
+    registrationCompleteApi,
+    profileStepPatchApi,
+} from '@services';
 import StepEmail from './steps/StepEmail';
 import StepName from './steps/StepName';
 import StepLocation from './steps/StepLocation';
@@ -15,12 +20,25 @@ import StepPhotos from './steps/StepPhotos';
 import StepWelcome from './steps/StepWelcome';
 import StepSuccess from './steps/StepSuccess';
 
-const TOTAL_STEPS = 9;
+// Step configuration for API payload mapping
+const STEP_CONFIG: Record<number, { errorMessage: string }> = {
+    1: { errorMessage: 'Failed to create draft' },
+    2: { errorMessage: 'Failed to update name' },
+    3: { errorMessage: 'Failed to update location' },
+    4: { errorMessage: 'Failed to update gender' },
+    5: { errorMessage: 'Failed to update seeking' },
+    6: { errorMessage: 'Failed to update birthday' },
+    7: { errorMessage: 'Failed to upload photos' },
+    8: { errorMessage: 'Failed to accept rules' },
+    9: { errorMessage: 'Failed to complete profile' },
+};
 
 const ProfileSetup = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const [currentStep, setCurrentStep] = useState(1);
+    const [userId, setUserId] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [profileData, setProfileData] = useState<ProfileData>({
         email: '',
         firstName: '',
@@ -31,9 +49,101 @@ const ProfileSetup = () => {
         photos: [],
     });
 
-    const handleNext = () => {
-        if (currentStep < TOTAL_STEPS) {
-            setCurrentStep((prev) => prev + 1);
+    const updateProfileData = <K extends keyof ProfileData>(key: K, value: ProfileData[K]) => {
+        setProfileData((prev) => ({ ...prev, [key]: value }));
+    };
+
+    // Get API payload based on step
+    const getStepPayload = (
+        step: number,
+        extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
+    ): ProfileUpdateRequest | null => {
+        switch (step) {
+            case 2:
+                return { first_name: profileData.firstName };
+            case 3:
+                if (extraData?.locationSkipped) return { location_skipped: true };
+                if (extraData?.location) return { latitude: extraData.location.lat, longitude: extraData.location.lng };
+                return null;
+            case 4:
+                return profileData.gender ? { gender: profileData.gender } : null;
+            case 5:
+                return profileData.seeking ? { seeking: profileData.seeking } : null;
+            case 6:
+                return { date_of_birth: profileData.dateOfBirth };
+            case 8:
+                return { rules_accepted: true };
+            default:
+                return null;
+        }
+    };
+
+    // Unified step submit handler
+    const handleStepSubmit = async (
+        step: number,
+        extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
+    ) => {
+        const config = STEP_CONFIG[step];
+
+        // Step 7 (Photos): Just move to next step, photos are handled in component
+        if (step === 7) {
+            setCurrentStep(8);
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // Step 1: Create draft
+            if (step === 1) {
+                if (!profileData.email) return;
+                const response = await registrationDraftApi({ email: profileData.email });
+                setUserId(response.user_id);
+                setCurrentStep(2);
+                return;
+            }
+
+            // Step 9: Complete profile
+            if (step === 9) {
+                if (!userId || !extraData?.password) return;
+                const response = await registrationCompleteApi(userId, {
+                    password: extraData.password,
+                    confirm_password: extraData.password,
+                });
+
+                dispatch(
+                    loginSuccess({
+                        user: {
+                            id: response.user.id,
+                            name: response.user.first_name,
+                            email: response.user.email,
+                        },
+                        token: response.tokens.access_token,
+                    })
+                );
+
+                message.success('Account created successfully!');
+                navigate(Routes.DASHBOARD, { replace: true });
+                return;
+            }
+
+            // Steps 2-6, 8: PATCH profile
+            if (!userId) return;
+            const payload = getStepPayload(step, extraData);
+            if (!payload) return;
+
+            await profileStepPatchApi(userId, payload);
+
+            // Update local state for location
+            if (step === 3 && extraData?.location) {
+                updateProfileData('location', extraData.location);
+            }
+
+            setCurrentStep(step + 1);
+        } catch (error) {
+            const err = error as Error;
+            message.error(err.message || config.errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -45,95 +155,93 @@ const ProfileSetup = () => {
         }
     };
 
-    const handleComplete = () => {
-        console.log('Profile completed:', profileData);
-
-        dispatch(
-            loginSuccess({
-                user: {
-                    id: Date.now().toString(),
-                    name: profileData.firstName,
-                    email: profileData.email,
-                },
-                token: 'new-user-token-' + Date.now(),
-            })
-        );
-
-        message.success('Account created successfully!');
-        navigate(Routes.DASHBOARD, { replace: true });
-    };
-
-    const updateProfileData = <K extends keyof ProfileData>(key: K, value: ProfileData[K]) => {
-        setProfileData((prev) => ({ ...prev, [key]: value }));
-    };
-
     const renderStep = () => {
-        const stepProps = { onNext: handleNext, onBack: handleBack };
-
         switch (currentStep) {
             case 1:
                 return (
                     <StepEmail
-                        {...stepProps}
+                        onNext={() => handleStepSubmit(1)}
+                        onBack={handleBack}
                         value={profileData.email}
                         onChange={(v) => updateProfileData('email', v)}
+                        isLoading={isLoading}
                     />
                 );
             case 2:
                 return (
                     <StepName
-                        {...stepProps}
+                        onNext={() => handleStepSubmit(2)}
+                        onBack={handleBack}
                         value={profileData.firstName}
                         onChange={(v) => updateProfileData('firstName', v)}
+                        isLoading={isLoading}
                     />
                 );
             case 3:
                 return (
                     <StepLocation
                         onBack={handleBack}
-                        onAllow={(location) => {
-                            updateProfileData('location', location);
-                            handleNext();
-                        }}
-                        onSkip={handleNext}
+                        onAllow={(location) => handleStepSubmit(3, { location })}
+                        onSkip={() => handleStepSubmit(3, { locationSkipped: true })}
+                        isLoading={isLoading}
                     />
                 );
             case 4:
                 return (
                     <StepGender
-                        {...stepProps}
+                        onNext={() => handleStepSubmit(4)}
+                        onBack={handleBack}
                         value={profileData.gender}
                         onChange={(v) => updateProfileData('gender', v)}
+                        isLoading={isLoading}
                     />
                 );
             case 5:
                 return (
                     <StepSeeking
-                        {...stepProps}
+                        onNext={() => handleStepSubmit(5)}
+                        onBack={handleBack}
                         value={profileData.seeking}
                         onChange={(v) => updateProfileData('seeking', v)}
+                        isLoading={isLoading}
                     />
                 );
             case 6:
                 return (
                     <StepBirthday
-                        {...stepProps}
+                        onNext={() => handleStepSubmit(6)}
+                        onBack={handleBack}
                         value={profileData.dateOfBirth}
                         onChange={(v) => updateProfileData('dateOfBirth', v)}
+                        isLoading={isLoading}
                     />
                 );
             case 7:
                 return (
                     <StepPhotos
-                        {...stepProps}
+                        onNext={() => handleStepSubmit(7)}
+                        onBack={handleBack}
                         value={profileData.photos}
                         onChange={(v) => updateProfileData('photos', v)}
+                        isLoading={isLoading}
+                        userId={userId}
                     />
                 );
             case 8:
-                return <StepWelcome {...stepProps} />;
+                return (
+                    <StepWelcome
+                        onNext={() => handleStepSubmit(8)}
+                        onBack={handleBack}
+                        isLoading={isLoading}
+                    />
+                );
             case 9:
-                return <StepSuccess onComplete={handleComplete} />;
+                return (
+                    <StepSuccess
+                        onComplete={(password) => handleStepSubmit(9, { password })}
+                        isLoading={isLoading}
+                    />
+                );
             default:
                 return null;
         }
