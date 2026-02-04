@@ -4,7 +4,8 @@
   display: flex;
   min-height: 100vh;
   width: 100vw;
-  background: #1a1a2e;
+  background: var(--color-frame-outer);
+  transition: background-color 0.3s ease;
 }
 
 /* Left side - App Container */
@@ -12,28 +13,30 @@
   width: 100%;
   max-width: 425px;
   min-width: 320px;
-  background: linear-gradient(180deg, #1e1b4b 0%, #1a1a2e 100%);
+  background: linear-gradient(180deg, var(--color-frame-accent) 0%, var(--color-frame-outer) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   box-sizing: border-box;
+  transition: background 0.3s ease;
 }
 
 .phone-frame {
   width: 100%;
   height: calc(100vh - 40px);
   max-height: 850px;
-  background: #fff;
+  background: var(--color-bg-primary);
   border-radius: 40px;
   overflow: hidden;
   box-shadow: 
-    0 0 0 12px #312e81,
-    0 0 0 14px #1e1b4b,
-    0 25px 50px rgba(0, 0, 0, 0.5);
+    0 0 0 12px var(--color-frame-inner),
+    0 0 0 14px var(--color-frame-accent),
+    0 25px 50px var(--color-shadow-dark);
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* App content area */
@@ -41,7 +44,8 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  background: #fafafa;
+  background: var(--color-bg-secondary);
+  transition: background-color 0.3s ease;
 }
 
 /* Custom scrollbar for app content */
@@ -50,16 +54,16 @@
 }
 
 .app-content::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--color-scrollbar-track);
 }
 
 .app-content::-webkit-scrollbar-thumb {
-  background: rgba(108, 92, 231, 0.3);
+  background: var(--color-scrollbar-thumb);
   border-radius: 4px;
 }
 
 .app-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(108, 92, 231, 0.5);
+  background: var(--color-scrollbar-thumb-hover);
 }
 
 /* Right side - Decorative Panel */

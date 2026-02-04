@@ -34,6 +34,7 @@ export type {
 export {
   Routes,
   Theme,
+  EffectiveTheme,
   NotificationType,
   AuthStatus,
   Gender,

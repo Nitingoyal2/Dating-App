@@ -21,9 +21,18 @@ export type Routes = (typeof Routes)[keyof typeof Routes];
 export const Theme = {
   LIGHT: 'light',
   DARK: 'dark',
+  DEFAULT: 'default', // System preference
 } as const;
 
 export type Theme = (typeof Theme)[keyof typeof Theme];
+
+// Effective Theme (actual applied theme - only light or dark)
+export const EffectiveTheme = {
+  LIGHT: 'light',
+  DARK: 'dark',
+} as const;
+
+export type EffectiveTheme = (typeof EffectiveTheme)[keyof typeof EffectiveTheme];
 
 // Notification types
 export const NotificationType = {

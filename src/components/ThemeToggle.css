@@ -1,0 +1,158 @@
+/* ========================================
+   THEME TOGGLE COMPONENT STYLES
+   ======================================== */
+
+.theme-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.theme-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.theme-buttons {
+  display: flex;
+  gap: 8px;
+  background: var(--color-bg-tertiary);
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+}
+
+.theme-btn.active {
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+  box-shadow: 0 2px 8px var(--color-shadow-medium);
+}
+
+.theme-btn-icon {
+  font-size: 1rem;
+}
+
+.theme-btn-text {
+  font-size: 0.8rem;
+}
+
+.theme-current {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+/* ========================================
+   DROPDOWN VARIANT
+   ======================================== */
+
+.theme-toggle-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-select {
+  padding: 10px 16px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 10px;
+  background: var(--color-input-bg);
+  color: var(--color-text-primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.theme-select:hover {
+  border-color: var(--color-accent-primary);
+}
+
+.theme-select:focus {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+/* ========================================
+   ICONS VARIANT
+   ======================================== */
+
+.theme-toggle-icons {
+  display: flex;
+  gap: 4px;
+  background: var(--color-bg-tertiary);
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.theme-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.theme-icon-btn:hover {
+  background: var(--color-bg-card);
+  color: var(--color-text-primary);
+}
+
+.theme-icon-btn.active {
+  background: var(--color-accent-primary);
+  color: white;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 380px) {
+  .theme-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .theme-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+  
+  .theme-btn-text {
+    display: none;
+  }
+}
+

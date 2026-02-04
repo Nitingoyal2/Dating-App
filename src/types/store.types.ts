@@ -1,4 +1,4 @@
-import type { Theme, NotificationType, AuthStatus } from './enums';
+import type { Theme, EffectiveTheme, NotificationType, AuthStatus } from './enums';
 
 // Auth State Types
 export interface AuthState {
@@ -34,7 +34,8 @@ export interface RegisterPayload {
 
 // App State Types
 export interface AppState {
-  theme: Theme;
+  theme: Theme; // User preference (light, dark, or default)
+  effectiveTheme: EffectiveTheme; // Actual applied theme (light or dark)
   isLoading: boolean;
   notification: NotificationState | null;
 }

@@ -1,7 +1,11 @@
 import type { LayoutProps } from '@/types';
+import { useTheme } from '@hooks';
 import './Layout.css';
 
 const Layout = ({ children }: LayoutProps) => {
+  // Initialize theme (applies theme class to document)
+  useTheme();
+
   return (
     <div className="app-layout">
       {/* Left side - Mobile App Container */}

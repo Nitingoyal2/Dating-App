@@ -2,9 +2,10 @@
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+  background: var(--color-bg-primary);
   padding: 16px 24px 32px;
   box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
 /* Header */
@@ -27,8 +28,8 @@
   padding: 0;
   margin-left: -8px;
   border-radius: 50%;
-  transition: background 0.2s ease;
-  color: #1a1a1a;
+  transition: background 0.2s ease, color 0.3s ease;
+  color: var(--color-text-primary);
 }
 
 .back-button:hover {
@@ -48,17 +49,19 @@
   font-family: 'Poppins', sans-serif;
   font-size: 1.75rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   margin: 0 0 8px 0;
   line-height: 1.2;
+  transition: color 0.3s ease;
 }
 
 .auth-description {
   font-family: 'Poppins', sans-serif;
   font-size: 0.95rem;
-  color: #666;
+  color: var(--color-text-secondary);
   margin: 0;
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
 
 /* Form Section */
@@ -78,8 +81,9 @@
   font-family: 'Poppins', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
+  transition: color 0.3s ease;
 }
 
 .auth-form-section .form-input-wrapper {
@@ -91,9 +95,10 @@
 .auth-form-section .form-input-icon {
   position: absolute;
   left: 16px;
-  color: #999;
+  color: var(--color-text-tertiary);
   font-size: 1.1rem;
   pointer-events: none;
+  transition: color 0.3s ease;
 }
 
 .auth-form-section .form-input {
@@ -101,35 +106,36 @@
   padding: 14px 16px 14px 48px;
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-input-border);
   border-radius: 12px;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background: #fafafa;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+  background: var(--color-input-bg);
+  color: var(--color-text-primary);
   box-sizing: border-box;
 }
 
 .auth-form-section .form-input:focus {
-  border-color: #6C5CE7;
+  border-color: var(--color-input-focus);
   box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
-  background: #fff;
+  background: var(--color-bg-primary);
 }
 
 .auth-form-section .form-input::placeholder {
-  color: #aaa;
+  color: var(--color-input-placeholder);
 }
 
 .auth-form-section .form-link {
   font-family: 'Poppins', sans-serif;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--color-text-secondary);
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 
 .auth-form-section .form-link:hover {
-  color: #6C5CE7;
+  color: var(--color-accent-primary);
 }
 
 .auth-form-section .submit-btn {
@@ -139,7 +145,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, #6C5CE7, #a855f7);
+  background: var(--color-accent-gradient);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -149,7 +155,7 @@
 
 .auth-form-section .submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+  box-shadow: 0 8px 25px var(--color-shadow-medium);
 }
 
 .auth-form-section .submit-btn:active {
