@@ -1,4 +1,4 @@
-// Common/Shared types used across the application
+// Common/Shared interfaces used across the application
 
 export interface User {
   id: string;
@@ -9,7 +9,7 @@ export interface User {
   age?: number;
   location?: string;
   interests?: string[];
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface ApiResponse<T> {

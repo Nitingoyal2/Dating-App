@@ -1,4 +1,4 @@
-import type { LayoutProps } from '@/types';
+import type { LayoutProps } from '@interfaces';
 import { useTheme } from '@hooks';
 import './Layout.css';
 

@@ -1,88 +1,132 @@
-.home-screen {
+.onboarding-screen {
   min-height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background: var(--color-bg-secondary);
-  padding: 40px 24px;
+  background: var(--color-bg-primary);
+  padding: 40px 24px 32px;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
   transition: background-color 0.3s ease;
 }
 
-.home-content {
-  text-align: center;
+/* Floating Hearts */
+.onboarding-hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.onboarding-hearts .heart {
+  position: absolute;
+  font-size: 24px;
+  opacity: 0.6;
+  animation: floatHeart 4s ease-in-out infinite;
+}
+
+.onboarding-hearts .heart-1 {
+  top: 15%;
+  right: 10%;
+  font-size: 20px;
+  animation-delay: 0s;
+}
+
+.onboarding-hearts .heart-2 {
+  top: 25%;
+  right: 5%;
+  font-size: 16px;
+  opacity: 0.4;
+  animation-delay: 1s;
+}
+
+.onboarding-hearts .heart-3 {
+  top: 35%;
+  left: 8%;
+  font-size: 18px;
+  opacity: 0.5;
+  animation-delay: 2s;
+}
+
+.onboarding-hearts .heart-4 {
+  top: 20%;
+  left: 15%;
+  font-size: 14px;
+  opacity: 0.3;
+  animation-delay: 0.5s;
+}
+
+@keyframes floatHeart {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+/* Illustration */
+.onboarding-illustration {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  max-width: 300px;
+  max-width: 280px;
+  margin: 0 auto;
 }
 
-.home-icon {
-  margin-bottom: 16px;
-  animation: pulse 2s ease-in-out infinite;
+.onboarding-illustration svg {
+  width: 100%;
+  height: auto;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+/* Content */
+.onboarding-content {
+  text-align: center;
+  margin-bottom: 32px;
+  z-index: 10;
 }
 
-.home-title {
+.onboarding-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  background: var(--color-accent-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 0 0 4px 0;
-}
-
-.home-tagline {
-  font-family: 'Poppins', sans-serif;
-  color: var(--color-text-tertiary);
-  font-size: 1rem;
-  margin: 0 0 48px 0;
+  color: var(--color-text-primary);
+  margin: 0 0 12px 0;
   transition: color 0.3s ease;
 }
 
-.home-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.home-buttons .btn-primary {
+.onboarding-description {
   font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
-  background: var(--color-accent-gradient);
-  border: none;
-  padding: 16px 32px;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 10px 30px var(--color-shadow-medium);
-  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 280px;
+  transition: color 0.3s ease;
 }
 
-.home-buttons .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 40px var(--color-shadow-dark);
+/* Actions */
+.onboarding-actions {
+  width: 100%;
+  z-index: 10;
 }
 
-.home-buttons .btn-secondary {
-  font-family: 'Poppins', sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-accent-primary);
-  background: transparent;
-  border: 2px solid var(--color-accent-primary);
-  padding: 14px 32px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.onboarding-btn {
+  height: 52px !important;
+  border-radius: 50px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  background: var(--color-btn-primary-gradient) !important;
+  border: none !important;
+  box-shadow: 0 8px 24px var(--color-btn-primary-shadow) !important;
 }
 
-.home-buttons .btn-secondary:hover {
-  background: rgba(108, 92, 231, 0.1);
+.onboarding-btn:hover {
+  background: var(--color-btn-primary-gradient-hover) !important;
   transform: translateY(-2px);
+  box-shadow: 0 12px 28px var(--color-btn-primary-shadow-hover) !important;
 }

@@ -1,35 +1,28 @@
-import { useNavigate } from 'react-router-dom';
 import { Form, Input } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
-import { Routes } from '@/types';
-import type { ForgotPasswordFormData } from '@interfaces';
+import type { StepEmailProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
-import './ForgotPassword.css';
 
-const ForgotPassword = () => {
-    const navigate = useNavigate();
+const StepEmail = ({ value, onChange, onNext, onBack }: StepEmailProps) => {
     const [form] = Form.useForm();
 
-    const handleBack = () => {
-        navigate(Routes.LOGIN);
-    };
-
-    const handleSubmit = (values: ForgotPasswordFormData) => {
-        console.log('Reset password for:', values.email);
-        // TODO: Call API to send reset email
+    const handleFinish = () => {
+        onNext();
     };
 
     return (
         <AuthLayout
-            title="Account Recovery"
-            description="We'll email you a link that will instantly log you in"
-            onBackClick={handleBack}
+            title="What's your email?"
+            description="Don't lose access to your account, verify your email."
+            descriptionColor="accent"
+            onBackClick={onBack}
         >
             <Form
                 form={form}
                 layout="vertical"
-                onFinish={handleSubmit}
+                onFinish={handleFinish}
+                initialValues={{ email: value }}
                 style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
             >
                 <Form.Item
@@ -44,15 +37,15 @@ const ForgotPassword = () => {
                         prefix={<MailOutlined style={{ color: 'var(--color-text-tertiary)' }} />}
                         placeholder="Email Address"
                         size="large"
+                        onChange={(e) => onChange(e.target.value)}
+                        autoFocus
                         style={{ borderRadius: 12, height: 52 }}
                     />
                 </Form.Item>
 
-                <span className="form-link">Resend email</span>
-
-                <Form.Item style={{ marginTop: 32, marginBottom: 0 }}>
+                <Form.Item style={{ marginTop: 'auto', marginBottom: 0 }}>
                     <PrimaryButton htmlType="submit">
-                        Send Email
+                        Continue
                     </PrimaryButton>
                 </Form.Item>
             </Form>
@@ -60,4 +53,4 @@ const ForgotPassword = () => {
     );
 };
 
-export default ForgotPassword;
+export default StepEmail;

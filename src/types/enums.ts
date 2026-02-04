@@ -3,12 +3,12 @@ export const Routes = {
   // Public routes
   HOME: '/',
   LOGIN: '/login',
-  REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
 
   // Protected routes
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
+  PROFILE_SETUP: '/profile-setup',
   MATCHES: '/matches',
   CHAT: '/chat',
   SETTINGS: '/settings',

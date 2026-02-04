@@ -8,6 +8,47 @@
   transition: background-color 0.3s ease;
 }
 
+/* ========================================
+   ANT DESIGN FORM OVERRIDES
+   ======================================== */
+
+.auth-layout .ant-form-item-label > label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.auth-layout .ant-input,
+.auth-layout .ant-picker {
+  font-family: 'Poppins', sans-serif;
+  border-radius: 12px;
+  border-color: var(--color-border-light);
+  background: var(--color-bg-secondary);
+  transition: all 0.2s ease;
+}
+
+.auth-layout .ant-input:hover,
+.auth-layout .ant-picker:hover {
+  border-color: var(--color-accent-tertiary);
+}
+
+.auth-layout .ant-input:focus,
+.auth-layout .ant-input-focused,
+.auth-layout .ant-picker-focused {
+  border-color: var(--color-accent-tertiary);
+  box-shadow: 0 0 0 3px var(--color-btn-primary-shadow);
+}
+
+.auth-layout .ant-input-prefix {
+  margin-right: 12px;
+}
+
+.auth-layout .ant-form-item-explain-error {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+}
+
 /* Header */
 .auth-header {
   height: 44px;
@@ -33,11 +74,11 @@
 }
 
 .back-button:hover {
-  background: rgba(108, 92, 231, 0.1);
+  background: var(--color-bg-tertiary);
 }
 
 .back-button:active {
-  background: rgba(108, 92, 231, 0.2);
+  background: var(--color-bg-secondary);
 }
 
 /* Title Section */
@@ -117,7 +158,7 @@
 
 .auth-form-section .form-input:focus {
   border-color: var(--color-input-focus);
-  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+  box-shadow: 0 0 0 3px var(--color-shadow-light);
   background: var(--color-bg-primary);
 }
 
@@ -167,4 +208,285 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* Centered Layout Variant */
+.auth-layout--centered .auth-form-section {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Accent Description Color */
+.auth-description--accent {
+  color: var(--color-accent-tertiary) !important;
+}
+
+/* Footer Section */
+.auth-footer-section {
+  margin-top: 16px;
+}
+
+/* ========================================
+   PROFILE SETUP SPECIFIC STYLES
+   ======================================== */
+
+/* Selection Options */
+.auth-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.auth-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 12px;
+  background: var(--color-bg-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-option:hover {
+  border-color: var(--color-accent-tertiary);
+  background: var(--color-bg-secondary);
+}
+
+.auth-option.selected {
+  background: var(--color-btn-primary-gradient);
+  border-color: transparent;
+}
+
+.auth-option-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  transition: color 0.2s ease;
+}
+
+.auth-option.selected .auth-option-text {
+  color: white;
+}
+
+.auth-option-check {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.auth-option.selected .auth-option-check {
+  opacity: 1;
+}
+
+/* Age Display */
+.auth-age-display {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.auth-age-number {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  transition: color 0.3s ease;
+}
+
+.auth-age-note {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary);
+  margin-top: 4px;
+  transition: color 0.3s ease;
+}
+
+/* Location Icon Container */
+.auth-location-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--color-btn-primary-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 32px auto;
+}
+
+.auth-location-icon svg {
+  width: 48px;
+  height: 48px;
+  color: var(--color-btn-primary);
+}
+
+/* Photos Grid */
+.auth-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.auth-photo-slot {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 2px dashed var(--color-border-light);
+  background: var(--color-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.auth-photo-slot:hover {
+  border-color: var(--color-accent-tertiary);
+  background: var(--color-bg-tertiary);
+}
+
+.auth-photo-slot.filled {
+  border: none;
+}
+
+.auth-photo-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auth-photo-add {
+  color: var(--color-btn-primary);
+  font-size: 28px;
+  font-weight: 300;
+}
+
+.auth-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-btn-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Welcome Rules */
+.auth-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.auth-rule {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: var(--color-bg-secondary);
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+  text-align: left;
+}
+
+.auth-rule-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-rule-content {
+  flex: 1;
+}
+
+.auth-rule-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 4px 0;
+  transition: color 0.3s ease;
+}
+
+.auth-rule-description {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.auth-rule-link {
+  color: var(--color-accent-tertiary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Continue Button (Coral/Pink Style) */
+.auth-continue-btn {
+  width: 100%;
+  height: 52px !important;
+  margin-top: auto;
+  border-radius: 50px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  background: var(--color-btn-primary-gradient) !important;
+  border: none !important;
+  box-shadow: 0 8px 24px var(--color-btn-primary-shadow) !important;
+}
+
+.auth-continue-btn:hover:not(:disabled) {
+  background: var(--color-btn-primary-gradient-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px var(--color-btn-primary-shadow-hover) !important;
+}
+
+.auth-continue-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Skip/Secondary Button */
+.auth-skip-btn {
+  width: 100%;
+  height: 48px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  color: var(--color-text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.auth-skip-btn:hover {
+  color: var(--color-text-primary) !important;
 }

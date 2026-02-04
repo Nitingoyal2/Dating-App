@@ -1,13 +1,11 @@
-import type { Theme, EffectiveTheme, NotificationType, AuthStatus } from './enums';
+import type { Theme, EffectiveTheme, NotificationType, AuthStatus } from '@/types/enums';
 
-// Auth State Types
+// Auth State
 export interface AuthState {
   user: UserState | null;
   token: string | null;
   status: AuthStatus;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
 }
 
 export interface UserState {
@@ -21,21 +19,10 @@ export interface UserState {
   interests?: string[];
 }
 
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface RegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-}
-
-// App State Types
+// App State
 export interface AppState {
-  theme: Theme; // User preference (light, dark, or default)
-  effectiveTheme: EffectiveTheme; // Actual applied theme (light or dark)
+  theme: Theme;
+  effectiveTheme: EffectiveTheme;
   isLoading: boolean;
   notification: NotificationState | null;
 }
@@ -44,3 +31,4 @@ export interface NotificationState {
   type: NotificationType;
   message: string;
 }
+

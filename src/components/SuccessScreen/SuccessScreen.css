@@ -1,0 +1,146 @@
+.success-screen {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  background: var(--color-bg-secondary);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+/* Floating hearts background */
+.success-hearts-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  font-size: 60px;
+  opacity: 0.15;
+  animation: floatHeart 6s ease-in-out infinite;
+}
+
+.heart-1 {
+  bottom: 5%;
+  left: 10%;
+  font-size: 80px;
+  animation-delay: 0s;
+}
+
+.heart-2 {
+  bottom: 15%;
+  right: 5%;
+  font-size: 100px;
+  animation-delay: 1s;
+}
+
+.heart-3 {
+  bottom: 0;
+  right: 30%;
+  font-size: 70px;
+  opacity: 0.1;
+  animation-delay: 2s;
+}
+
+.heart-4 {
+  bottom: 10%;
+  left: 40%;
+  font-size: 50px;
+  opacity: 0.08;
+  animation-delay: 3s;
+}
+
+@keyframes floatHeart {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.05);
+  }
+}
+
+/* Content */
+.success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 10;
+  flex: 1;
+  justify-content: center;
+}
+
+.success-icon {
+  margin-bottom: 24px;
+}
+
+.success-icon svg {
+  width: 80px;
+  height: 80px;
+}
+
+.success-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 12px 0;
+  transition: color 0.3s ease;
+}
+
+.success-description {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+  max-width: 280px;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+/* Actions */
+.success-actions {
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.success-btn-primary {
+  height: 52px !important;
+  border-radius: 50px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  background: var(--color-btn-primary-gradient) !important;
+  border: none !important;
+  box-shadow: 0 8px 24px var(--color-btn-primary-shadow) !important;
+}
+
+.success-btn-primary:hover {
+  background: var(--color-btn-primary-gradient-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px var(--color-btn-primary-shadow-hover) !important;
+}
+
+.success-btn-secondary {
+  height: 48px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.success-btn-secondary:hover {
+  color: var(--color-text-primary) !important;
+  background: var(--color-bg-tertiary) !important;
+}
+

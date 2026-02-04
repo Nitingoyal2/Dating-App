@@ -1,8 +1,8 @@
-import { Home, Login, Register, ForgotPassword, Dashboard } from '@/pages';
+import { Home, Login, ForgotPassword, Dashboard, ProfileSetup } from '@/pages';
 import { Routes } from '@/types';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
-import type { RouteConfig } from '@/types';
+import type { RouteConfig } from '@interfaces';
 
 // Re-export Routes enum for convenience
 export { Routes } from '@/types';
@@ -12,6 +12,12 @@ export const publicRoutes: RouteConfig[] = [
     {
         path: Routes.HOME,
         element: <Home />,
+        isProtected: false,
+    },
+    {
+        // Profile Setup is public for new user registration
+        path: Routes.PROFILE_SETUP,
+        element: <ProfileSetup />,
         isProtected: false,
     },
 ];
@@ -24,15 +30,6 @@ export const restrictedPublicRoutes: RouteConfig[] = [
         element: (
             <PublicRoute restricted>
                 <Login />
-            </PublicRoute>
-        ),
-        isProtected: false,
-    },
-    {
-        path: Routes.REGISTER,
-        element: (
-            <PublicRoute restricted>
-                <Register />
             </PublicRoute>
         ),
         isProtected: false,
@@ -59,16 +56,6 @@ export const protectedRoutes: RouteConfig[] = [
         ),
         isProtected: true,
     },
-    // Add more protected routes here
-    // {
-    //   path: Routes.PROFILE,
-    //   element: (
-    //     <ProtectedRoute>
-    //       <Profile />
-    //     </ProtectedRoute>
-    //   ),
-    //   isProtected: true,
-    // },
 ];
 
 // Combine all routes

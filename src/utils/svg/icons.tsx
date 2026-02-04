@@ -11,13 +11,15 @@ export const ArrowLeftIcon = ({ size = 24, color = 'currentColor', ...props }: I
         height={size}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <path d="M19 12H5M12 19l-7-7 7-7" />
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M15.2071 18.7071C14.8166 19.0976 14.1834 19.0976 13.7929 18.7071L7.79289 12.7071C7.40237 12.3166 7.40237 11.6834 7.79289 11.2929L13.7929 5.29289C14.1834 4.90237 14.8166 4.90237 15.2071 5.29289C15.5976 5.68342 15.5976 6.31658 15.2071 6.70711L9.91421 12L15.2071 17.2929C15.5976 17.6834 15.5976 18.3166 15.2071 18.7071Z"
+            fill={color}
+        />
     </svg>
 );
 
@@ -27,13 +29,15 @@ export const ArrowRightIcon = ({ size = 24, color = 'currentColor', ...props }: 
         height={size}
         viewBox="0 0 24 24"
         fill="none"
-        stroke={color}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        xmlns="http://www.w3.org/2000/svg"
         {...props}
     >
-        <path d="M5 12h14M12 5l7 7-7 7" />
+        <path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M8.79289 5.29289C9.18342 4.90237 9.81658 4.90237 10.2071 5.29289L16.2071 11.2929C16.5976 11.6834 16.5976 12.3166 16.2071 12.7071L10.2071 18.7071C9.81658 19.0976 9.18342 19.0976 8.79289 18.7071C8.40237 18.3166 8.40237 17.6834 8.79289 17.2929L14.0858 12L8.79289 6.70711C8.40237 6.31658 8.40237 5.68342 8.79289 5.29289Z"
+            fill={color}
+        />
     </svg>
 );
 

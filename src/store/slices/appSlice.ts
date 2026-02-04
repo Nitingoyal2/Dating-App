@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { Theme, EffectiveTheme, NotificationType } from '@/types';
-import type { AppState, NotificationState } from '@/types';
+import type { AppState, NotificationState } from '@interfaces';
 
 // Helper to get system preference
 const getSystemTheme = (): EffectiveTheme => {

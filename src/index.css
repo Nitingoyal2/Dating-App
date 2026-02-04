@@ -40,6 +40,21 @@
   --color-shadow-medium: rgba(0, 0, 0, 0.1);
   --color-shadow-dark: rgba(0, 0, 0, 0.2);
   
+  /* Button colors */
+  --color-btn-primary: #ff6b6b;
+  --color-btn-primary-hover: #ff5252;
+  --color-btn-primary-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  --color-btn-primary-gradient-hover: linear-gradient(135deg, #ff5252 0%, #e84848 100%);
+  --color-btn-primary-shadow: rgba(255, 107, 107, 0.35);
+  --color-btn-primary-shadow-hover: rgba(255, 107, 107, 0.45);
+  
+  --color-btn-secondary: #3b82f6;
+  --color-btn-secondary-hover: #2563eb;
+  --color-btn-secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --color-btn-secondary-gradient-hover: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --color-btn-secondary-shadow: rgba(59, 130, 246, 0.35);
+  --color-btn-secondary-shadow-hover: rgba(59, 130, 246, 0.45);
+  
   /* Phone frame colors */
   --color-frame-outer: #1a1a2e;
   --color-frame-inner: #312e81;
@@ -90,6 +105,21 @@
   --color-shadow-light: rgba(0, 0, 0, 0.2);
   --color-shadow-medium: rgba(0, 0, 0, 0.3);
   --color-shadow-dark: rgba(0, 0, 0, 0.5);
+  
+  /* Button colors - dark mode */
+  --color-btn-primary: #ff7b7b;
+  --color-btn-primary-hover: #ff6262;
+  --color-btn-primary-gradient: linear-gradient(135deg, #ff7b7b 0%, #f06a6a 100%);
+  --color-btn-primary-gradient-hover: linear-gradient(135deg, #ff6262 0%, #ea5858 100%);
+  --color-btn-primary-shadow: rgba(255, 123, 123, 0.4);
+  --color-btn-primary-shadow-hover: rgba(255, 123, 123, 0.5);
+  
+  --color-btn-secondary: #60a5fa;
+  --color-btn-secondary-hover: #3b82f6;
+  --color-btn-secondary-gradient: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  --color-btn-secondary-gradient-hover: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --color-btn-secondary-shadow: rgba(96, 165, 250, 0.4);
+  --color-btn-secondary-shadow-hover: rgba(96, 165, 250, 0.5);
   
   /* Phone frame colors - dark mode */
   --color-frame-outer: #0a0a14;

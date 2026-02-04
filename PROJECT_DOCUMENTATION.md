@@ -1,6 +1,6 @@
-# Milan Dating App - Project Documentation
+# Prosto Dating App - Project Documentation
 
-> A modern React dating application built with TypeScript, Redux Toolkit, and React Router.
+> A modern React dating application built with TypeScript, Redux Toolkit, Ant Design, and React Router.
 
 ---
 
@@ -10,14 +10,17 @@
 2. [Folder Structure](#folder-structure)
 3. [Path Aliases](#path-aliases)
 4. [Application Flow](#application-flow)
-5. [Components](#components)
-6. [Pages](#pages)
-7. [Routing System](#routing-system)
-8. [State Management (Redux)](#state-management-redux)
-9. [Types & Enums](#types--enums)
-10. [SVG Icons](#svg-icons)
-11. [Styling Approach](#styling-approach)
-12. [How to Add New Features](#how-to-add-new-features)
+5. [Theme System](#theme-system)
+6. [Components](#components)
+7. [Pages](#pages)
+8. [Profile Setup Flow](#profile-setup-flow)
+9. [Backend API](#backend-api)
+10. [Routing System](#routing-system)
+11. [State Management (Redux)](#state-management-redux)
+12. [Types & Enums](#types--enums)
+13. [SVG Icons](#svg-icons)
+14. [Styling Approach](#styling-approach)
+15. [How to Add New Features](#how-to-add-new-features)
 
 ---
 
@@ -31,6 +34,9 @@
 | React Router DOM | 7.x | Client-side Routing |
 | Redux Toolkit | 2.x | State Management |
 | React Redux | 9.x | React bindings for Redux |
+| **Ant Design** | 5.x | UI Component Library |
+| **@ant-design/icons** | 5.x | Icon Library |
+| **dayjs** | 1.x | Date manipulation |
 
 ---
 
@@ -47,34 +53,48 @@ dating-app/
 │   │   ├── Layout.tsx        # Main app layout (phone frame + side panel)
 │   │   ├── Layout.css
 │   │   ├── AuthLayout.tsx    # Auth pages layout (back btn, title, form)
-│   │   └── AuthLayout.css
+│   │   ├── AuthLayout.css
+│   │   ├── AntdProvider.tsx  # Ant Design theme provider
+│   │   ├── ThemeToggle.tsx   # Theme switcher component
+│   │   ├── ThemeToggle.css
+│   │   ├── Button/           # Reusable button component
+│   │   │   ├── PrimaryButton.tsx
+│   │   │   ├── Button.css
+│   │   │   └── index.ts
+│   │   ├── ConfirmModal/     # Reusable confirmation modal
+│   │   │   ├── ConfirmModal.tsx
+│   │   │   ├── ConfirmModal.css
+│   │   │   └── index.ts
+│   │   └── SuccessScreen/    # Success/celebration screen
+│   │       ├── SuccessScreen.tsx
+│   │       ├── SuccessScreen.css
+│   │       └── index.ts
+│   │
+│   ├── hooks/                # Custom React hooks
+│   │   ├── index.ts
+│   │   └── useTheme.ts       # Theme management hook
 │   │
 │   ├── pages/                # Page components (each in own folder)
 │   │   ├── index.ts          # Exports all pages
 │   │   ├── Splash/           # Loading/splash screen
-│   │   │   ├── Splash.tsx
-│   │   │   ├── Splash.css
-│   │   │   └── index.ts
-│   │   ├── Home/             # Landing page
-│   │   │   ├── Home.tsx
-│   │   │   ├── Home.css
-│   │   │   └── index.ts
+│   │   ├── Home/             # Onboarding/landing page
 │   │   ├── Login/            # Login page
-│   │   │   ├── Login.tsx
-│   │   │   ├── Login.css
-│   │   │   └── index.ts
-│   │   ├── Register/         # Registration page
-│   │   │   ├── Register.tsx
-│   │   │   ├── Register.css
-│   │   │   └── index.ts
 │   │   ├── ForgotPassword/   # Password recovery
-│   │   │   ├── ForgotPassword.tsx
-│   │   │   ├── ForgotPassword.css
-│   │   │   └── index.ts
-│   │   └── Dashboard/        # Main app (protected)
-│   │       ├── Dashboard.tsx
-│   │       ├── Dashboard.css
-│   │       └── index.ts
+│   │   ├── Dashboard/        # Main app (protected)
+│   │   └── ProfileSetup/     # Multi-step profile creation
+│   │       ├── ProfileSetup.tsx
+│   │       ├── index.ts
+│   │       └── steps/        # Individual step components
+│   │           ├── index.ts
+│   │           ├── StepEmail.tsx
+│   │           ├── StepName.tsx
+│   │           ├── StepLocation.tsx
+│   │           ├── StepGender.tsx
+│   │           ├── StepSeeking.tsx
+│   │           ├── StepBirthday.tsx
+│   │           ├── StepPhotos.tsx
+│   │           ├── StepWelcome.tsx
+│   │           └── StepSuccess.tsx
 │   │
 │   ├── routes/               # Routing configuration
 │   │   ├── index.tsx         # AppRoutes component
@@ -99,22 +119,30 @@ dating-app/
 │   │   ├── layout.types.ts   # Layout props types
 │   │   └── common.types.ts   # Shared types (User, API response)
 │   │
+│   ├── services/             # API services
+│   │   ├── index.ts          # Exports all services
+│   │   ├── interceptor.ts    # Axios instance with interceptors
+│   │   ├── api_methods.ts    # Generic API methods (get, post, patch, etc.)
+│   │   └── api_collections.ts # All API endpoint functions
+│   │
 │   ├── utils/                # Utility functions & components
 │   │   └── svg/              # SVG icon components
 │   │       ├── index.ts      # Exports all icons
 │   │       ├── icons.tsx     # Icon components
-│   │       └── MilanLogo.tsx # App logo
+│   │       └── ProstoLogo.tsx # App logo
 │   │
 │   ├── main.tsx              # Application entry point
 │   ├── App.tsx               # Root component
 │   ├── App.css               # App-level styles (minimal)
-│   └── index.css             # Global styles & fonts
+│   └── index.css             # Global styles, fonts & CSS variables
 │
 ├── index.html                # HTML template
 ├── vite.config.ts            # Vite configuration + aliases
 ├── tsconfig.json             # TypeScript config
 ├── tsconfig.app.json         # App-specific TS config + aliases
-└── package.json              # Dependencies & scripts
+├── package.json              # Dependencies & scripts
+├── PROJECT_DOCUMENTATION.md  # This file - frontend documentation
+└── BACKEND_API_SPEC.md       # Backend API specification (v2.0.0)
 ```
 
 ---
@@ -126,10 +154,12 @@ Configured in `tsconfig.app.json` and `vite.config.ts`:
 | Alias | Maps To | Example Usage |
 |-------|---------|---------------|
 | `@/*` | `src/*` | `import { Routes } from '@/types'` |
-| `@components/*` | `src/components/*` | `import Layout from '@components/Layout'` |
+| `@components/*` | `src/components/*` | `import AuthLayout from '@components/AuthLayout'` |
 | `@pages/*` | `src/pages/*` | `import { Home } from '@/pages'` |
 | `@types/*` | `src/types/*` | `import type { User } from '@/types'` |
 | `@store/*` | `src/store/*` | `import { useAppDispatch } from '@store/hooks'` |
+| `@hooks` | `src/hooks` | `import { useTheme } from '@hooks'` |
+| `@services` | `src/services` | `import { createDraft, login } from '@services'` |
 | `@utils/*` | `src/utils/*` | `import { formatDate } from '@utils/helpers'` |
 | `@svg` | `src/utils/svg` | `import { HeartIcon } from '@svg'` |
 
@@ -147,29 +177,30 @@ Configured in `tsconfig.app.json` and `vite.config.ts`:
    ▼
 2. main.tsx
    ├── Wraps app with Redux Provider (state management)
+   ├── Wraps app with AntdProvider (Ant Design theming)
    ├── Wraps app with BrowserRouter (routing)
    └── Renders <App />
    │
    ▼
 3. App.tsx
-   ├── [showSplash = true] → Show Splash screen
-   │                         (Milan logo for 2.5 seconds)
-   │
+   ├── [showSplash = true] → Show Splash screen (2.5 seconds)
    └── [showSplash = false] → Show Layout + AppRoutes
    │
    ▼
 4. ROUTING (based on URL)
    │
-   ├── "/" (HOME)
-   │   └── Shows Home page (Sign In / Create Account buttons)
+   ├── "/" (HOME - Onboarding)
+   │   └── Shows Algorithm screen → "Get Started" button
    │
    ├── "/login" (RESTRICTED PUBLIC)
    │   ├── If authenticated → Redirect to /dashboard
    │   └── If not authenticated → Show Login form
+   │       ├── Sign In → Dashboard
+   │       └── Sign Up → Profile Setup
    │
-   ├── "/register" (RESTRICTED PUBLIC)
-   │   ├── If authenticated → Redirect to /dashboard
-   │   └── If not authenticated → Show Register form
+   ├── "/profile-setup" (PUBLIC)
+   │   └── 9-step profile creation flow
+   │       → On complete: Auto-login → Dashboard
    │
    ├── "/forgot-password" (RESTRICTED PUBLIC)
    │   └── Show password recovery form
@@ -177,15 +208,102 @@ Configured in `tsconfig.app.json` and `vite.config.ts`:
    └── "/dashboard" (PROTECTED)
        ├── If not authenticated → Redirect to /login
        └── If authenticated → Show Dashboard
-   │
-   ▼
-5. USER ACTIONS
-   │
-   ├── Login → dispatch(loginSuccess) → isAuthenticated = true
-   │                                   → Navigate to /dashboard
-   │
-   └── Logout → dispatch(logout) → isAuthenticated = false
-                                 → Redirect to /login
+```
+
+### User Flow Diagram
+
+```
+┌──────────┐     ┌──────────┐     ┌─────────────────┐     ┌───────────┐
+│   HOME   │────▶│  LOGIN   │────▶│  PROFILE SETUP  │────▶│ DASHBOARD │
+│          │     │          │     │   (9 Steps)     │     │           │
+│Get Started     │ Sign Up  │     │                 │     │ (Logged   │
+└──────────┘     └────┬─────┘     └─────────────────┘     │   In)     │
+                     │                                    └───────────┘
+                     │ Sign In (existing user)                  ▲
+                     └──────────────────────────────────────────┘
+```
+
+---
+
+## 🎨 Theme System
+
+The app supports **Light**, **Dark**, and **System Default** themes.
+
+### Theme Modes
+
+| Mode | Description |
+|------|-------------|
+| `light` | Light theme with white backgrounds |
+| `dark` | Dark theme with dark purple backgrounds |
+| `default` | Follows system preference (auto-switches) |
+
+### CSS Variables
+
+All colors use CSS variables defined in `index.css`. Colors automatically adapt to light/dark mode:
+
+```css
+:root {
+  /* Backgrounds */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #fafafa;
+  --color-bg-tertiary: #f5f5f5;
+  
+  /* Text */
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #4a4a68;
+  --color-text-inverse: #ffffff;
+  
+  /* Accents */
+  --color-accent-primary: #6C5CE7;
+  --color-accent-secondary: #a855f7;
+  --color-accent-tertiary: #ec4899;
+  
+  /* Button Colors (Coral/Pink & Blue) */
+  --color-btn-primary: #ff6b6b;
+  --color-btn-primary-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  --color-btn-primary-shadow: rgba(255, 107, 107, 0.35);
+  --color-btn-secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  
+  /* Status */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+}
+
+[data-theme="dark"] {
+  --color-bg-primary: #0f0f1a;
+  --color-text-primary: #f5f5f7;
+  --color-btn-primary: #ff7b7b;
+  --color-btn-primary-gradient: linear-gradient(135deg, #ff7b7b 0%, #f06a6a 100%);
+  /* ... dark mode overrides for all variables */
+}
+```
+
+### Color Guidelines
+
+| Category | Light Mode | Dark Mode | CSS Variable |
+|----------|------------|-----------|--------------|
+| Primary Button | `#ff6b6b` | `#ff7b7b` | `--color-btn-primary` |
+| Secondary Button | `#3b82f6` | `#60a5fa` | `--color-btn-secondary` |
+| Accent | `#6C5CE7` | `#8b7cf7` | `--color-accent-primary` |
+| Success | `#10b981` | `#34d399` | `--color-success` |
+| Background | `#ffffff` | `#0f0f1a` | `--color-bg-primary` |
+
+### useTheme Hook
+
+```typescript
+import { useTheme } from '@hooks';
+
+const { 
+  theme,           // 'light' | 'dark' | 'default'
+  effectiveTheme,  // 'light' | 'dark' (actual applied)
+  isDark,          // boolean
+  changeTheme,     // (theme) => void
+  setDarkTheme,    // () => void
+  setLightTheme,   // () => void
+  setSystemTheme,  // () => void
+} = useTheme();
 ```
 
 ---
@@ -200,79 +318,215 @@ The main wrapper that provides the phone-like interface:
 ┌─────────────────────────────────────────────────────────────┐
 │                                                             │
 │  ┌─────────────────┐     ┌─────────────────────────────┐   │
-│  │                 │     │                             │   │
 │  │   PHONE FRAME   │     │      SIDE PANEL             │   │
-│  │   (max 425px)   │     │                             │   │
-│  │                 │     │   • "Milan" branding        │   │
-│  │   Your app      │     │   • Floating hearts         │   │
-│  │   content       │     │   • Stats (2M+ users, etc)  │   │
-│  │   renders       │     │                             │   │
-│  │   here          │     │   (Hidden on mobile)        │   │
-│  │                 │     │                             │   │
+│  │   (max 425px)   │     │   • "Prosto" branding       │   │
+│  │                 │     │   • Floating hearts         │   │
+│  │   App content   │     │   • Stats (2M+ users)       │   │
+│  │   renders here  │     │   (Hidden on mobile)        │   │
 │  └─────────────────┘     └─────────────────────────────┘   │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Props:**
-- `children: ReactNode` - Content to render inside phone frame
-
 ---
 
 ### AuthLayout Component (`components/AuthLayout.tsx`)
 
-Reusable layout for authentication pages:
-
-```
-┌─────────────────────────┐
-│ ←  (back button)        │  ← onBackClick prop
-├─────────────────────────┤
-│                         │
-│ Title                   │  ← title prop
-│ Description text        │  ← description prop
-│                         │
-│ ┌─────────────────────┐ │
-│ │                     │ │
-│ │   Form Content      │ │  ← children prop
-│ │   (inputs, buttons) │ │
-│ │                     │ │
-│ └─────────────────────┘ │
-│                         │
-└─────────────────────────┘
-```
+Reusable layout for authentication and profile setup pages:
 
 **Props:**
-| Prop | Type | Description |
-|------|------|-------------|
-| `title` | string | Page heading |
-| `description` | string | Subheading text |
-| `onBackClick` | () => void | Back button handler |
-| `showBackButton` | boolean | Show/hide back button (default: true) |
-| `children` | ReactNode | Form content |
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | string | - | Page heading |
+| `description` | string | - | Subheading text (optional) |
+| `descriptionColor` | `'default' \| 'accent'` | `'default'` | Description color |
+| `onBackClick` | () => void | - | Back button handler |
+| `showBackButton` | boolean | `true` | Show/hide back button |
+| `centered` | boolean | `false` | Center content vertically |
+| `children` | ReactNode | - | Form content |
+| `footer` | ReactNode | - | Optional footer content |
+
+---
+
+### PrimaryButton Component (`components/Button/`)
+
+Reusable button with multiple variants:
+
+```typescript
+import { PrimaryButton } from '@components/Button';
+
+<PrimaryButton 
+  variant="primary"    // 'primary' | 'secondary' | 'outline' | 'text'
+  size="large"         // 'small' | 'medium' | 'large'
+  fullWidth={true}     // boolean
+  rounded={true}       // boolean (pill shape)
+  disabled={false}
+  loading={false}
+  onClick={handleClick}
+>
+  Continue
+</PrimaryButton>
+```
+
+**Variants (Theme-aware):**
+
+| Variant | Style | CSS Variable |
+|---------|-------|--------------|
+| `primary` | Coral/Pink gradient | `--color-btn-primary-gradient` |
+| `secondary` | Blue gradient | `--color-btn-secondary-gradient` |
+| `outline` | Transparent with accent border | `--color-accent-primary` |
+| `text` | Text only, no background | `--color-text-secondary` |
+
+All button variants automatically adapt to light/dark mode.
+
+---
+
+### ConfirmModal Component (`components/ConfirmModal/`)
+
+Reusable confirmation dialog:
+
+```typescript
+import { ConfirmModal } from '@components/ConfirmModal';
+
+<ConfirmModal
+  open={isOpen}
+  onClose={() => setIsOpen(false)}
+  onConfirm={handleConfirm}
+  type="success"           // 'success' | 'warning' | 'info' | 'error'
+  title="Please confirm"
+  description="Are you sure?"
+  confirmText="Confirm"
+  cancelText="Cancel"
+  showCancel={true}
+/>
+```
+
+---
+
+### SuccessScreen Component (`components/SuccessScreen/`)
+
+Celebration/success screen with floating hearts:
+
+```typescript
+import { SuccessScreen } from '@components/SuccessScreen';
+
+<SuccessScreen
+  icon={<ProstoLogo size={80} />}
+  title="Yaaay you Made It"
+  description="Start matching with singles near you"
+  buttonText="Continue"
+  onButtonClick={handleComplete}
+  showHearts={true}
+/>
+```
 
 ---
 
 ## 📄 Pages
 
-Each page follows this structure:
-
-```
-pages/PageName/
-├── PageName.tsx    # Component logic
-├── PageName.css    # Styles (scoped to this page)
-└── index.ts        # Export: export { default } from './PageName'
-```
-
-### Available Pages:
-
 | Page | Route | Description |
 |------|-------|-------------|
-| Splash | (initial load) | Loading screen with Milan logo |
-| Home | `/` | Landing page with Sign In / Create Account |
+| Splash | (initial) | Loading screen with Prosto logo |
+| Home | `/` | Onboarding "Algorithm" screen |
 | Login | `/login` | Email & password login form |
-| Register | `/register` | Registration form |
 | ForgotPassword | `/forgot-password` | Password recovery |
+| ProfileSetup | `/profile-setup` | 9-step profile creation |
 | Dashboard | `/dashboard` | Main app (after authentication) |
+
+---
+
+## 📝 Profile Setup Flow
+
+9-step profile creation for new users:
+
+| Step | Component | Description |
+|------|-----------|-------------|
+| 1 | `StepEmail` | Enter email address |
+| 2 | `StepName` | Enter first name |
+| 3 | `StepLocation` | Allow location (optional) |
+| 4 | `StepGender` | Select "I am a" (Man/Woman) |
+| 5 | `StepSeeking` | Select "Seeking a" (Man/Woman) |
+| 6 | `StepBirthday` | Date of birth with confirmation |
+| 7 | `StepPhotos` | Upload 2-6 photos |
+| 8 | `StepWelcome` | House rules acknowledgment |
+| 9 | `StepSuccess` | Celebration screen |
+
+**Profile Data Structure:**
+
+```typescript
+interface ProfileData {
+  email: string;
+  firstName: string;
+  location: { lat: number; lng: number } | null;
+  gender: 'man' | 'woman' | null;
+  seeking: 'man' | 'woman' | null;
+  dateOfBirth: string;
+  photos: string[];
+}
+```
+
+---
+
+## 🔌 Backend API
+
+> Full API specification available in `BACKEND_API_SPEC.md`
+
+### API Architecture
+
+The backend provides a **step-by-step API** with:
+- Draft API to create profile with email (returns `user_id`)
+- PATCH endpoint to update profile fields on each step
+- Complete API to finalize account
+
+### API Flow
+
+```
+Step 1:  POST   /api/draft               → { email }  → { user_id }
+Steps 2-8: PATCH  /api/profile/{user_id}   → { field: value }
+Step 7:  POST   /api/profile/{user_id}/photos  → upload photo
+Step 9:  POST   /api/profile/{user_id}/complete → finalize account
+```
+
+### Endpoints Summary
+
+| Step | Method | Endpoint | Request |
+|------|--------|----------|---------|
+| 1 | POST | `/api/draft` | `{ email }` |
+| 2 | PATCH | `/api/profile/{user_id}` | `{ first_name }` |
+| 3 | PATCH | `/api/profile/{user_id}` | `{ latitude, longitude }` |
+| 4 | PATCH | `/api/profile/{user_id}` | `{ gender }` |
+| 5 | PATCH | `/api/profile/{user_id}` | `{ seeking }` |
+| 6 | PATCH | `/api/profile/{user_id}` | `{ date_of_birth }` |
+| 7 | POST | `/api/profile/{user_id}/photos` | `multipart/form-data` |
+| 8 | PATCH | `/api/profile/{user_id}` | `{ rules_accepted }` |
+| 9 | POST | `/api/profile/{user_id}/complete` | `{ password }` |
+
+### Frontend API Service
+
+```typescript
+// services/profileApi.ts
+export const profileApi = {
+    // Step 1: Create draft
+    createDraft: (email: string) =>
+        api.post('/api/draft', { email }),
+
+    // Steps 2-6, 8: Update profile
+    updateProfile: (userId: string, data: object) =>
+        api.patch(`/api/profile/${userId}`, data),
+
+    // Step 7: Upload photo
+    uploadPhoto: (userId: string, file: File) => {
+        const formData = new FormData();
+        formData.append('photo', file);
+        return api.post(`/api/profile/${userId}/photos`, formData);
+    },
+
+    // Step 9: Complete
+    complete: (userId: string, password: string) =>
+        api.post(`/api/profile/${userId}/complete`, { password }),
+};
+```
 
 ---
 
@@ -282,44 +536,27 @@ pages/PageName/
 
 | Type | Description | Example |
 |------|-------------|---------|
-| **Public** | Anyone can access | Home `/` |
-| **Restricted Public** | Only non-authenticated users | Login, Register |
+| **Public** | Anyone can access | Home `/`, Profile Setup |
+| **Restricted Public** | Only non-authenticated | Login, Forgot Password |
 | **Protected** | Only authenticated users | Dashboard |
 
-### Route Guards
-
-**ProtectedRoute** - For pages requiring authentication:
-```typescript
-// If not authenticated → Redirect to /login (saves original URL)
-// If authenticated → Render children
-```
-
-**PublicRoute** - For auth pages (with `restricted` prop):
-```typescript
-// If authenticated + restricted → Redirect to /dashboard
-// Otherwise → Render children
-```
-
-### Routes Constant (Enum-like)
+### Routes Constant
 
 ```typescript
 import { Routes } from '@/types';
 
-// Usage:
-navigate(Routes.LOGIN);      // '/login'
-navigate(Routes.DASHBOARD);  // '/dashboard'
+// Available Routes:
+Routes.HOME            // '/'
+Routes.LOGIN           // '/login'
+Routes.FORGOT_PASSWORD // '/forgot-password'
+Routes.PROFILE_SETUP   // '/profile-setup'
+Routes.DASHBOARD       // '/dashboard'
+Routes.PROFILE         // '/profile'
+Routes.MATCHES         // '/matches'
+Routes.CHAT            // '/chat'
+Routes.SETTINGS        // '/settings'
+Routes.DISCOVER        // '/discover'
 ```
-
-**Available Routes:**
-- `Routes.HOME` → `/`
-- `Routes.LOGIN` → `/login`
-- `Routes.REGISTER` → `/register`
-- `Routes.FORGOT_PASSWORD` → `/forgot-password`
-- `Routes.DASHBOARD` → `/dashboard`
-- `Routes.PROFILE` → `/profile`
-- `Routes.MATCHES` → `/matches`
-- `Routes.CHAT` → `/chat`
-- `Routes.SETTINGS` → `/settings`
 
 ---
 
@@ -329,7 +566,7 @@ navigate(Routes.DASHBOARD);  // '/dashboard'
 
 ```typescript
 store: {
-  auth: {              // Authentication state
+  auth: {
     user: UserState | null,
     token: string | null,
     status: AuthStatus,
@@ -337,8 +574,9 @@ store: {
     isLoading: boolean,
     error: string | null
   },
-  app: {               // App-wide state
-    theme: Theme,
+  app: {
+    theme: Theme,           // 'light' | 'dark' | 'default'
+    effectiveTheme: EffectiveTheme,  // 'light' | 'dark'
     isLoading: boolean,
     notification: NotificationState | null
   }
@@ -353,121 +591,58 @@ store: {
 | `logout()` | Clear user data, mark unauthenticated |
 | `setLoading(boolean)` | Set loading state |
 | `setUser(user)` | Update user data |
-| `updateUser(partialUser)` | Partial user update |
-| `loginFailure(error)` | Set error message |
-| `clearError()` | Clear error state |
 
 ### App Slice Actions
 
 | Action | Description |
 |--------|-------------|
-| `setTheme(theme)` | Set light/dark theme |
-| `toggleTheme()` | Toggle between themes |
-| `setAppLoading(boolean)` | Set app loading state |
-| `showNotification({ type, message })` | Show notification |
+| `setTheme(theme)` | Set theme preference |
+| `setEffectiveTheme(theme)` | Set actual applied theme |
+| `toggleTheme()` | Toggle between light/dark |
 | `showSuccess(message)` | Show success notification |
 | `showError(message)` | Show error notification |
-| `clearNotification()` | Clear notification |
-
-### Typed Hooks Usage
-
-```typescript
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-
-// In component:
-const dispatch = useAppDispatch();
-const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-
-// Dispatch actions:
-dispatch(loginSuccess({ user: userData, token: 'xxx' }));
-dispatch(logout());
-```
 
 ---
 
 ## 📝 Types & Enums
 
-### Constants (Enum-like Objects)
+### Theme Constants
 
 ```typescript
-// Routes
-export const Routes = {
-  HOME: '/',
-  LOGIN: '/login',
-  // ...
-} as const;
-
-// Theme
 export const Theme = {
   LIGHT: 'light',
   DARK: 'dark',
+  DEFAULT: 'default',
 } as const;
 
-// Auth Status
-export const AuthStatus = {
-  IDLE: 'idle',
-  LOADING: 'loading',
-  AUTHENTICATED: 'authenticated',
-  UNAUTHENTICATED: 'unauthenticated',
-  ERROR: 'error',
-} as const;
-
-// Notification Type
-export const NotificationType = {
-  SUCCESS: 'success',
-  ERROR: 'error',
-  WARNING: 'warning',
-  INFO: 'info',
-} as const;
-
-// Gender
-export const Gender = {
-  MALE: 'male',
-  FEMALE: 'female',
-  OTHER: 'other',
-  PREFER_NOT_TO_SAY: 'prefer_not_to_say',
-} as const;
-
-// Relationship Goal
-export const RelationshipGoal = {
-  CASUAL: 'casual',
-  SERIOUS: 'serious',
-  FRIENDSHIP: 'friendship',
-  NOT_SURE: 'not_sure',
+export const EffectiveTheme = {
+  LIGHT: 'light',
+  DARK: 'dark',
 } as const;
 ```
 
 ### Key Interfaces
 
 ```typescript
-// User
-interface UserState {
-  id: string;
-  name: string;
+interface AuthLayoutProps {
+  title: string;
+  description?: string;
+  descriptionColor?: 'default' | 'accent';
+  onBackClick?: () => void;
+  showBackButton?: boolean;
+  centered?: boolean;
+  children: ReactNode;
+  footer?: ReactNode;
+}
+
+interface ProfileData {
   email: string;
-  avatar?: string;
-  bio?: string;
-  age?: number;
-  location?: string;
-  interests?: string[];
-}
-
-// Auth State
-interface AuthState {
-  user: UserState | null;
-  token: string | null;
-  status: AuthStatus;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
-}
-
-// Route Config
-interface RouteConfig {
-  path: string;
-  element: ReactNode;
-  children?: RouteConfig[];
-  isProtected?: boolean;
+  firstName: string;
+  location: { lat: number; lng: number } | null;
+  gender: 'man' | 'woman' | null;
+  seeking: 'man' | 'woman' | null;
+  dateOfBirth: string;
+  photos: string[];
 }
 ```
 
@@ -480,38 +655,25 @@ interface RouteConfig {
 ```typescript
 import {
   ArrowLeftIcon,
-  ArrowRightIcon,
   MailIcon,
   LockIcon,
-  EyeIcon,
-  EyeOffIcon,
   UserIcon,
   HeartIcon,
   MessageIcon,
-  SearchIcon,
   SettingsIcon,
-  CloseIcon,
-  CheckIcon,
-  CameraIcon,
-  LocationIcon,
-  MilanLogo,
+  ProstoLogo,
 } from '@svg';
-```
 
-### Icon Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `size` | number | 24 | Icon size in pixels |
-| `color` | string | 'currentColor' | Icon color |
-| `...props` | SVGProps | - | Any SVG attribute |
-
-### Usage Examples
-
-```tsx
-<MailIcon size={20} color="#999" />
-<HeartIcon size={32} color="#ff5a5f" filled />
-<MilanLogo size={100} />
+// Ant Design Icons
+import {
+  MailOutlined,
+  LockOutlined,
+  UserOutlined,
+  CheckOutlined,
+  PlusOutlined,
+  EnvironmentOutlined,
+  CalendarOutlined,
+} from '@ant-design/icons';
 ```
 
 ---
@@ -520,23 +682,20 @@ import {
 
 ### CSS Organization
 
-- **Global styles**: `src/index.css` (fonts, resets)
+- **Global styles & variables**: `src/index.css`
 - **Component styles**: Each component has its own CSS file
-- **Page styles**: Each page folder contains `PageName.css`
+- **Theme variables**: Light/dark mode via CSS custom properties
 
-### CSS Classes in AuthLayout
+### Ant Design Integration
 
-Pre-defined classes for form elements:
+The app uses `AntdProvider` to sync Ant Design's theme with the app theme:
 
-| Class | Purpose |
-|-------|---------|
-| `.form-group` | Container for input + label |
-| `.form-label` | Label text |
-| `.form-input-wrapper` | Input container (for icon) |
-| `.form-input-icon` | Icon inside input |
-| `.form-input` | Styled input field |
-| `.form-link` | Clickable text link |
-| `.submit-btn` | Primary button |
+```typescript
+// In main.tsx
+<AntdProvider>
+  <App />
+</AntdProvider>
+```
 
 ---
 
@@ -544,152 +703,24 @@ Pre-defined classes for form elements:
 
 ### Adding a New Page
 
-1. **Create folder**: `src/pages/NewPage/`
+1. Create folder: `src/pages/NewPage/`
+2. Create files: `NewPage.tsx`, `NewPage.css`, `index.ts`
+3. Export from `pages/index.ts`
+4. Add route in `routes/routes.tsx`
+5. Add route constant in `types/enums.ts`
 
-2. **Create files**:
-   ```
-   NewPage/
-   ├── NewPage.tsx
-   ├── NewPage.css
-   └── index.ts
-   ```
+### Adding a New Component
 
-3. **NewPage.tsx**:
-   ```tsx
-   import './NewPage.css';
+1. Create folder: `src/components/ComponentName/`
+2. Create files: `ComponentName.tsx`, `ComponentName.css`, `index.ts`
+3. Use existing components as reference (Button, ConfirmModal)
 
-   const NewPage = () => {
-     return <div className="new-page">Content</div>;
-   };
+### Adding a Profile Setup Step
 
-   export default NewPage;
-   ```
-
-4. **index.ts**:
-   ```typescript
-   export { default } from './NewPage';
-   ```
-
-5. **Export from pages/index.ts**:
-   ```typescript
-   export { default as NewPage } from './NewPage';
-   ```
-
-6. **Add route in routes/routes.tsx**:
-   ```typescript
-   {
-     path: Routes.NEW_PAGE,
-     element: <NewPage />,
-     isProtected: false,
-   }
-   ```
-
-7. **Add route constant in types/enums.ts**:
-   ```typescript
-   export const Routes = {
-     // ...existing routes
-     NEW_PAGE: '/new-page',
-   } as const;
-   ```
-
----
-
-### Adding a New Icon
-
-1. **Add to utils/svg/icons.tsx**:
-   ```tsx
-   export const NewIcon = ({ size = 24, color = 'currentColor', ...props }: IconProps) => (
-     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} {...props}>
-       {/* SVG path */}
-     </svg>
-   );
-   ```
-
-2. **Export from utils/svg/index.ts**:
-   ```typescript
-   export { NewIcon } from './icons';
-   ```
-
----
-
-### Adding a New Redux Slice
-
-1. **Create slice**: `store/slices/newSlice.ts`
-   ```typescript
-   import { createSlice } from '@reduxjs/toolkit';
-
-   const newSlice = createSlice({
-     name: 'new',
-     initialState: {},
-     reducers: {
-       // actions
-     },
-   });
-
-   export const { /* actions */ } = newSlice.actions;
-   export default newSlice.reducer;
-   ```
-
-2. **Export from slices/index.ts**:
-   ```typescript
-   export { default as newReducer } from './newSlice';
-   export * from './newSlice';
-   ```
-
-3. **Add to store/index.ts**:
-   ```typescript
-   export const store = configureStore({
-     reducer: {
-       auth: authReducer,
-       app: appReducer,
-       new: newReducer,  // Add here
-     },
-   });
-   ```
-
----
-
-## 📌 Quick Reference
-
-### Import Patterns
-
-```typescript
-// Types & Enums
-import { Routes, Theme, AuthStatus } from '@/types';
-import type { User, AuthState } from '@/types';
-
-// Components
-import Layout from '@components/Layout';
-import AuthLayout from '@components/AuthLayout';
-
-// Pages
-import { Home, Login, Dashboard } from '@/pages';
-
-// Redux
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { loginSuccess, logout } from '@store/slices';
-
-// Icons
-import { HeartIcon, MailIcon, MilanLogo } from '@svg';
-```
-
-### Navigation
-
-```typescript
-import { useNavigate } from 'react-router-dom';
-import { Routes } from '@/types';
-
-const navigate = useNavigate();
-navigate(Routes.LOGIN);
-navigate(Routes.DASHBOARD);
-```
-
-### Redux State Access
-
-```typescript
-const { user, isAuthenticated } = useAppSelector((state) => state.auth);
-const { theme, notification } = useAppSelector((state) => state.app);
-```
+1. Create step component in `pages/ProfileSetup/steps/`
+2. Export from `steps/index.ts`
+3. Add to `ProfileSetup.tsx` switch statement
+4. Update `ProfileData` interface if needed
 
 ---
 
@@ -715,5 +746,4 @@ npm run lint
 ---
 
 *Last Updated: February 2026*
-*Version: 1.0.0*
-
+*Version: 2.3.0*
