@@ -1,20 +1,9 @@
-import type { ReactNode } from 'react';
 import { Space, Typography } from 'antd';
 import { PrimaryButton } from '@components/Button';
+import type { SuccessScreenProps } from '@interfaces';
 import './SuccessScreen.css';
 
 const { Title, Text } = Typography;
-
-interface SuccessScreenProps {
-    icon: ReactNode;
-    title: string;
-    description?: string;
-    buttonText: string;
-    onButtonClick: () => void;
-    secondaryButtonText?: string;
-    onSecondaryClick?: () => void;
-    showHearts?: boolean;
-}
 
 const SuccessScreen = ({
     icon,

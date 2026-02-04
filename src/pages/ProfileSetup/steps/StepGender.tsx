@@ -1,12 +1,10 @@
 import { Space } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import type { StepGenderProps } from '@interfaces';
+import type { StepGenderProps, GenderType } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 
-type GenderOption = 'man' | 'woman';
-
-const options: { value: GenderOption; label: string }[] = [
+const options: { value: GenderType; label: string }[] = [
     { value: 'man', label: 'Man' },
     { value: 'woman', label: 'Woman' },
 ];

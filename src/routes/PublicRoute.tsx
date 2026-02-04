@@ -1,12 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAppSelector } from '@store/hooks';
 import { Routes } from '@/types';
-import type { ReactNode } from 'react';
-
-interface PublicRouteProps {
-  children: ReactNode;
-  restricted?: boolean; // If true, redirect authenticated users away
-}
+import type { PublicRouteProps } from '@interfaces';
 
 const PublicRoute = ({ children, restricted = false }: PublicRouteProps) => {
   const { isAuthenticated } = useAppSelector((state) => state.auth);

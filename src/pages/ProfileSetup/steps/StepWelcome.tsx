@@ -1,17 +1,12 @@
 import { Space, Typography } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import type { StepProps } from '@interfaces';
+import type { StepProps, WelcomeRule } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 
 const { Text } = Typography;
 
-interface Rule {
-    title: string;
-    description: React.ReactNode;
-}
-
-const rules: Rule[] = [
+const rules: WelcomeRule[] = [
     {
         title: 'Be yourself',
         description: 'Make sure your photos, age, and bio are true to who you are.',

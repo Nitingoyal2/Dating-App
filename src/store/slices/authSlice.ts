@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { AuthStatus } from '@/types';
-import type { AuthState, UserState } from '@interfaces';
+import type { AuthState, UserState, LoginSuccessPayload } from '@interfaces';
 
 const initialState: AuthState = {
   user: null,
@@ -9,12 +9,6 @@ const initialState: AuthState = {
   status: AuthStatus.IDLE,
   isAuthenticated: false,
 };
-
-// Payload types
-interface LoginSuccessPayload {
-  user: UserState;
-  token: string;
-}
 
 const authSlice = createSlice({
   name: 'auth',

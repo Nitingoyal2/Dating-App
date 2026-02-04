@@ -1,20 +1,15 @@
 import { useState } from 'react';
 import { Form, Input, Typography, Space } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import type { StepSuccessProps } from '@interfaces';
+import type { StepSuccessProps, PasswordFormData } from '@interfaces';
 import { PrimaryButton } from '@components/Button';
 import { ProstoLogo } from '@svg';
 import './StepSuccess.css';
 
 const { Title, Text } = Typography;
 
-interface PasswordForm {
-    password: string;
-    confirm_password: string;
-}
-
 const StepSuccess = ({ onComplete, isLoading }: StepSuccessProps) => {
-    const [form] = Form.useForm<PasswordForm>();
+    const [form] = Form.useForm<PasswordFormData>();
     const [isValid, setIsValid] = useState(false);
 
     const handleValuesChange = () => {

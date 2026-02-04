@@ -32,3 +32,9 @@ export interface NotificationState {
   message: string;
 }
 
+// Auth Payload Types
+export interface LoginSuccessPayload {
+  user: UserState;
+  token: string;
+}
+

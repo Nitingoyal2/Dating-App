@@ -2,27 +2,10 @@ import type { ReactNode } from 'react';
 import { Modal, Space, Typography } from 'antd';
 import { CheckCircleFilled, ExclamationCircleFilled, InfoCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 import { PrimaryButton } from '@components/Button';
+import type { ConfirmModalProps, ModalType } from '@interfaces';
 import './ConfirmModal.css';
 
 const { Text } = Typography;
-
-type ModalType = 'success' | 'warning' | 'info' | 'error';
-
-interface ConfirmModalProps {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  description?: ReactNode;
-  type?: ModalType;
-  icon?: ReactNode;
-  confirmText?: string;
-  cancelText?: string;
-  confirmVariant?: 'primary' | 'secondary';
-  cancelVariant?: 'primary' | 'secondary' | 'outline' | 'text';
-  showCancel?: boolean;
-  width?: number;
-}
 
 const iconMap: Record<ModalType, { icon: ReactNode; color: string }> = {
   success: { icon: <CheckCircleFilled />, color: '#22c55e' },

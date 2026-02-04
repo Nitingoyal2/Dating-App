@@ -1,11 +1,7 @@
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import { useAppSelector } from '@store/hooks';
 import { EffectiveTheme } from '@/types';
-import type { ReactNode } from 'react';
-
-interface AntdProviderProps {
-  children: ReactNode;
-}
+import type { AntdProviderProps } from '@interfaces';
 
 /**
  * Ant Design theme provider that syncs with the app's theme state

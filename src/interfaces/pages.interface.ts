@@ -1,10 +1,19 @@
+import type { ReactNode } from 'react';
+
+// ============================================
+// Common Types
+// ============================================
+export type GenderType = 'man' | 'woman';
+
+// ============================================
 // Profile Setup interfaces
+// ============================================
 export interface ProfileData {
   email: string;
   firstName: string;
   location: { lat: number; lng: number } | null;
-  gender: 'man' | 'woman' | null;
-  seeking: 'man' | 'woman' | null;
+  gender: GenderType | null;
+  seeking: GenderType | null;
   dateOfBirth: string;
   photos: string[];
 }
@@ -33,13 +42,13 @@ export interface StepLocationProps {
 }
 
 export interface StepGenderProps extends StepProps {
-  value: 'man' | 'woman' | null;
-  onChange: (value: 'man' | 'woman') => void;
+  value: GenderType | null;
+  onChange: (value: GenderType) => void;
 }
 
 export interface StepSeekingProps extends StepProps {
-  value: 'man' | 'woman' | null;
-  onChange: (value: 'man' | 'woman') => void;
+  value: GenderType | null;
+  onChange: (value: GenderType) => void;
 }
 
 export interface StepBirthdayProps extends StepProps {
@@ -58,7 +67,22 @@ export interface StepSuccessProps {
   isLoading?: boolean;
 }
 
+export interface PasswordFormData {
+  password: string;
+  confirm_password: string;
+}
+
+// ============================================
+// Step Welcome Types
+// ============================================
+export interface WelcomeRule {
+  title: string;
+  description: ReactNode;
+}
+
+// ============================================
 // Splash interfaces
+// ============================================
 export interface SplashProps {
   onFinish: () => void;
   duration?: number;

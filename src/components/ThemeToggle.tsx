@@ -1,11 +1,7 @@
 import { useTheme } from '@hooks';
 import { Theme } from '@/types';
+import type { ThemeToggleProps } from '@interfaces';
 import './ThemeToggle.css';
-
-interface ThemeToggleProps {
-  showLabel?: boolean;
-  variant?: 'buttons' | 'dropdown' | 'icons';
-}
 
 export const ThemeToggle = ({ showLabel = true, variant = 'buttons' }: ThemeToggleProps) => {
   const { theme, effectiveTheme, changeTheme, isDark } = useTheme();

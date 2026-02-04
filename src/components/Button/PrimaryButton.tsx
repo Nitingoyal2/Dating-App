@@ -1,16 +1,6 @@
 import { Button } from 'antd';
-import type { ButtonProps } from 'antd';
+import type { PrimaryButtonProps } from '@interfaces';
 import './Button.css';
-
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'text';
-type ButtonSize = 'small' | 'medium' | 'large';
-
-interface PrimaryButtonProps extends Omit<ButtonProps, 'size'> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  fullWidth?: boolean;
-  rounded?: boolean;
-}
 
 const PrimaryButton = ({
   children,

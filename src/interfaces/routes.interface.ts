@@ -11,3 +11,13 @@ export interface RouteParams {
   [key: string]: string | undefined;
 }
 
+// Route Component Props
+export interface ProtectedRouteProps {
+  children: ReactNode;
+}
+
+export interface PublicRouteProps {
+  children: ReactNode;
+  restricted?: boolean;
+}
+

@@ -1,11 +1,6 @@
-import type { SVGProps } from 'react';
+import type { IconProps } from '@interfaces';
 
-interface ProstoLogoProps extends SVGProps<SVGSVGElement> {
-  size?: number;
-  color?: string;
-}
-
-const ProstoLogo = ({ size = 100, color = '#6C5CE7', ...props }: ProstoLogoProps) => (
+const ProstoLogo = ({ size = 100, color = '#6C5CE7', ...props }: IconProps) => (
   <svg
     width={size}
     height={size}

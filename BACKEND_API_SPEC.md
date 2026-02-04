@@ -477,30 +477,19 @@ CREATE TABLE users (
 
 ## 📱 Frontend Integration
 
-### TypeScript Types
+### TypeScript Interfaces
+
+All interfaces are centralized in `src/interfaces/api.interface.ts`:
 
 ```typescript
-// types/api.types.ts
+// interfaces/api.interface.ts
 
-interface ApiResponse<T> {
-    success: boolean;
-    data?: T;
-    error?: {
-        code: string;
-        message: string;
-        details?: Record<string, unknown>;
-    };
-    message?: string;
-}
-
-// Draft response
-interface DraftResponse {
-    user_id: string;
+// Request Types
+export interface DraftRequest {
     email: string;
 }
 
-// Profile update request (varies by step)
-interface ProfileUpdateRequest {
+export interface ProfileUpdateRequest {
     first_name?: string;
     gender?: 'man' | 'woman';
     seeking?: 'man' | 'woman';
@@ -511,9 +500,50 @@ interface ProfileUpdateRequest {
     rules_accepted?: boolean;
 }
 
-// Complete response
-interface CompleteResponse {
-    user: User;
+export interface CompleteRequest {
+    password: string;
+    confirm_password: string;
+}
+
+// Response Types
+export interface DraftResponse {
+    user_id: string;
+    email: string;
+}
+
+export interface ProfileUpdateResponse {
+    user_id: string;
+    [key: string]: unknown;
+}
+
+export interface PhotoUploadResponse {
+    photo: {
+        id: string;
+        url: string;
+        order: number;
+    };
+    photos: Array<{ id: string; url: string; order: number }>;
+    photo_count: number;
+}
+
+export interface PhotoDeleteResponse {
+    deleted_photo_id: string;
+    photo_count: number;
+}
+
+export interface CompleteUser {
+    id: string;
+    email: string;
+    first_name: string;
+    age: number;
+    gender: 'man' | 'woman';
+    seeking: 'man' | 'woman';
+    photos: Array<{ id: string; url: string; is_primary: boolean }>;
+    created_at: string;
+}
+
+export interface CompleteResponse {
+    user: CompleteUser;
     tokens: {
         access_token: string;
         refresh_token: string;
@@ -523,81 +553,138 @@ interface CompleteResponse {
 }
 ```
 
-### API Service
+### API Service Structure
+
+APIs are organized by HTTP method in `src/services/api/`:
 
 ```typescript
-// services/profileApi.ts
+// services/api/post_apis.ts
+import { postApi, postFormDataApi } from '../api_methods';
+import type { DraftRequest, DraftResponse, CompleteRequest, CompleteResponse, PhotoUploadResponse } from '@interfaces';
 
-const API_BASE = '/api';
+export const registrationDraftApi = async (data: DraftRequest): Promise<DraftResponse> => {
+    return await postApi<DraftResponse>('/api/draft', data);
+};
 
-export const profileApi = {
-    // Step 1: Create draft
-    createDraft: (email: string) =>
-        api.post<DraftResponse>(`${API_BASE}/draft`, { email }),
+export const registrationCompleteApi = async (
+    userId: string,
+    data: CompleteRequest
+): Promise<CompleteResponse> => {
+    return await postApi<CompleteResponse>(`/api/profile/${userId}/complete`, data);
+};
 
-    // Steps 2-6, 8: Update profile
-    updateProfile: (userId: string, data: ProfileUpdateRequest) =>
-        api.patch(`${API_BASE}/profile/${userId}`, data),
+export const profilePhotoUploadApi = async (
+    userId: string,
+    file: File,
+    order?: number
+): Promise<PhotoUploadResponse> => {
+    const formData = new FormData();
+    formData.append('photo', file);
+    if (order !== undefined) formData.append('order', order.toString());
+    return await postFormDataApi<PhotoUploadResponse>(`/api/profile/${userId}/photos`, formData);
+};
 
-    // Step 7: Photos
-    uploadPhoto: (userId: string, file: File, order?: number) => {
-        const formData = new FormData();
-        formData.append('photo', file);
-        if (order !== undefined) formData.append('order', order.toString());
-        return api.post(`${API_BASE}/profile/${userId}/photos`, formData);
-    },
+// services/api/patch_apis.ts
+import { patchApi } from '../api_methods';
+import type { ProfileUpdateRequest, ProfileUpdateResponse } from '@interfaces';
 
-    deletePhoto: (userId: string, photoId: string) =>
-        api.delete(`${API_BASE}/profile/${userId}/photos/${photoId}`),
+export const profileStepPatchApi = async (
+    userId: string,
+    data: ProfileUpdateRequest
+): Promise<ProfileUpdateResponse> => {
+    return await patchApi<ProfileUpdateResponse>(`/api/profile/${userId}`, data);
+};
 
-    // Step 9: Complete
-    complete: (userId: string, password: string) =>
-        api.post<CompleteResponse>(`${API_BASE}/profile/${userId}/complete`, {
-            password,
-            confirm_password: password,
-        }),
+// services/api/delete_apis.ts
+import { deleteApi } from '../api_methods';
+import type { PhotoDeleteResponse } from '@interfaces';
+
+export const profilePhotoDeleteApi = async (
+    userId: string,
+    photoId: string
+): Promise<PhotoDeleteResponse> => {
+    return await deleteApi<PhotoDeleteResponse>(`/api/profile/${userId}/photos/${photoId}`);
 };
 ```
 
 ### Usage in ProfileSetup Component
 
+The ProfileSetup component uses a **single unified handler** for all steps:
+
 ```typescript
 // pages/ProfileSetup/ProfileSetup.tsx
+import { registrationDraftApi, registrationCompleteApi, profileStepPatchApi } from '@services';
+import type { ProfileData, ProfileUpdateRequest } from '@interfaces';
 
 const ProfileSetup = () => {
     const [userId, setUserId] = useState<string | null>(null);
     const [currentStep, setCurrentStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const [profileData, setProfileData] = useState<ProfileData>({...});
 
-    // Step 1: Create draft
-    const handleEmailSubmit = async (email: string) => {
-        const response = await profileApi.createDraft(email);
-        setUserId(response.data.user_id);
-        setCurrentStep(2);
+    // Object map for step payloads
+    const getStepPayload = (
+        step: number,
+        extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean }
+    ): ProfileUpdateRequest | null => {
+        const payloadMap: Record<number, () => ProfileUpdateRequest | null> = {
+            2: () => ({ first_name: profileData.firstName }),
+            3: () => {
+                if (extraData?.locationSkipped) return { location_skipped: true };
+                if (extraData?.location) return { latitude: extraData.location.lat, longitude: extraData.location.lng };
+                return null;
+            },
+            4: () => (profileData.gender ? { gender: profileData.gender } : null),
+            5: () => (profileData.seeking ? { seeking: profileData.seeking } : null),
+            6: () => ({ date_of_birth: profileData.dateOfBirth }),
+            8: () => ({ rules_accepted: true }),
+        };
+        return payloadMap[step]?.() ?? null;
     };
 
-    // Steps 2-6, 8: Update profile
-    const handleProfileUpdate = async (data: ProfileUpdateRequest) => {
-        if (!userId) return;
-        await profileApi.updateProfile(userId, data);
-        setCurrentStep((prev) => prev + 1);
+    // Single unified handler
+    const handleStepSubmit = async (
+        step: number,
+        extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
+    ) => {
+        if (step === 7) { setCurrentStep(8); return; } // Photos handled in component
+
+        setIsLoading(true);
+        try {
+            // Step 1: Create draft
+            if (step === 1) {
+                const response = await registrationDraftApi({ email: profileData.email });
+                setUserId(response.user_id);
+                setCurrentStep(2);
+                return;
+            }
+
+            // Step 9: Complete profile
+            if (step === 9) {
+                const response = await registrationCompleteApi(userId!, {
+                    password: extraData!.password!,
+                    confirm_password: extraData!.password!,
+                });
+                dispatch(loginSuccess({
+                    user: { id: response.user.id, name: response.user.first_name, email: response.user.email },
+                    token: response.tokens.access_token,
+                }));
+                navigate(Routes.DASHBOARD, { replace: true });
+                return;
+            }
+
+            // Steps 2-6, 8: PATCH profile
+            const payload = getStepPayload(step, extraData);
+            if (payload) await profileStepPatchApi(userId!, payload);
+            setCurrentStep(step + 1);
+        } catch (error) {
+            message.error((error as Error).message); // Backend provides error messages
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    // Step 7: Upload photo
-    const handlePhotoUpload = async (file: File) => {
-        if (!userId) return;
-        await profileApi.uploadPhoto(userId, file);
-    };
-
-    // Step 9: Complete
-    const handleComplete = async (password: string) => {
-        if (!userId) return;
-        const response = await profileApi.complete(userId, password);
-        // Store tokens and redirect to dashboard
-        dispatch(loginSuccess(response.data));
-        navigate(Routes.DASHBOARD);
-    };
-
-    // ... render steps
+    // ... render steps with isLoading prop
 };
 ```
 
@@ -689,6 +776,13 @@ Authorization: Bearer {refresh_token}
 
 ## 📝 Changelog
 
+### v3.1.0 (February 2026)
+- **Frontend**: Updated to unified `handleStepSubmit` function
+- **Frontend**: APIs organized by HTTP method (`services/api/`)
+- **Frontend**: All interfaces centralized in `interfaces/api.interface.ts`
+- **Frontend**: Full type safety with no `any` types
+- **Frontend**: Object map pattern for step payloads
+
 ### v3.0.0 (February 2026)
 - **Updated**: Simplified to match backend team's API structure
 - **Changed**: Step 1 uses `POST /draft` instead of `/register/start`
@@ -704,6 +798,6 @@ Authorization: Bearer {refresh_token}
 
 ---
 
-*Document Version: 3.0.0*  
+*Document Version: 3.1.0*  
 *Created: February 2026*  
-*Frontend Version: 2.2.0*
+*Frontend Version: 3.0.0*

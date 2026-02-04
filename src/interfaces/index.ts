@@ -20,7 +20,12 @@ export type {
 export type { LayoutProps } from './layout.interface';
 
 // Route interfaces
-export type { RouteConfig, RouteParams } from './routes.interface';
+export type {
+  RouteConfig,
+  RouteParams,
+  ProtectedRouteProps,
+  PublicRouteProps,
+} from './routes.interface';
 
 // Store interfaces
 export type {
@@ -28,10 +33,12 @@ export type {
   UserState,
   AppState,
   NotificationState,
+  LoginSuccessPayload,
 } from './store.interface';
 
 // Page interfaces
 export type {
+  GenderType,
   ProfileData,
   StepProps,
   StepEmailProps,
@@ -42,6 +49,8 @@ export type {
   StepBirthdayProps,
   StepPhotosProps,
   StepSuccessProps,
+  PasswordFormData,
+  WelcomeRule,
   SplashProps,
 } from './pages.interface';
 
@@ -60,3 +69,17 @@ export type {
   CompleteTokens,
   CompleteResponse,
 } from './api.interface';
+
+// Component interfaces
+export type {
+  IconProps,
+  ButtonVariant,
+  ButtonSize,
+  PrimaryButtonProps,
+  ThemeToggleVariant,
+  ThemeToggleProps,
+  ModalType,
+  ConfirmModalProps,
+  SuccessScreenProps,
+  AntdProviderProps,
+} from './components.interface';

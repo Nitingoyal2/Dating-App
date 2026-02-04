@@ -1,4 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import type { UnknownAction } from '@reduxjs/toolkit';
 import { authReducer, appReducer } from './slices';
 
 // Combine all reducers
@@ -7,8 +8,11 @@ const appCombinedReducer = combineReducers({
   app: appReducer,
 });
 
+// Type for combined state
+type CombinedState = ReturnType<typeof appCombinedReducer>;
+
 // Root reducer that resets state on logout (except theme)
-const rootReducer = (state: ReturnType<typeof appCombinedReducer> | undefined, action: any) => {
+const rootReducer = (state: CombinedState | undefined, action: UnknownAction): CombinedState => {
   // Reset all state on logout, but preserve theme preferences
   if (action.type === 'auth/logout') {
     const themeState = state?.app ? {
@@ -19,7 +23,7 @@ const rootReducer = (state: ReturnType<typeof appCombinedReducer> | undefined, a
     } : undefined;
 
     return appCombinedReducer(
-      { app: themeState } as any,
+      { app: themeState } as Partial<CombinedState> as CombinedState,
       action
     );
   }

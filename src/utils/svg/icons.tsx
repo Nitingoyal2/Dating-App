@@ -1,9 +1,6 @@
-import type { SVGProps } from 'react';
+import type { IconProps } from '@interfaces';
 
-export interface IconProps extends SVGProps<SVGSVGElement> {
-    size?: number;
-    color?: string;
-}
+export type { IconProps };
 
 export const ArrowLeftIcon = ({ size = 24, color = 'currentColor', ...props }: IconProps) => (
     <svg
