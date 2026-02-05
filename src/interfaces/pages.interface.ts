@@ -28,6 +28,23 @@ export interface StepEmailProps extends StepProps {
   value: string;
   onChange: (value: string) => void;
 }
+export interface OtpVerificationProps extends StepProps {
+  value: string;
+  onChange: (value: string) => void;
+  identifier?: string;
+  onResend?: () => void | Promise<void>;
+}
+
+export type LoginIdentifierType = 'phone' | 'email';
+
+export interface LoginSetupLoginProps extends StepProps {
+  loginType: LoginIdentifierType;
+  onLoginTypeChange: (value: LoginIdentifierType) => void;
+  phone: string;
+  onPhoneChange: (value: string) => void;
+  email: string;
+  onEmailChange: (value: string) => void;
+}
 
 export interface StepNameProps extends StepProps {
   value: string;

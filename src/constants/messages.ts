@@ -30,6 +30,14 @@ export const ValidationMessages = {
 
     // Account
     ACCOUNT_CREATED: 'Account created successfully!',
+
+    // OTP
+    OTP_REQUIRED: 'Please enter the code',
+    OTP_LEN_6: 'Code must be 6 digits',
+    OTP_RESENT: 'A new code has been sent.',
+
+    // Phone
+    PHONE_INVALID: 'Please enter a valid phone number',
 } as const;
 
 // Type for the messages

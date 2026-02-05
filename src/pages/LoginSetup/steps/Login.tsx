@@ -1,28 +1,28 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { useAppDispatch } from '@store/hooks';
-import { loginSuccess } from '@store/slices';
 import { Routes } from '@/types';
 import { PrimaryButton } from '@components/Button';
 import { loginBackgroundImages } from '@/data';
+import type { LoginSetupLoginProps } from '@interfaces';
+import { ValidationMessages } from '@constants';
 import './Login.css';
 
-type LoginType = 'phone' | 'email';
-
-const Login = () => {
+const Login = ({
+    loginType,
+    onLoginTypeChange,
+    phone,
+    onPhoneChange,
+    email,
+    onEmailChange,
+    onNext,
+}: LoginSetupLoginProps) => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const dispatch = useAppDispatch();
     const [form] = Form.useForm();
-    const [loginType, setLoginType] = useState<LoginType>('phone');
     const [currentBgIndex, setCurrentBgIndex] = useState(0);
-    const [phone, setPhone] = useState('');
-
-    const from = location.state?.from?.pathname || Routes.DASHBOARD;
 
     // Background carousel auto-change
     useEffect(() => {
@@ -34,18 +34,10 @@ const Login = () => {
 
     const handleSubmit = (values: { email?: string }) => {
         const identifier = loginType === 'phone' ? phone : values.email;
-
-        if (identifier) {
-            dispatch(loginSuccess({
-                user: {
-                    id: '1',
-                    name: loginType === 'email' ? values.email?.split('@')[0] || 'User' : 'User',
-                    email: loginType === 'email' ? values.email || '' : '',
-                },
-                token: 'demo-token-123',
-            }));
-            navigate(from, { replace: true });
-        }
+        if (!identifier) return;
+        if (loginType === 'phone' && identifier.length < 10) return;
+        if (loginType === 'email' && values.email) onEmailChange(values.email);
+        onNext();
     };
 
     return (
@@ -71,13 +63,19 @@ const Login = () => {
                 <div className="login-toggle">
                     <button
                         className={`login-toggle-btn ${loginType === 'phone' ? 'active' : ''}`}
-                        onClick={() => setLoginType('phone')}
+                        onClick={() => {
+                            onLoginTypeChange('phone');
+                            form.resetFields();
+                        }}
                     >
                         Phone
                     </button>
                     <button
                         className={`login-toggle-btn ${loginType === 'email' ? 'active' : ''}`}
-                        onClick={() => setLoginType('email')}
+                        onClick={() => {
+                            onLoginTypeChange('email');
+                            form.resetFields();
+                        }}
                     >
                         Email
                     </button>
@@ -94,12 +92,12 @@ const Login = () => {
                             label="Phone Number"
                             required
                             validateStatus={phone.length > 0 && phone.length < 10 ? 'error' : ''}
-                            help={phone.length > 0 && phone.length < 10 ? 'Please enter a valid phone number' : ''}
+                            help={phone.length > 0 && phone.length < 10 ? ValidationMessages.PHONE_INVALID : ''}
                         >
                             <PhoneInput
                                 country={'us'}
                                 value={phone}
-                                onChange={(value) => setPhone(value)}
+                                onChange={(value) => onPhoneChange(value)}
                                 inputClass="phone-input-field"
                                 containerClass="phone-input-container"
                                 buttonClass="phone-input-button"
@@ -117,8 +115,8 @@ const Login = () => {
                             name="email"
                             label="Email Address"
                             rules={[
-                                { required: true, message: 'Please enter your email' },
-                                { type: 'email', message: 'Please enter a valid email' },
+                                { required: true, message: ValidationMessages.EMAIL_REQUIRED },
+                                { type: 'email', message: ValidationMessages.EMAIL_INVALID },
                             ]}
                         >
                             <Input
@@ -126,6 +124,8 @@ const Login = () => {
                                 placeholder="Enter your email"
                                 size="large"
                                 className="login-input"
+                                value={email}
+                                onChange={(e) => onEmailChange(e.target.value)}
                             />
                         </Form.Item>
                     )}
