@@ -1,7 +1,7 @@
 # Backend API Specification - Prosto Dating App
 
 > **Project**: Prosto Dating App  
-> **Version**: 3.2.0  
+> **Version**: 3.3.0  
 > **Date**: February 2026
 
 ---
@@ -80,6 +80,15 @@ Resend:  POST   /api/login/resend-otp → { country_code, phone } or { email }
     "error": {
         "code": "USER_NOT_FOUND",
         "message": "No account found with this phone/email"
+    }
+}
+
+// 403 - Account suspended
+{
+    "success": false,
+    "error": {
+        "code": "ACCOUNT_SUSPENDED",
+        "message": "Your account has been suspended"
     }
 }
 ```
@@ -927,6 +936,13 @@ export const LoginType = {
 } as const;
 
 export type LoginType = (typeof LoginType)[keyof typeof LoginType];
+
+// Profile status (for account states like suspended)
+export const ProfileStatus = {
+    SUSPENDED: 'suspended',
+} as const;
+
+export type ProfileStatus = (typeof ProfileStatus)[keyof typeof ProfileStatus];
 ```
 
 ### Centralized Messages
@@ -963,6 +979,7 @@ export const ValidationMessages = {
 - [ ] POST /login - Send OTP via phone
 - [ ] POST /login - Send OTP via email
 - [ ] POST /login - Reject non-existent user
+- [ ] POST /login - Reject suspended account (403)
 - [ ] POST /login/verify-otp - Verify valid OTP (phone)
 - [ ] POST /login/verify-otp - Verify valid OTP (email)
 - [ ] POST /login/verify-otp - Reject invalid OTP
@@ -987,6 +1004,12 @@ export const ValidationMessages = {
 ---
 
 ## 📝 Changelog
+
+### v3.3.0 (February 2026)
+- **Added**: Suspended account handling (403 error on login)
+- **Added**: `ProfileStatus` enum with `SUSPENDED` status
+- **Frontend**: Warning modal for suspended accounts in LoginSetup
+- **Frontend**: Enhanced ConfirmModal with `showCancel`, `width`, `confirmVariant`, `cancelVariant` props
 
 ### v3.2.0 (February 2026)
 - **Added**: Login API with OTP authentication (`POST /api/login`)
@@ -1019,6 +1042,6 @@ export const ValidationMessages = {
 
 ---
 
-*Document Version: 3.2.0*  
+*Document Version: 3.3.0*  
 *Created: February 2026*  
-*Frontend Version: 3.2.0*
+*Frontend Version: 3.3.0*

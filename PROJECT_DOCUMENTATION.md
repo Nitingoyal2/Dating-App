@@ -244,6 +244,10 @@ export type ApiStatus = (typeof ApiStatus)[keyof typeof ApiStatus];
 // Login type (phone or email)
 export const LoginType = { PHONE: 'phone', EMAIL: 'email' } as const;
 export type LoginType = (typeof LoginType)[keyof typeof LoginType];
+
+// Profile status (for account states)
+export const ProfileStatus = { SUSPENDED: 'suspended' } as const;
+export type ProfileStatus = (typeof ProfileStatus)[keyof typeof ProfileStatus];
 ```
 
 ### `interfaces/` - All Interfaces (Centralized)
@@ -253,7 +257,7 @@ export type LoginType = (typeof LoginType)[keyof typeof LoginType];
 | `api.interface.ts` | `LoginRequest`, `LoginResponse`, `OtpVerifyRequest`, `OtpVerifyResponse`, `DraftRequest`, `DraftResponse`, `ProfileUpdateRequest`, `CompleteResponse`, etc. |
 | `auth.interface.ts` | `AuthLayoutProps`, `LoginFormData`, `LoginPayload`, etc. |
 | `common.interface.ts` | `User`, `ApiResponse<T>`, `PaginatedResponse<T>` |
-| `components.interface.ts` | `IconProps`, `PrimaryButtonProps`, `ConfirmModalProps`, `ThemeToggleProps` |
+| `components.interface.ts` | `IconProps`, `PrimaryButtonProps`, `ConfirmModalProps` (with `showCancel`, `width`), `ThemeToggleProps` |
 | `layout.interface.ts` | `LayoutProps` |
 | `pages.interface.ts` | `GenderType`, `ProfileData`, `StepProps`, `LoginSetupLoginProps`, `OtpVerificationProps`, etc. |
 | `routes.interface.ts` | `RouteConfig`, `ProtectedRouteProps`, `PublicRouteProps` |
@@ -511,9 +515,15 @@ import { ConfirmModal } from '@components/ConfirmModal';
   open={isOpen}
   onClose={() => setIsOpen(false)}
   onConfirm={handleConfirm}
-  type="success"  // 'success' | 'warning' | 'info' | 'error'
+  type="success"        // 'success' | 'warning' | 'info' | 'error'
   title="Please confirm"
   description="Are you sure?"
+  confirmText="Confirm"
+  cancelText="Cancel"
+  confirmVariant="primary"    // 'primary' | 'secondary'
+  cancelVariant="secondary"   // 'primary' | 'secondary' | 'outline' | 'text'
+  showCancel={true}           // Hide cancel button if false
+  width={320}                 // Modal width in pixels
 />
 ```
 
@@ -569,14 +579,16 @@ import AuthLayout from '@components/AuthLayout';
 ### LoginSetup Implementation
 
 ```typescript
-import { LoginType } from '@/types';
+import { LoginType, ProfileStatus } from '@/types';
 import { loginApi, otpVerifyApi, resendOtpApi } from '@services';
 import { ValidationMessages } from '@constants';
+import { ConfirmModal } from '@components/ConfirmModal';
 
 const [loginType, setLoginType] = useState<LoginType>(LoginType.PHONE);
 const [countryCode, setCountryCode] = useState('1');
+const [isSuspendedModalOpen, setIsSuspendedModalOpen] = useState(false);
 
-// Step 1: Send OTP
+// Step 1: Send OTP (with suspended account handling)
 const handleSendOtp = async () => {
   const payload = loginType === LoginType.PHONE
     ? { country_code: `+${countryCode}`, phone: getPhoneWithoutCode() }
@@ -586,6 +598,12 @@ const handleSendOtp = async () => {
     await loginApi(payload);
     setCurrentStep(2);
   } catch (error) {
+    const msg = error.message.toLowerCase();
+    // Check if account is suspended
+    if (msg.includes(ProfileStatus.SUSPENDED.toLowerCase())) {
+      setIsSuspendedModalOpen(true);
+      return;
+    }
     message.error(err.message || ValidationMessages.OTP_SEND_FAILED);
   }
 };
@@ -609,6 +627,19 @@ const handleResendOtp = async () => {
   await resendOtpApi(payload);
   message.success(ValidationMessages.OTP_RESENT);
 };
+
+// Suspended account modal
+<ConfirmModal
+  open={isSuspendedModalOpen}
+  onClose={() => setIsSuspendedModalOpen(false)}
+  onConfirm={() => setIsSuspendedModalOpen(false)}
+  type="warning"
+  title=""
+  description="Your DateMe Account has been banned for activity that violates our Terms of Use."
+  confirmText="Okay"
+  showCancel={false}
+  width={340}
+/>
 ```
 
 ---
@@ -932,4 +963,4 @@ npm run lint
 ---
 
 *Last Updated: February 2026*
-*Version: 3.2.0*
+*Version: 3.3.0*
