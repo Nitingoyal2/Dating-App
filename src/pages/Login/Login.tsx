@@ -7,6 +7,7 @@ import { Routes } from '@/types';
 import type { LoginFormData } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
+import { ValidationMessages } from '@constants';
 import './Login.css';
 
 const Login = () => {
@@ -58,8 +59,8 @@ const Login = () => {
                     name="email"
                     label="Email"
                     rules={[
-                        { required: true, message: 'Please enter your email' },
-                        { type: 'email', message: 'Please enter a valid email' },
+                        { required: true, message: ValidationMessages.EMAIL_REQUIRED },
+                        { type: 'email', message: ValidationMessages.EMAIL_INVALID },
                     ]}
                 >
                     <Input
@@ -74,8 +75,8 @@ const Login = () => {
                     name="password"
                     label="Password"
                     rules={[
-                        { required: true, message: 'Please enter your password' },
-                        { min: 6, message: 'Password must be at least 6 characters' },
+                        { required: true, message: ValidationMessages.PASSWORD_REQUIRED },
+                        { min: 6, message: ValidationMessages.PASSWORD_MIN_6 },
                     ]}
                 >
                     <Input.Password

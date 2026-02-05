@@ -10,17 +10,18 @@
 2. [Folder Structure](#folder-structure)
 3. [Path Aliases](#path-aliases)
 4. [Types & Interfaces Architecture](#types--interfaces-architecture)
-5. [Application Flow](#application-flow)
-6. [Theme System](#theme-system)
-7. [Components](#components)
-8. [Pages](#pages)
-9. [Profile Setup Flow](#profile-setup-flow)
-10. [Backend API Integration](#backend-api-integration)
-11. [Routing System](#routing-system)
-12. [State Management (Redux)](#state-management-redux)
-13. [SVG Icons](#svg-icons)
-14. [Styling Approach](#styling-approach)
-15. [How to Add New Features](#how-to-add-new-features)
+5. [Centralized Messages (Constants)](#centralized-messages-constants)
+6. [Application Flow](#application-flow)
+7. [Theme System](#theme-system)
+8. [Components](#components)
+9. [Pages](#pages)
+10. [Profile Setup Flow](#profile-setup-flow)
+11. [Backend API Integration](#backend-api-integration)
+12. [Routing System](#routing-system)
+13. [State Management (Redux)](#state-management-redux)
+14. [SVG Icons](#svg-icons)
+15. [Styling Approach](#styling-approach)
+16. [How to Add New Features](#how-to-add-new-features)
 
 ---
 
@@ -50,14 +51,14 @@ dating-app/
 │   ├── assets/               # Images, fonts, etc.
 │   │   └── react.svg
 │   │
-│   ├── components/           # Reusable UI components
-│   │   ├── Layout.tsx        # Main app layout (phone frame + side panel)
-│   │   ├── Layout.css
-│   │   ├── AuthLayout.tsx    # Auth pages layout (back btn, title, form)
-│   │   ├── AuthLayout.css
-│   │   ├── AntdProvider.tsx  # Ant Design theme provider
-│   │   ├── ThemeToggle.tsx   # Theme switcher component
-│   │   ├── ThemeToggle.css
+│   ├── components/           # Reusable UI components (each in own folder)
+│   │   ├── AntdProvider/     # Ant Design theme provider
+│   │   │   ├── AntdProvider.tsx
+│   │   │   └── index.ts
+│   │   ├── AuthLayout/       # Auth pages layout (back btn, title, form)
+│   │   │   ├── AuthLayout.tsx
+│   │   │   ├── AuthLayout.css
+│   │   │   └── index.ts
 │   │   ├── Button/           # Reusable button component
 │   │   │   ├── PrimaryButton.tsx
 │   │   │   ├── Button.css
@@ -66,10 +67,22 @@ dating-app/
 │   │   │   ├── ConfirmModal.tsx
 │   │   │   ├── ConfirmModal.css
 │   │   │   └── index.ts
-│   │   └── SuccessScreen/    # Success/celebration screen
-│   │       ├── SuccessScreen.tsx
-│   │       ├── SuccessScreen.css
+│   │   ├── Layout/           # Main app layout (phone frame + side panel)
+│   │   │   ├── Layout.tsx
+│   │   │   ├── Layout.css
+│   │   │   └── index.ts
+│   │   ├── SuccessScreen/    # Success/celebration screen
+│   │   │   ├── SuccessScreen.tsx
+│   │   │   ├── SuccessScreen.css
+│   │   │   └── index.ts
+│   │   └── ThemeToggle/      # Theme switcher component
+│   │       ├── ThemeToggle.tsx
+│   │       ├── ThemeToggle.css
 │   │       └── index.ts
+│   │
+│   ├── constants/            # Centralized constants & messages
+│   │   ├── index.ts          # Exports all constants
+│   │   └── messages.ts       # ValidationMessages for forms & toasts
 │   │
 │   ├── hooks/                # Custom React hooks
 │   │   ├── index.ts
@@ -171,6 +184,7 @@ Configured in `tsconfig.app.json` and `vite.config.ts`:
 | `@components/*` | `src/components/*` | `import AuthLayout from '@components/AuthLayout'` |
 | `@pages/*` | `src/pages/*` | `import { Home } from '@/pages'` |
 | `@interfaces` | `src/interfaces` | `import type { ProfileData } from '@interfaces'` |
+| `@constants` | `src/constants` | `import { ValidationMessages } from '@constants'` |
 | `@store/*` | `src/store/*` | `import { useAppDispatch } from '@store/hooks'` |
 | `@hooks` | `src/hooks` | `import { useTheme } from '@hooks'` |
 | `@services` | `src/services` | `import { registrationDraftApi } from '@services'` |
@@ -219,6 +233,80 @@ import { Routes, Theme, AuthStatus } from '@/types';
 // Import interfaces from @interfaces
 import type { ProfileData, StepProps, DraftResponse } from '@interfaces';
 ```
+
+---
+
+## 📝 Centralized Messages (Constants)
+
+All validation messages, toast notifications, and user-facing strings are centralized in `constants/messages.ts`. This allows:
+
+- **Single source of truth** - change a message once, updates everywhere
+- **Type safety** - TypeScript autocomplete for message keys
+- **Easy i18n** - ready for future localization
+
+### `constants/messages.ts`
+
+```typescript
+export const ValidationMessages = {
+  // Email
+  EMAIL_REQUIRED: 'Please enter your email',
+  EMAIL_INVALID: 'Please enter a valid email',
+
+  // Password
+  PASSWORD_REQUIRED: 'Please enter your password',
+  PASSWORD_MIN_6: 'Password must be at least 6 characters',
+  PASSWORD_MIN_8: 'Password must be at least 8 characters',
+  PASSWORD_PATTERN: 'Password must contain uppercase, lowercase, and number',
+  PASSWORD_CONFIRM_REQUIRED: 'Please confirm your password',
+  PASSWORD_MISMATCH: 'Passwords do not match',
+
+  // Name
+  NAME_REQUIRED: 'Please enter your name',
+  NAME_MIN_2: 'Name must be at least 2 characters',
+
+  // Photo Upload
+  PHOTO_INVALID_TYPE: 'Please select an image file',
+  PHOTO_SIZE_LIMIT: 'Image size should be less than 5MB',
+  PHOTO_ADDED: 'Photo added successfully',
+  PHOTO_REMOVED: 'Photo removed',
+
+  // Account
+  ACCOUNT_CREATED: 'Account created successfully!',
+} as const;
+
+export type ValidationMessageKey = keyof typeof ValidationMessages;
+```
+
+### Usage
+
+```typescript
+import { ValidationMessages } from '@constants';
+
+// In Ant Design Form rules
+<Form.Item
+  name="email"
+  rules={[
+    { required: true, message: ValidationMessages.EMAIL_REQUIRED },
+    { type: 'email', message: ValidationMessages.EMAIL_INVALID },
+  ]}
+>
+
+// In toast notifications
+message.success(ValidationMessages.ACCOUNT_CREATED);
+message.error(ValidationMessages.PHOTO_SIZE_LIMIT);
+```
+
+### Pages Using ValidationMessages
+
+| Page | Messages Used |
+|------|---------------|
+| `Login.tsx` | EMAIL_*, PASSWORD_* |
+| `ForgotPassword.tsx` | EMAIL_* |
+| `StepEmail.tsx` | EMAIL_* |
+| `StepName.tsx` | NAME_* |
+| `StepPhotos.tsx` | PHOTO_* |
+| `StepSuccess.tsx` | PASSWORD_* |
+| `ProfileSetup.tsx` | ACCOUNT_CREATED |
 
 ---
 
@@ -586,6 +674,13 @@ import { HeartIcon, UserIcon, ProstoLogo } from '@svg';
 2. Export from `interfaces/index.ts`
 3. Import using `import type { NewInterface } from '@interfaces'`
 
+### Adding a New Validation Message
+
+1. Add the message to `constants/messages.ts` in the `ValidationMessages` object
+2. Use descriptive key names (e.g., `FIELD_VALIDATION_TYPE`)
+3. Import using `import { ValidationMessages } from '@constants'`
+4. Use in forms: `message: ValidationMessages.YOUR_MESSAGE_KEY`
+
 ### Adding a New API Endpoint
 
 1. Add request/response types to `interfaces/api.interface.ts`
@@ -596,9 +691,10 @@ import { HeartIcon, UserIcon, ProstoLogo } from '@svg';
 ### Adding a New Component
 
 1. Create folder: `src/components/ComponentName/`
-2. Add props interface to `interfaces/components.interface.ts`
-3. Export interface from `interfaces/index.ts`
-4. Create component importing props from `@interfaces`
+2. Add files: `ComponentName.tsx`, `ComponentName.css` (if needed), `index.ts`
+3. Add props interface to `interfaces/components.interface.ts`
+4. Export interface from `interfaces/index.ts`
+5. Create component importing props from `@interfaces`
 
 ---
 
@@ -624,4 +720,4 @@ npm run lint
 ---
 
 *Last Updated: February 2026*
-*Version: 3.0.0*
+*Version: 3.1.0*

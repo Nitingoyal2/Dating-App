@@ -5,6 +5,7 @@ import { Routes } from '@/types';
 import type { ForgotPasswordFormData } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
+import { ValidationMessages } from '@constants';
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
@@ -36,8 +37,8 @@ const ForgotPassword = () => {
                     name="email"
                     label="Your Email"
                     rules={[
-                        { required: true, message: 'Please enter your email' },
-                        { type: 'email', message: 'Please enter a valid email' },
+                        { required: true, message: ValidationMessages.EMAIL_REQUIRED },
+                        { type: 'email', message: ValidationMessages.EMAIL_INVALID },
                     ]}
                 >
                     <Input

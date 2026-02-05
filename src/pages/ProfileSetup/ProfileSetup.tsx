@@ -10,6 +10,7 @@ import {
     registrationCompleteApi,
     profileStepPatchApi,
 } from '@services';
+import { ValidationMessages } from '@constants';
 import StepEmail from './steps/StepEmail';
 import StepName from './steps/StepName';
 import StepLocation from './steps/StepLocation';
@@ -102,7 +103,7 @@ const ProfileSetup = () => {
                     })
                 );
 
-                message.success('Account created successfully!');
+                message.success(ValidationMessages.ACCOUNT_CREATED);
                 navigate(Routes.DASHBOARD, { replace: true });
                 return;
             }

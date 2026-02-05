@@ -43,7 +43,9 @@
       "@hooks": ["src/hooks"],
       "@hooks/*": ["src/hooks/*"],
       "@services": ["src/services"],
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@constants": ["src/constants"],
+      "@constants/*": ["src/constants/*"]
     }
   },
   "include": ["src"]

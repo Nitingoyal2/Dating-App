@@ -4,9 +4,10 @@ import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import type { StepPhotosProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
+import { ValidationMessages } from '@constants';
 
 const MAX_PHOTOS = 6;
-const MIN_PHOTOS = 2;
+const MIN_PHOTOS = 3;
 
 const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,12 +20,12 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
         const file = files[0];
 
         if (!file.type.startsWith('image/')) {
-            message.error('Please select an image file');
+            message.error(ValidationMessages.PHOTO_INVALID_TYPE);
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            message.error('Image size should be less than 5MB');
+            message.error(ValidationMessages.PHOTO_SIZE_LIMIT);
             return;
         }
 
@@ -32,7 +33,7 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 onChange([...value, reader.result as string]);
-                message.success('Photo added successfully');
+                message.success(ValidationMessages.PHOTO_ADDED);
             };
             reader.readAsDataURL(file);
         }
@@ -42,7 +43,7 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
 
     const handleRemovePhoto = (index: number) => {
         onChange(value.filter((_, i) => i !== index));
-        message.info('Photo removed');
+        message.info(ValidationMessages.PHOTO_REMOVED);
     };
 
     const renderSlots = () => {

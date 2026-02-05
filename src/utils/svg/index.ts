@@ -9,6 +9,8 @@ export {
   EyeOffIcon,
   UserIcon,
   HeartIcon,
+  HeartFilledIcon,
+  TwoHeartsIcon,
   MessageIcon,
   SearchIcon,
   SettingsIcon,
@@ -16,6 +18,9 @@ export {
   CheckIcon,
   CameraIcon,
   LocationIcon,
+  SunIcon,
+  MoonIcon,
+  MonitorIcon,
 } from './icons';
 
 export { default as ProstoLogo } from './ProstoLogo';

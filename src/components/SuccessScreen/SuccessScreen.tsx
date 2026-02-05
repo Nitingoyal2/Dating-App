@@ -1,6 +1,7 @@
 import { Space, Typography } from 'antd';
 import { PrimaryButton } from '@components/Button';
 import type { SuccessScreenProps } from '@interfaces';
+import { HeartFilledIcon, TwoHeartsIcon } from '@utils/svg';
 import './SuccessScreen.css';
 
 const { Title, Text } = Typography;
@@ -19,10 +20,10 @@ const SuccessScreen = ({
         <div className="success-screen">
             {showHearts && (
                 <div className="success-hearts-bg">
-                    <div className="heart heart-1">💗</div>
-                    <div className="heart heart-2">💕</div>
-                    <div className="heart heart-3">💗</div>
-                    <div className="heart heart-4">💕</div>
+                    <div className="heart heart-1"><HeartFilledIcon size={80} /></div>
+                    <div className="heart heart-2"><TwoHeartsIcon size={100} /></div>
+                    <div className="heart heart-3"><HeartFilledIcon size={70} /></div>
+                    <div className="heart heart-4"><TwoHeartsIcon size={50} /></div>
                 </div>
             )}
 

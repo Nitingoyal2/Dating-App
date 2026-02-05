@@ -3,6 +3,7 @@ import { MailOutlined } from '@ant-design/icons';
 import type { StepEmailProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
+import { ValidationMessages } from '@constants';
 
 const StepEmail = ({ value, onChange, onNext, onBack }: StepEmailProps) => {
     const [form] = Form.useForm();
@@ -29,8 +30,8 @@ const StepEmail = ({ value, onChange, onNext, onBack }: StepEmailProps) => {
                     name="email"
                     label="Your Email"
                     rules={[
-                        { required: true, message: 'Please enter your email' },
-                        { type: 'email', message: 'Please enter a valid email' },
+                        { required: true, message: ValidationMessages.EMAIL_REQUIRED },
+                        { type: 'email', message: ValidationMessages.EMAIL_INVALID },
                     ]}
                 >
                     <Input

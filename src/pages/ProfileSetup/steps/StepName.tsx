@@ -3,6 +3,7 @@ import { UserOutlined } from '@ant-design/icons';
 import type { StepNameProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
+import { ValidationMessages } from '@constants';
 
 const StepName = ({ value, onChange, onNext, onBack }: StepNameProps) => {
     const [form] = Form.useForm();
@@ -29,8 +30,8 @@ const StepName = ({ value, onChange, onNext, onBack }: StepNameProps) => {
                     name="firstName"
                     label="First Name"
                     rules={[
-                        { required: true, message: 'Please enter your name' },
-                        { min: 2, message: 'Name must be at least 2 characters' },
+                        { required: true, message: ValidationMessages.NAME_REQUIRED },
+                        { min: 2, message: ValidationMessages.NAME_MIN_2 },
                     ]}
                 >
                     <Input

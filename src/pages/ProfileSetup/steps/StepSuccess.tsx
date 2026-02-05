@@ -4,6 +4,7 @@ import { LockOutlined } from '@ant-design/icons';
 import type { StepSuccessProps, PasswordFormData } from '@interfaces';
 import { PrimaryButton } from '@components/Button';
 import { ProstoLogo } from '@svg';
+import { ValidationMessages } from '@constants';
 import './StepSuccess.css';
 
 const { Title, Text } = Typography;
@@ -56,11 +57,11 @@ const StepSuccess = ({ onComplete, isLoading }: StepSuccessProps) => {
                     <Form.Item
                         name="password"
                         rules={[
-                            { required: true, message: 'Please enter a password' },
-                            { min: 8, message: 'Password must be at least 8 characters' },
+                            { required: true, message: ValidationMessages.PASSWORD_REQUIRED },
+                            { min: 8, message: ValidationMessages.PASSWORD_MIN_8 },
                             {
                                 pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                                message: 'Password must contain uppercase, lowercase, and number',
+                                message: ValidationMessages.PASSWORD_PATTERN,
                             },
                         ]}
                     >
@@ -75,13 +76,13 @@ const StepSuccess = ({ onComplete, isLoading }: StepSuccessProps) => {
                         name="confirm_password"
                         dependencies={['password']}
                         rules={[
-                            { required: true, message: 'Please confirm your password' },
+                            { required: true, message: ValidationMessages.PASSWORD_CONFIRM_REQUIRED },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
                                     if (!value || getFieldValue('password') === value) {
                                         return Promise.resolve();
                                     }
-                                    return Promise.reject(new Error('Passwords do not match'));
+                                    return Promise.reject(new Error(ValidationMessages.PASSWORD_MISMATCH));
                                 },
                             }),
                         ]}
