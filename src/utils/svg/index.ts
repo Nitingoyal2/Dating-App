@@ -24,6 +24,8 @@ export {
   FacebookIcon,
   AppleIcon,
   GoogleIcon,
+  WarningIcon,
+  SuccessIcon
 } from './icons';
 
 export { default as ProstoLogo } from './ProstoLogo';
