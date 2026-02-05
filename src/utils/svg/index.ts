@@ -21,6 +21,9 @@ export {
   SunIcon,
   MoonIcon,
   MonitorIcon,
+  FacebookIcon,
+  AppleIcon,
+  GoogleIcon,
 } from './icons';
 
 export { default as ProstoLogo } from './ProstoLogo';
