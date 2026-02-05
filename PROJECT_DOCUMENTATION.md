@@ -15,13 +15,14 @@
 7. [Theme System](#theme-system)
 8. [Components](#components)
 9. [Pages](#pages)
-10. [Profile Setup Flow](#profile-setup-flow)
-11. [Backend API Integration](#backend-api-integration)
-12. [Routing System](#routing-system)
-13. [State Management (Redux)](#state-management-redux)
-14. [SVG Icons](#svg-icons)
-15. [Styling Approach](#styling-approach)
-16. [How to Add New Features](#how-to-add-new-features)
+10. [Login Setup Flow](#login-setup-flow)
+11. [Profile Setup Flow](#profile-setup-flow)
+12. [Backend API Integration](#backend-api-integration)
+13. [Routing System](#routing-system)
+14. [State Management (Redux)](#state-management-redux)
+15. [SVG Icons](#svg-icons)
+16. [Styling Approach](#styling-approach)
+17. [How to Add New Features](#how-to-add-new-features)
 
 ---
 
@@ -103,7 +104,14 @@ dating-app/
 │   │   ├── index.ts          # Exports all pages
 │   │   ├── Splash/           # Loading/splash screen
 │   │   ├── Home/             # Onboarding/landing page
-│   │   ├── Login/            # Login page
+│   │   ├── LoginSetup/       # Multi-step login with OTP
+│   │   │   ├── LoginSetup.tsx    # Main controller with API integration
+│   │   │   ├── index.ts
+│   │   │   └── steps/        # Login step components
+│   │   │       ├── index.ts
+│   │   │       ├── Login.tsx         # Phone/Email entry
+│   │   │       ├── Login.css
+│   │   │       └── OtpVerification.tsx  # OTP entry
 │   │   ├── ForgotPassword/   # Password recovery
 │   │   ├── Dashboard/        # Main app (protected)
 │   │   └── ProfileSetup/     # Multi-step profile creation
@@ -209,6 +217,9 @@ export type Theme = (typeof Theme)[keyof typeof Theme];
 
 export const Gender = { MALE: 'male', FEMALE: 'female', ... } as const;
 export type Gender = (typeof Gender)[keyof typeof Gender];
+
+export const LoginType = { PHONE: 'phone', EMAIL: 'email' } as const;
+export type LoginType = (typeof LoginType)[keyof typeof LoginType];
 ```
 
 ### `interfaces/` - All Interfaces (Centralized)
@@ -270,8 +281,23 @@ export const ValidationMessages = {
   PHOTO_ADDED: 'Photo added successfully',
   PHOTO_REMOVED: 'Photo removed',
 
+  // OTP
+  OTP_REQUIRED: 'Please enter the code',
+  OTP_LEN_6: 'Code must be 6 digits',
+  OTP_RESENT: 'A new code has been sent.',
+  OTP_SEND_FAILED: 'Failed to send OTP',
+  OTP_INVALID: 'Invalid OTP',
+  OTP_RESEND_FAILED: 'Failed to resend OTP',
+
+  // Phone
+  PHONE_INVALID: 'Please enter a valid phone number',
+
   // Account
   ACCOUNT_CREATED: 'Account created successfully!',
+
+  // Login
+  LOGIN_SUCCESS: 'Login successful!',
+  LOGIN_FAILED: 'Login failed',
 } as const;
 
 export type ValidationMessageKey = keyof typeof ValidationMessages;
@@ -300,7 +326,9 @@ message.error(ValidationMessages.PHOTO_SIZE_LIMIT);
 
 | Page | Messages Used |
 |------|---------------|
-| `Login.tsx` | EMAIL_*, PASSWORD_* |
+| `LoginSetup.tsx` | OTP_*, LOGIN_* |
+| `LoginSetup/steps/Login.tsx` | EMAIL_*, PHONE_* |
+| `LoginSetup/steps/OtpVerification.tsx` | OTP_* |
 | `ForgotPassword.tsx` | EMAIL_* |
 | `StepEmail.tsx` | EMAIL_* |
 | `StepName.tsx` | NAME_* |
@@ -444,10 +472,54 @@ import type { ThemeToggleProps } from '@interfaces';
 |------|-------|-------------|
 | Splash | (initial) | Loading screen with Prosto logo |
 | Home | `/` | Onboarding "Algorithm" screen |
-| Login | `/login` | Email & password login form |
+| LoginSetup | `/login` | 2-step login with OTP (Phone/Email → OTP) |
 | ForgotPassword | `/forgot-password` | Password recovery |
 | ProfileSetup | `/profile-setup` | 9-step profile creation with API |
 | Dashboard | `/dashboard` | Main app (after authentication) |
+
+---
+
+## 🔐 Login Setup Flow
+
+2-step login with **OTP authentication**:
+
+| Step | Component | API Call | Data |
+|------|-----------|----------|------|
+| 1 | `Login` | `POST /api/login` | `{ country_code, phone }` or `{ email }` |
+| 2 | `OtpVerification` | `POST /api/login/verify-otp` | `{ country_code, phone, otp }` or `{ email, otp }` |
+
+### LoginSetup Implementation
+
+```typescript
+// LoginSetup uses LoginType enum for phone/email
+import { LoginType } from '@/types';
+
+const [loginType, setLoginType] = useState<LoginType>(LoginType.PHONE);
+
+// Step 1: Send OTP
+const handleSendOtp = async () => {
+  const payload = loginType === LoginType.PHONE
+    ? { country_code: `+${countryCode}`, phone: getPhoneWithoutCode() }
+    : { email };
+  await loginApi(payload);
+  setCurrentStep(2);
+};
+
+// Step 2: Verify OTP
+const handleVerifyOtp = async () => {
+  const payload = loginType === LoginType.PHONE
+    ? { country_code: `+${countryCode}`, phone: getPhoneWithoutCode(), otp }
+    : { email, otp };
+  const response = await otpVerifyApi(payload);
+  dispatch(loginSuccess({ user: response.user, token: response.access_token }));
+};
+
+// Resend OTP
+const handleResendOtp = async () => {
+  await resendOtpApi(payload);
+  message.success(ValidationMessages.OTP_RESENT);
+};
+```
 
 ---
 
@@ -519,8 +591,12 @@ services/
 
 ```typescript
 // services/api/post_apis.ts
-import type { DraftRequest, DraftResponse, CompleteRequest, CompleteResponse } from '@interfaces';
+import type { 
+  DraftRequest, DraftResponse, CompleteRequest, CompleteResponse,
+  LoginRequest, LoginResponse, OtpVerifyRequest, OtpVerifyResponse 
+} from '@interfaces';
 
+// Registration APIs
 export const registrationDraftApi = async (data: DraftRequest): Promise<DraftResponse> => {
   return await postApi<DraftResponse>('/api/draft', data);
 };
@@ -530,6 +606,19 @@ export const registrationCompleteApi = async (
   data: CompleteRequest
 ): Promise<CompleteResponse> => {
   return await postApi<CompleteResponse>(`/api/profile/${userId}/complete`, data);
+};
+
+// Login APIs
+export const loginApi = async (data: LoginRequest): Promise<LoginResponse> => {
+  return await postApi<LoginResponse>('/api/login', data);
+};
+
+export const otpVerifyApi = async (data: OtpVerifyRequest): Promise<OtpVerifyResponse> => {
+  return await postApi<OtpVerifyResponse>('/api/login/verify-otp', data);
+};
+
+export const resendOtpApi = async (data: LoginRequest): Promise<LoginResponse> => {
+  return await postApi<LoginResponse>('/api/login/resend-otp', data);
 };
 
 // services/api/patch_apis.ts
@@ -547,6 +636,8 @@ export const profileStepPatchApi = async (
 
 ```typescript
 // interfaces/api.interface.ts
+
+// Registration Types
 export interface DraftResponse {
   user_id: string;
   email: string;
@@ -571,6 +662,34 @@ export interface CompleteResponse {
     token_type: string;
     expires_in: number;
   };
+}
+
+// Login Types
+export interface LoginPhoneRequest {
+  country_code: string;
+  phone: string;
+}
+
+export interface LoginEmailRequest {
+  email: string;
+}
+
+export type LoginRequest = LoginPhoneRequest | LoginEmailRequest;
+
+export interface LoginResponse {
+  message: string;
+  otp_sent: boolean;
+  expires_in: number;
+}
+
+export interface OtpVerifyResponse {
+  user: {
+    id: string;
+    email?: string;
+    phone?: string;
+    first_name: string;
+  };
+  access_token: string;
 }
 ```
 
@@ -720,4 +839,4 @@ npm run lint
 ---
 
 *Last Updated: February 2026*
-*Version: 3.1.0*
+*Version: 3.2.0*

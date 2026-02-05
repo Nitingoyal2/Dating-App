@@ -42,7 +42,6 @@ export type {
   ProfileData,
   StepProps,
   StepEmailProps,
-  LoginIdentifierType,
   LoginSetupLoginProps,
   OtpVerificationProps,
   StepNameProps,
@@ -71,6 +70,17 @@ export type {
   CompleteUser,
   CompleteTokens,
   CompleteResponse,
+  // Login APIs
+  LoginPhoneRequest,
+  LoginEmailRequest,
+  LoginRequest,
+  LoginResponse,
+  OtpVerifyPhoneRequest,
+  OtpVerifyEmailRequest,
+  OtpVerifyRequest,
+  OtpVerifyResponse,
+  ResendOtpRequest,
+  ResendOtpResponse,
 } from './api.interface';
 
 // Component interfaces

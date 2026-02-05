@@ -706,35 +706,169 @@ const ProfileSetup = () => {
 
 ---
 
-## 🔐 Authentication
+## 🔐 Authentication (Login with OTP)
 
-### After Complete - Login
+The app uses **OTP-based authentication** for login. Users can login via phone or email.
 
-**Endpoint**: `POST /api/auth/login`
+### Login Flow
 
-**Request**:
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              LOGIN FLOW                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Step 1:  POST   /api/login           → { country_code, phone } or { email }
+                                      ← { message, otp_sent, expires_in }
+
+Step 2:  POST   /api/login/verify-otp → { country_code, phone, otp } or { email, otp }
+                                      ← { user, access_token }
+
+Resend:  POST   /api/login/resend-otp → { country_code, phone } or { email }
+                                      ← { message, otp_sent, expires_in }
+```
+
+---
+
+### Step 1: Send OTP (Login)
+
+**Endpoint**: `POST /api/login`
+
+**Purpose**: Send OTP to user's phone or email
+
+**Request (Phone)**:
 ```json
 {
-    "email": "user@example.com",
-    "password": "SecurePassword123!"
+    "country_code": "+1",
+    "phone": "3316238413"
 }
 ```
 
-**Response**:
+**Request (Email)**:
+```json
+{
+    "email": "user@example.com"
+}
+```
+
+**Response (200 OK)**:
 ```json
 {
     "success": true,
     "data": {
-        "user": { ... },
-        "tokens": {
-            "access_token": "eyJ...",
-            "refresh_token": "eyJ...",
-            "token_type": "Bearer",
-            "expires_in": 3600
-        }
+        "message": "OTP sent successfully",
+        "otp_sent": true,
+        "expires_in": 60
     }
 }
 ```
+
+**Errors**:
+```json
+// 404 - User not found
+{
+    "success": false,
+    "error": {
+        "code": "USER_NOT_FOUND",
+        "message": "No account found with this phone/email"
+    }
+}
+```
+
+---
+
+### Step 2: Verify OTP
+
+**Endpoint**: `POST /api/login/verify-otp`
+
+**Purpose**: Verify OTP and get authentication token
+
+**Request (Phone)**:
+```json
+{
+    "country_code": "+1",
+    "phone": "3316238413",
+    "otp": "1234"
+}
+```
+
+**Request (Email)**:
+```json
+{
+    "email": "user@example.com",
+    "otp": "1234"
+}
+```
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "user": {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "email": "user@example.com",
+            "phone": "+13316238413",
+            "first_name": "John"
+        },
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+}
+```
+
+**Errors**:
+```json
+// 400 - Invalid OTP
+{
+    "success": false,
+    "error": {
+        "code": "INVALID_OTP",
+        "message": "Invalid OTP"
+    }
+}
+
+// 400 - OTP Expired
+{
+    "success": false,
+    "error": {
+        "code": "OTP_EXPIRED",
+        "message": "OTP has expired. Please request a new one."
+    }
+}
+```
+
+---
+
+### Resend OTP
+
+**Endpoint**: `POST /api/login/resend-otp`
+
+**Purpose**: Resend OTP to user's phone or email
+
+**Request**: Same as Login (Step 1)
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "message": "OTP sent successfully",
+        "otp_sent": true,
+        "expires_in": 60
+    }
+}
+```
+
+---
+
+### Login API Summary
+
+| Step | Method | Endpoint | Request Body |
+|------|--------|----------|--------------|
+| 1 | POST | `/api/login` | `{ country_code, phone }` or `{ email }` |
+| 2 | POST | `/api/login/verify-otp` | `{ country_code, phone, otp }` or `{ email, otp }` |
+| Resend | POST | `/api/login/resend-otp` | `{ country_code, phone }` or `{ email }` |
+
+---
 
 ### Token Refresh
 
@@ -761,7 +895,7 @@ Authorization: Bearer {refresh_token}
 
 ## 🧪 Testing Checklist
 
-### API Tests
+### Registration API Tests
 
 - [ ] POST /draft - Create with valid email
 - [ ] POST /draft - Reject duplicate email
@@ -772,9 +906,27 @@ Authorization: Bearer {refresh_token}
 - [ ] POST /profile/{id}/complete - Complete profile
 - [ ] POST /profile/{id}/complete - Reject incomplete profile
 
+### Login API Tests
+
+- [ ] POST /login - Send OTP via phone
+- [ ] POST /login - Send OTP via email
+- [ ] POST /login - Reject non-existent user
+- [ ] POST /login/verify-otp - Verify valid OTP
+- [ ] POST /login/verify-otp - Reject invalid OTP
+- [ ] POST /login/verify-otp - Reject expired OTP
+- [ ] POST /login/resend-otp - Resend OTP successfully
+
 ---
 
 ## 📝 Changelog
+
+### v3.2.0 (February 2026)
+- **Added**: Login API with OTP authentication (`POST /api/login`)
+- **Added**: OTP Verify API (`POST /api/login/verify-otp`)
+- **Added**: Resend OTP API (`POST /api/login/resend-otp`)
+- **Added**: `LoginType` enum for phone/email keys
+- **Added**: Centralized OTP messages in ValidationMessages
+- **Frontend**: LoginSetup with 2-step flow (credentials → OTP)
 
 ### v3.1.0 (February 2026)
 - **Frontend**: Updated to unified `handleStepSubmit` function
@@ -798,6 +950,6 @@ Authorization: Bearer {refresh_token}
 
 ---
 
-*Document Version: 3.1.0*  
+*Document Version: 3.2.0*  
 *Created: February 2026*  
-*Frontend Version: 3.0.0*
+*Frontend Version: 3.2.0*

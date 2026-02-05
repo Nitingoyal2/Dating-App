@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { LoginType } from '@/types';
 
 // ============================================
 // Common Types
@@ -35,13 +36,13 @@ export interface OtpVerificationProps extends StepProps {
   onResend?: () => void | Promise<void>;
 }
 
-export type LoginIdentifierType = 'phone' | 'email';
-
 export interface LoginSetupLoginProps extends StepProps {
-  loginType: LoginIdentifierType;
-  onLoginTypeChange: (value: LoginIdentifierType) => void;
+  loginType: LoginType;
+  onLoginTypeChange: (value: LoginType) => void;
   phone: string;
   onPhoneChange: (value: string) => void;
+  countryCode: string;
+  onCountryCodeChange: (value: string) => void;
   email: string;
   onEmailChange: (value: string) => void;
 }

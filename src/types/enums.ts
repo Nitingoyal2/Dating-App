@@ -84,3 +84,11 @@ export const ApiStatus = {
 } as const;
 
 export type ApiStatus = (typeof ApiStatus)[keyof typeof ApiStatus];
+
+// Login identifier type
+export const LoginType = {
+  PHONE: 'phone',
+  EMAIL: 'email',
+} as const;
+
+export type LoginType = (typeof LoginType)[keyof typeof LoginType];

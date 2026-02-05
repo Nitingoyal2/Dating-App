@@ -4,7 +4,7 @@ import { Form, Input } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { Routes } from '@/types';
+import { Routes, LoginType } from '@/types';
 import { PrimaryButton } from '@components/Button';
 import { loginBackgroundImages } from '@/data';
 import type { LoginSetupLoginProps } from '@interfaces';
@@ -16,9 +16,12 @@ const Login = ({
     onLoginTypeChange,
     phone,
     onPhoneChange,
+    countryCode: _countryCode,
+    onCountryCodeChange,
     email,
     onEmailChange,
     onNext,
+    isLoading,
 }: LoginSetupLoginProps) => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
@@ -33,10 +36,10 @@ const Login = ({
     }, []);
 
     const handleSubmit = (values: { email?: string }) => {
-        const identifier = loginType === 'phone' ? phone : values.email;
+        const identifier = loginType === LoginType.PHONE ? phone : values.email;
         if (!identifier) return;
-        if (loginType === 'phone' && identifier.length < 10) return;
-        if (loginType === 'email' && values.email) onEmailChange(values.email);
+        if (loginType === LoginType.PHONE && identifier.length < 10) return;
+        if (loginType === LoginType.EMAIL && values.email) onEmailChange(values.email);
         onNext();
     };
 
@@ -62,18 +65,18 @@ const Login = ({
                 {/* Login Type Toggle */}
                 <div className="login-toggle">
                     <button
-                        className={`login-toggle-btn ${loginType === 'phone' ? 'active' : ''}`}
+                        className={`login-toggle-btn ${loginType === LoginType.PHONE ? 'active' : ''}`}
                         onClick={() => {
-                            onLoginTypeChange('phone');
+                            onLoginTypeChange(LoginType.PHONE);
                             form.resetFields();
                         }}
                     >
                         Phone
                     </button>
                     <button
-                        className={`login-toggle-btn ${loginType === 'email' ? 'active' : ''}`}
+                        className={`login-toggle-btn ${loginType === LoginType.EMAIL ? 'active' : ''}`}
                         onClick={() => {
-                            onLoginTypeChange('email');
+                            onLoginTypeChange(LoginType.EMAIL);
                             form.resetFields();
                         }}
                     >
@@ -87,7 +90,7 @@ const Login = ({
                     onFinish={handleSubmit}
                     className="login-form"
                 >
-                    {loginType === 'phone' ? (
+                    {loginType === LoginType.PHONE ? (
                         <Form.Item
                             label="Phone Number"
                             required
@@ -97,7 +100,13 @@ const Login = ({
                             <PhoneInput
                                 country={'us'}
                                 value={phone}
-                                onChange={(value) => onPhoneChange(value)}
+                                onChange={(value, country) => {
+                                    onPhoneChange(value);
+                                    const countryData = country as { dialCode?: string };
+                                    if (countryData?.dialCode) {
+                                        onCountryCodeChange(countryData.dialCode);
+                                    }
+                                }}
                                 inputClass="phone-input-field"
                                 containerClass="phone-input-container"
                                 buttonClass="phone-input-button"
@@ -106,7 +115,6 @@ const Login = ({
                                 enableSearch
                                 countryCodeEditable={false}
                                 searchPlaceholder="Search country..."
-                                // preferredCountries={['us', 'in', 'gb', 'au', 'ca']}
                                 placeholder="331-623-8413"
                             />
                         </Form.Item>
@@ -137,7 +145,7 @@ const Login = ({
                     </div>
 
                     <Form.Item style={{ marginBottom: 0 }}>
-                        <PrimaryButton htmlType="submit">
+                        <PrimaryButton htmlType="submit" loading={isLoading}>
                             Continue
                         </PrimaryButton>
                     </Form.Item>

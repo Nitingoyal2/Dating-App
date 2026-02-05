@@ -13,6 +13,63 @@ export interface ApiResponse<T> {
 }
 
 // ============================================
+// Login API
+// ============================================
+export interface LoginPhoneRequest {
+    country_code: string;
+    phone: string;
+}
+
+export interface LoginEmailRequest {
+    email: string;
+}
+
+export type LoginRequest = LoginPhoneRequest | LoginEmailRequest;
+
+export interface LoginResponse {
+    message: string;
+    otp_sent: boolean;
+    expires_in: number; // OTP expiry in seconds
+}
+
+// ============================================
+// OTP Verification API
+// ============================================
+export interface OtpVerifyPhoneRequest {
+    country_code: string;
+    phone: string;
+    otp: string;
+}
+
+export interface OtpVerifyEmailRequest {
+    email: string;
+    otp: string;
+}
+
+export type OtpVerifyRequest = OtpVerifyPhoneRequest | OtpVerifyEmailRequest;
+
+export interface OtpVerifyResponse {
+    user: {
+        id: string;
+        email?: string;
+        phone?: string;
+        first_name: string;
+    };
+    access_token: string;
+}
+
+// ============================================
+// Resend OTP API
+// ============================================
+export type ResendOtpRequest = LoginRequest;
+
+export interface ResendOtpResponse {
+    message: string;
+    otp_sent: boolean;
+    expires_in: number;
+}
+
+// ============================================
 // Draft API (Step 1)
 // ============================================
 export interface DraftRequest {

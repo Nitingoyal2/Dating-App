@@ -35,9 +35,16 @@ export const ValidationMessages = {
     OTP_REQUIRED: 'Please enter the code',
     OTP_LEN_6: 'Code must be 6 digits',
     OTP_RESENT: 'A new code has been sent.',
+    OTP_SEND_FAILED: 'Failed to send OTP',
+    OTP_INVALID: 'Invalid OTP',
+    OTP_RESEND_FAILED: 'Failed to resend OTP',
 
     // Phone
     PHONE_INVALID: 'Please enter a valid phone number',
+
+    // Login
+    LOGIN_SUCCESS: 'Login successful!',
+    LOGIN_FAILED: 'Login failed',
 } as const;
 
 // Type for the messages

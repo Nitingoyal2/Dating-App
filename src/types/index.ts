@@ -8,4 +8,5 @@ export {
   Gender,
   RelationshipGoal,
   ApiStatus,
+  LoginType,
 } from './enums';
