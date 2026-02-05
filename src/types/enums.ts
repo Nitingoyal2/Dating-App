@@ -92,3 +92,10 @@ export const LoginType = {
 } as const;
 
 export type LoginType = (typeof LoginType)[keyof typeof LoginType];
+
+
+export const ProfileStatus = {
+  SUSPENDED: 'suspended',
+} as const;
+
+export type ProfileStatus = (typeof ProfileStatus)[keyof typeof ProfileStatus];

@@ -173,3 +173,55 @@ body {
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 }
+
+/* ========================================
+   BROWSER AUTOFILL (CHROME/CHROMIUM)
+   Fix unwanted light/yellow autofill background in dark theme
+   ======================================== */
+
+/* Generic inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-input-bg) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-input-bg) inset !important;
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  caret-color: var(--color-text-primary) !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Ant Design inputs (affix wrapper / picker) */
+.ant-input:-webkit-autofill,
+.ant-input:-webkit-autofill:hover,
+.ant-input:-webkit-autofill:focus,
+.ant-input-affix-wrapper input:-webkit-autofill,
+.ant-input-affix-wrapper input:-webkit-autofill:hover,
+.ant-input-affix-wrapper input:-webkit-autofill:focus,
+.ant-picker input:-webkit-autofill,
+.ant-picker input:-webkit-autofill:hover,
+.ant-picker input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-input-bg) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-input-bg) inset !important;
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  caret-color: var(--color-text-primary) !important;
+}
+
+/* Auth screens intentionally use a different input background */
+.auth-layout .ant-input:-webkit-autofill,
+.auth-layout .ant-input:-webkit-autofill:hover,
+.auth-layout .ant-input:-webkit-autofill:focus,
+.auth-layout .ant-input-affix-wrapper input:-webkit-autofill,
+.auth-layout .ant-input-affix-wrapper input:-webkit-autofill:hover,
+.auth-layout .ant-input-affix-wrapper input:-webkit-autofill:focus,
+.auth-layout .ant-picker input:-webkit-autofill,
+.auth-layout .ant-picker input:-webkit-autofill:hover,
+.auth-layout .ant-picker input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-secondary) inset !important;
+  box-shadow: 0 0 0px 1000px var(--color-bg-secondary) inset !important;
+}

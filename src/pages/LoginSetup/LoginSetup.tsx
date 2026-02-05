@@ -8,6 +8,8 @@ import { loginApi, otpVerifyApi, resendOtpApi } from '@services';
 import StepLogin from './steps/Login';
 import OtpVerification from './steps/OtpVerification';
 import { ValidationMessages } from '@constants';
+import { ConfirmModal } from '@components/ConfirmModal';
+import { ProfileStatus } from '@/types/enums';
 
 const maskIdentifier = (identifier: string) => {
     if (!identifier) return '';
@@ -28,6 +30,7 @@ const LoginSetup = () => {
 
     const [currentStep, setCurrentStep] = useState<1 | 2>(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuspendedModalOpen, setIsSuspendedModalOpen] = useState(false);
     const [loginType, setLoginType] = useState<LoginType>(LoginType.PHONE);
     const [phone, setPhone] = useState('');
     const [countryCode, setCountryCode] = useState('1'); // Default US
@@ -68,6 +71,13 @@ const LoginSetup = () => {
             setCurrentStep(2);
         } catch (error) {
             const err = error as Error;
+            const msg = (err.message).toLowerCase();
+            const isSuspended = msg.includes(ProfileStatus.SUSPENDED.toLowerCase());
+            if (isSuspended) {
+                setIsSuspendedModalOpen(true);
+                return;
+            }
+
             message.error(err.message || ValidationMessages.OTP_SEND_FAILED);
         } finally {
             setIsLoading(false);
@@ -153,7 +163,24 @@ const LoginSetup = () => {
         );
     };
 
-    return renderStep();
+    return (
+        <>
+            {renderStep()}
+            <ConfirmModal
+                open={isSuspendedModalOpen}
+                onClose={() => setIsSuspendedModalOpen(false)}
+                onConfirm={() => setIsSuspendedModalOpen(false)}
+                type="warning"
+                title=""
+                description={
+                    'Your DateMe Account has been banned for activity that violates our Terms of Use.'
+                }
+                confirmText="Okay"
+                showCancel={false}
+                width={340}
+            />
+        </>
+    );
 };
 
 export default LoginSetup;

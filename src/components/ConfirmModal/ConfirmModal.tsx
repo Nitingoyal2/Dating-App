@@ -48,7 +48,7 @@ const ConfirmModal = ({
           {displayIcon}
         </div>
 
-        <h3 className="confirm-modal-title">{title}</h3>
+        {title && <h3 className="confirm-modal-title">{title}</h3>}
 
         {description && (
           <Text type="secondary" className="confirm-modal-description">
