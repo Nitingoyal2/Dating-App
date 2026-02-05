@@ -70,7 +70,7 @@ const StepBirthday = ({ value, onChange, onNext, onBack }: StepBirthdayProps) =>
                 }
                 cancelText="Edit"
                 confirmText="Confirm"
-                cancelVariant="secondary"
+                cancelVariant="outline"
                 confirmVariant="primary"
             />
         </AuthLayout>

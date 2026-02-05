@@ -24,7 +24,7 @@ import StepSuccess from './steps/StepSuccess';
 const ProfileSetup = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(6);
     const [userId, setUserId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [profileData, setProfileData] = useState<ProfileData>({

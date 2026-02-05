@@ -36,7 +36,7 @@ const StepLocation = ({ onAllow, onSkip, onBack }: StepLocationProps) => {
                 <PrimaryButton onClick={handleAllowLocation}>
                     Continue
                 </PrimaryButton>
-                <PrimaryButton variant="text" onClick={onSkip}>
+                <PrimaryButton variant="outline" onClick={onSkip}>
                     Not Now
                 </PrimaryButton>
             </Space>
