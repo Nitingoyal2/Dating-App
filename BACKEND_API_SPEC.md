@@ -1,13 +1,186 @@
-# Backend API Specification - Profile Setup Flow
+# Backend API Specification - Prosto Dating App
 
 > **Project**: Prosto Dating App  
-> **Module**: Multi-Step Profile Registration  
-> **Version**: 3.0.0  
+> **Version**: 3.2.0  
 > **Date**: February 2026
 
 ---
 
 ## 📋 Overview
+
+The Prosto Dating App backend provides the following API modules:
+
+1. **Login API** - OTP-based authentication (phone/email)
+2. **Registration API** - Multi-step profile creation
+3. **Profile API** - Profile updates and photo management
+
+---
+
+## 🔐 Authentication (Login with OTP)
+
+The app uses **OTP-based authentication** for login. Users can login via phone or email.
+
+### Login Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              LOGIN FLOW                                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Step 1:  POST   /api/login           → { country_code, phone } or { email }
+                                     ← { message, otp_sent, expires_in }
+
+Step 2:  POST   /api/login/verify-otp → { country_code, phone, otp } or { email, otp }
+                                     ← { user, access_token }
+
+Resend:  POST   /api/login/resend-otp → { country_code, phone } or { email }
+                                     ← { message, otp_sent, expires_in }
+```
+
+---
+
+### Step 1: Send OTP (Login)
+
+**Endpoint**: `POST /api/login`
+
+**Purpose**: Send OTP to user's phone or email
+
+**Request (Phone)**:
+```json
+{
+    "country_code": "+1",
+    "phone": "3316238413"
+}
+```
+
+**Request (Email)**:
+```json
+{
+    "email": "user@example.com"
+}
+```
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "message": "OTP sent successfully",
+        "otp_sent": true,
+        "expires_in": 60
+    }
+}
+```
+
+**Errors**:
+```json
+// 404 - User not found
+{
+    "success": false,
+    "error": {
+        "code": "USER_NOT_FOUND",
+        "message": "No account found with this phone/email"
+    }
+}
+```
+
+---
+
+### Step 2: Verify OTP
+
+**Endpoint**: `POST /api/login/verify-otp`
+
+**Purpose**: Verify OTP and get authentication token
+
+**Request (Phone)**:
+```json
+{
+    "country_code": "+1",
+    "phone": "3316238413",
+    "otp": "1234"
+}
+```
+
+**Request (Email)**:
+```json
+{
+    "email": "user@example.com",
+    "otp": "1234"
+}
+```
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "user": {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "email": "user@example.com",
+            "phone": "+13316238413",
+            "first_name": "John"
+        },
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+}
+```
+
+**Errors**:
+```json
+// 400 - Invalid OTP
+{
+    "success": false,
+    "error": {
+        "code": "INVALID_OTP",
+        "message": "Invalid OTP"
+    }
+}
+
+// 400 - OTP Expired
+{
+    "success": false,
+    "error": {
+        "code": "OTP_EXPIRED",
+        "message": "OTP has expired. Please request a new one."
+    }
+}
+```
+
+---
+
+### Resend OTP
+
+**Endpoint**: `POST /api/login/resend-otp`
+
+**Purpose**: Resend OTP to user's phone or email
+
+**Request**: Same as Login (Step 1)
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "message": "OTP sent successfully",
+        "otp_sent": true,
+        "expires_in": 60
+    }
+}
+```
+
+---
+
+### Login API Summary
+
+| Step | Method | Endpoint | Request Body |
+|------|--------|----------|--------------|
+| 1 | POST | `/api/login` | `{ country_code, phone }` or `{ email }` |
+| 2 | POST | `/api/login/verify-otp` | `{ country_code, phone, otp }` or `{ email, otp }` |
+| Resend | POST | `/api/login/resend-otp` | `{ country_code, phone }` or `{ email }` |
+
+---
+
+## 📝 Registration (Profile Setup)
 
 The frontend implements a **9-step profile creation flow**. The backend provides:
 
@@ -15,17 +188,15 @@ The frontend implements a **9-step profile creation flow**. The backend provides
 2. **Profile PATCH API** - Update profile fields step by step
 3. **Complete API** - Finalize profile and activate account
 
----
-
-## 🔄 API Flow
+### Registration Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              API FLOW                                        │
+│                           REGISTRATION FLOW                                  │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 Step 1:  POST   /api/draft              → { email }
-                                         ← { user_id }
+                                        ← { user_id }
          
 Step 2:  PATCH  /api/profile/{user_id}  → { first_name: "John" }
 
@@ -43,12 +214,12 @@ Step 7:  POST   /api/profile/{user_id}/photos  → multipart/form-data (photo up
 Step 8:  PATCH  /api/profile/{user_id}  → { rules_accepted: true }
 
 Step 9:  POST   /api/profile/{user_id}/complete  → Finalize & activate account
-                                                  ← { user, access_token, refresh_token }
+                                                 ← { user, tokens }
 ```
 
 ---
 
-## 📊 Visual Flow
+### Visual Flow
 
 ```
 ┌──────────────┐     ┌─────────────────────────────────────┐     ┌──────────────┐
@@ -66,8 +237,6 @@ Step 9:  POST   /api/profile/{user_id}/complete  → Finalize & activate account
 ```
 
 ---
-
-## 📡 API Endpoints
 
 ### Step 1: Create Draft (Email)
 
@@ -399,6 +568,16 @@ order: 0  (optional)
 
 ## 📋 API Summary
 
+### Login APIs
+
+| Step | Method | Endpoint | Request Body |
+|------|--------|----------|--------------|
+| 1 | POST | `/api/login` | `{ country_code, phone }` or `{ email }` |
+| 2 | POST | `/api/login/verify-otp` | `{ country_code, phone, otp }` or `{ email, otp }` |
+| Resend | POST | `/api/login/resend-otp` | `{ country_code, phone }` or `{ email }` |
+
+### Registration APIs
+
 | Step | Method | Endpoint | Request Body |
 |------|--------|----------|--------------|
 | 1 | POST | `/api/draft` | `{ email }` |
@@ -412,7 +591,47 @@ order: 0  (optional)
 | 8 | PATCH | `/api/profile/{user_id}` | `{ rules_accepted }` |
 | 9 | POST | `/api/profile/{user_id}/complete` | `{ password, confirm_password }` |
 
-**Total: 5 unique endpoints**
+### Token Refresh
+
+**Endpoint**: `POST /api/auth/token/refresh`
+
+**Headers**:
+```
+Authorization: Bearer {refresh_token}
+```
+
+**Response**:
+```json
+{
+    "success": true,
+    "data": {
+        "access_token": "eyJ...",
+        "token_type": "Bearer",
+        "expires_in": 3600
+    }
+}
+```
+
+**Total: 8 unique endpoints**
+
+---
+
+## 🔒 Validation Rules
+
+| Field | Rules |
+|-------|-------|
+| `email` | Valid email format, unique |
+| `first_name` | 2-100 chars, letters/spaces/hyphens |
+| `gender` | `"man"` or `"woman"` |
+| `seeking` | `"man"` or `"woman"` |
+| `date_of_birth` | `YYYY-MM-DD`, age ≥ 18 |
+| `latitude` | -90 to 90 |
+| `longitude` | -180 to 180 |
+| `photos` | Min 2, Max 6, JPEG/PNG/WebP, Max 5MB each |
+| `password` | Min 8 chars, 1 uppercase, 1 lowercase, 1 number |
+| `phone` | Valid phone number format |
+| `country_code` | Valid country code (e.g., `+1`, `+44`) |
+| `otp` | 4-6 digit code |
 
 ---
 
@@ -457,6 +676,8 @@ CREATE TABLE draft_photos (
 CREATE TABLE users (
     id UUID PRIMARY KEY,  -- Same ID from draft
     email VARCHAR(255) UNIQUE NOT NULL,
+    phone VARCHAR(20) UNIQUE,
+    country_code VARCHAR(5),
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     date_of_birth DATE NOT NULL,
@@ -473,6 +694,19 @@ CREATE TABLE users (
 );
 ```
 
+### `otp_codes` Table
+
+```sql
+CREATE TABLE otp_codes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    otp_code VARCHAR(6) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    is_used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 ---
 
 ## 📱 Frontend Integration
@@ -484,8 +718,66 @@ All interfaces are centralized in `src/interfaces/api.interface.ts`:
 ```typescript
 // interfaces/api.interface.ts
 
-// Request Types
+// ============================================
+// Login API Types
+// ============================================
+export interface LoginPhoneRequest {
+    country_code: string;
+    phone: string;
+}
+
+export interface LoginEmailRequest {
+    email: string;
+}
+
+export type LoginRequest = LoginPhoneRequest | LoginEmailRequest;
+
+export interface LoginResponse {
+    message: string;
+    otp_sent: boolean;
+    expires_in: number;
+}
+
+export interface OtpVerifyPhoneRequest {
+    country_code: string;
+    phone: string;
+    otp: string;
+}
+
+export interface OtpVerifyEmailRequest {
+    email: string;
+    otp: string;
+}
+
+export type OtpVerifyRequest = OtpVerifyPhoneRequest | OtpVerifyEmailRequest;
+
+export interface OtpVerifyResponse {
+    user: {
+        id: string;
+        email?: string;
+        phone?: string;
+        first_name: string;
+    };
+    access_token: string;
+}
+
+export type ResendOtpRequest = LoginRequest;
+
+export interface ResendOtpResponse {
+    message: string;
+    otp_sent: boolean;
+    expires_in: number;
+}
+
+// ============================================
+// Registration API Types
+// ============================================
 export interface DraftRequest {
+    email: string;
+}
+
+export interface DraftResponse {
+    user_id: string;
     email: string;
 }
 
@@ -500,35 +792,32 @@ export interface ProfileUpdateRequest {
     rules_accepted?: boolean;
 }
 
-export interface CompleteRequest {
-    password: string;
-    confirm_password: string;
-}
-
-// Response Types
-export interface DraftResponse {
-    user_id: string;
-    email: string;
-}
-
 export interface ProfileUpdateResponse {
     user_id: string;
     [key: string]: unknown;
 }
 
+export interface Photo {
+    id: string;
+    url: string;
+    order: number;
+    is_primary?: boolean;
+}
+
 export interface PhotoUploadResponse {
-    photo: {
-        id: string;
-        url: string;
-        order: number;
-    };
-    photos: Array<{ id: string; url: string; order: number }>;
+    photo: Photo;
+    photos: Photo[];
     photo_count: number;
 }
 
 export interface PhotoDeleteResponse {
     deleted_photo_id: string;
     photo_count: number;
+}
+
+export interface CompleteRequest {
+    password: string;
+    confirm_password: string;
 }
 
 export interface CompleteUser {
@@ -538,18 +827,20 @@ export interface CompleteUser {
     age: number;
     gender: 'man' | 'woman';
     seeking: 'man' | 'woman';
-    photos: Array<{ id: string; url: string; is_primary: boolean }>;
+    photos: Photo[];
     created_at: string;
+}
+
+export interface CompleteTokens {
+    access_token: string;
+    refresh_token: string;
+    token_type: string;
+    expires_in: number;
 }
 
 export interface CompleteResponse {
     user: CompleteUser;
-    tokens: {
-        access_token: string;
-        refresh_token: string;
-        token_type: string;
-        expires_in: number;
-    };
+    tokens: CompleteTokens;
 }
 ```
 
@@ -560,8 +851,25 @@ APIs are organized by HTTP method in `src/services/api/`:
 ```typescript
 // services/api/post_apis.ts
 import { postApi, postFormDataApi } from '../api_methods';
-import type { DraftRequest, DraftResponse, CompleteRequest, CompleteResponse, PhotoUploadResponse } from '@interfaces';
+import type { 
+    LoginRequest, LoginResponse, OtpVerifyRequest, OtpVerifyResponse,
+    DraftRequest, DraftResponse, CompleteRequest, CompleteResponse 
+} from '@interfaces';
 
+// Login APIs
+export const loginApi = async (data: LoginRequest): Promise<LoginResponse> => {
+    return await postApi<LoginResponse>('/api/login', data);
+};
+
+export const otpVerifyApi = async (data: OtpVerifyRequest): Promise<OtpVerifyResponse> => {
+    return await postApi<OtpVerifyResponse>('/api/login/verify-otp', data);
+};
+
+export const resendOtpApi = async (data: ResendOtpRequest): Promise<ResendOtpResponse> => {
+    return await postApi<ResendOtpResponse>('/api/login/resend-otp', data);
+};
+
+// Registration APIs
 export const registrationDraftApi = async (data: DraftRequest): Promise<DraftResponse> => {
     return await postApi<DraftResponse>('/api/draft', data);
 };
@@ -607,314 +915,74 @@ export const profilePhotoDeleteApi = async (
 };
 ```
 
-### Usage in ProfileSetup Component
-
-The ProfileSetup component uses a **single unified handler** for all steps:
+### Frontend Enums
 
 ```typescript
-// pages/ProfileSetup/ProfileSetup.tsx
-import { registrationDraftApi, registrationCompleteApi, profileStepPatchApi } from '@services';
-import type { ProfileData, ProfileUpdateRequest } from '@interfaces';
+// types/enums.ts
 
-const ProfileSetup = () => {
-    const [userId, setUserId] = useState<string | null>(null);
-    const [currentStep, setCurrentStep] = useState(1);
-    const [isLoading, setIsLoading] = useState(false);
-    const [profileData, setProfileData] = useState<ProfileData>({...});
+// Login type (phone or email)
+export const LoginType = {
+    PHONE: 'phone',
+    EMAIL: 'email',
+} as const;
 
-    // Object map for step payloads
-    const getStepPayload = (
-        step: number,
-        extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean }
-    ): ProfileUpdateRequest | null => {
-        const payloadMap: Record<number, () => ProfileUpdateRequest | null> = {
-            2: () => ({ first_name: profileData.firstName }),
-            3: () => {
-                if (extraData?.locationSkipped) return { location_skipped: true };
-                if (extraData?.location) return { latitude: extraData.location.lat, longitude: extraData.location.lng };
-                return null;
-            },
-            4: () => (profileData.gender ? { gender: profileData.gender } : null),
-            5: () => (profileData.seeking ? { seeking: profileData.seeking } : null),
-            6: () => ({ date_of_birth: profileData.dateOfBirth }),
-            8: () => ({ rules_accepted: true }),
-        };
-        return payloadMap[step]?.() ?? null;
-    };
-
-    // Single unified handler
-    const handleStepSubmit = async (
-        step: number,
-        extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
-    ) => {
-        if (step === 7) { setCurrentStep(8); return; } // Photos handled in component
-
-        setIsLoading(true);
-        try {
-            // Step 1: Create draft
-            if (step === 1) {
-                const response = await registrationDraftApi({ email: profileData.email });
-                setUserId(response.user_id);
-                setCurrentStep(2);
-                return;
-            }
-
-            // Step 9: Complete profile
-            if (step === 9) {
-                const response = await registrationCompleteApi(userId!, {
-                    password: extraData!.password!,
-                    confirm_password: extraData!.password!,
-                });
-                dispatch(loginSuccess({
-                    user: { id: response.user.id, name: response.user.first_name, email: response.user.email },
-                    token: response.tokens.access_token,
-                }));
-                navigate(Routes.DASHBOARD, { replace: true });
-                return;
-            }
-
-            // Steps 2-6, 8: PATCH profile
-            const payload = getStepPayload(step, extraData);
-            if (payload) await profileStepPatchApi(userId!, payload);
-            setCurrentStep(step + 1);
-        } catch (error) {
-            message.error((error as Error).message); // Backend provides error messages
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // ... render steps with isLoading prop
-};
+export type LoginType = (typeof LoginType)[keyof typeof LoginType];
 ```
 
----
+### Centralized Messages
 
-## 🔒 Validation Rules
+```typescript
+// constants/messages.ts
 
-| Field | Rules |
-|-------|-------|
-| `email` | Valid email format, unique |
-| `first_name` | 2-100 chars, letters/spaces/hyphens |
-| `gender` | `"man"` or `"woman"` |
-| `seeking` | `"man"` or `"woman"` |
-| `date_of_birth` | `YYYY-MM-DD`, age ≥ 18 |
-| `latitude` | -90 to 90 |
-| `longitude` | -180 to 180 |
-| `photos` | Min 2, Max 6, JPEG/PNG/WebP, Max 5MB each |
-| `password` | Min 8 chars, 1 uppercase, 1 lowercase, 1 number |
+export const ValidationMessages = {
+    // OTP
+    OTP_REQUIRED: 'Please enter the code',
+    OTP_RESENT: 'A new code has been sent.',
+    OTP_SEND_FAILED: 'Failed to send OTP',
+    OTP_INVALID: 'Invalid OTP',
+    OTP_RESEND_FAILED: 'Failed to resend OTP',
 
----
+    // Phone
+    PHONE_INVALID: 'Please enter a valid phone number',
 
-## 🔐 Authentication (Login with OTP)
-
-The app uses **OTP-based authentication** for login. Users can login via phone or email.
-
-### Login Flow
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              LOGIN FLOW                                      │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-Step 1:  POST   /api/login           → { country_code, phone } or { email }
-                                      ← { message, otp_sent, expires_in }
-
-Step 2:  POST   /api/login/verify-otp → { country_code, phone, otp } or { email, otp }
-                                      ← { user, access_token }
-
-Resend:  POST   /api/login/resend-otp → { country_code, phone } or { email }
-                                      ← { message, otp_sent, expires_in }
-```
-
----
-
-### Step 1: Send OTP (Login)
-
-**Endpoint**: `POST /api/login`
-
-**Purpose**: Send OTP to user's phone or email
-
-**Request (Phone)**:
-```json
-{
-    "country_code": "+1",
-    "phone": "3316238413"
-}
-```
-
-**Request (Email)**:
-```json
-{
-    "email": "user@example.com"
-}
-```
-
-**Response (200 OK)**:
-```json
-{
-    "success": true,
-    "data": {
-        "message": "OTP sent successfully",
-        "otp_sent": true,
-        "expires_in": 60
-    }
-}
-```
-
-**Errors**:
-```json
-// 404 - User not found
-{
-    "success": false,
-    "error": {
-        "code": "USER_NOT_FOUND",
-        "message": "No account found with this phone/email"
-    }
-}
-```
-
----
-
-### Step 2: Verify OTP
-
-**Endpoint**: `POST /api/login/verify-otp`
-
-**Purpose**: Verify OTP and get authentication token
-
-**Request (Phone)**:
-```json
-{
-    "country_code": "+1",
-    "phone": "3316238413",
-    "otp": "1234"
-}
-```
-
-**Request (Email)**:
-```json
-{
-    "email": "user@example.com",
-    "otp": "1234"
-}
-```
-
-**Response (200 OK)**:
-```json
-{
-    "success": true,
-    "data": {
-        "user": {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "email": "user@example.com",
-            "phone": "+13316238413",
-            "first_name": "John"
-        },
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-    }
-}
-```
-
-**Errors**:
-```json
-// 400 - Invalid OTP
-{
-    "success": false,
-    "error": {
-        "code": "INVALID_OTP",
-        "message": "Invalid OTP"
-    }
-}
-
-// 400 - OTP Expired
-{
-    "success": false,
-    "error": {
-        "code": "OTP_EXPIRED",
-        "message": "OTP has expired. Please request a new one."
-    }
-}
-```
-
----
-
-### Resend OTP
-
-**Endpoint**: `POST /api/login/resend-otp`
-
-**Purpose**: Resend OTP to user's phone or email
-
-**Request**: Same as Login (Step 1)
-
-**Response (200 OK)**:
-```json
-{
-    "success": true,
-    "data": {
-        "message": "OTP sent successfully",
-        "otp_sent": true,
-        "expires_in": 60
-    }
-}
-```
-
----
-
-### Login API Summary
-
-| Step | Method | Endpoint | Request Body |
-|------|--------|----------|--------------|
-| 1 | POST | `/api/login` | `{ country_code, phone }` or `{ email }` |
-| 2 | POST | `/api/login/verify-otp` | `{ country_code, phone, otp }` or `{ email, otp }` |
-| Resend | POST | `/api/login/resend-otp` | `{ country_code, phone }` or `{ email }` |
-
----
-
-### Token Refresh
-
-**Endpoint**: `POST /api/auth/token/refresh`
-
-**Headers**:
-```
-Authorization: Bearer {refresh_token}
-```
-
-**Response**:
-```json
-{
-    "success": true,
-    "data": {
-        "access_token": "eyJ...",
-        "token_type": "Bearer",
-        "expires_in": 3600
-    }
-}
+    // Login
+    LOGIN_SUCCESS: 'Login successful!',
+    LOGIN_FAILED: 'Login failed',
+    
+    // Account
+    ACCOUNT_CREATED: 'Account created successfully!',
+} as const;
 ```
 
 ---
 
 ## 🧪 Testing Checklist
 
-### Registration API Tests
-
-- [ ] POST /draft - Create with valid email
-- [ ] POST /draft - Reject duplicate email
-- [ ] PATCH /profile/{id} - Update each field
-- [ ] PATCH /profile/{id} - Validate age ≥ 18
-- [ ] POST /profile/{id}/photos - Upload photo
-- [ ] DELETE /profile/{id}/photos/{id} - Delete photo
-- [ ] POST /profile/{id}/complete - Complete profile
-- [ ] POST /profile/{id}/complete - Reject incomplete profile
-
 ### Login API Tests
 
 - [ ] POST /login - Send OTP via phone
 - [ ] POST /login - Send OTP via email
 - [ ] POST /login - Reject non-existent user
-- [ ] POST /login/verify-otp - Verify valid OTP
+- [ ] POST /login/verify-otp - Verify valid OTP (phone)
+- [ ] POST /login/verify-otp - Verify valid OTP (email)
 - [ ] POST /login/verify-otp - Reject invalid OTP
 - [ ] POST /login/verify-otp - Reject expired OTP
 - [ ] POST /login/resend-otp - Resend OTP successfully
+
+### Registration API Tests
+
+- [ ] POST /draft - Create with valid email
+- [ ] POST /draft - Reject duplicate email
+- [ ] PATCH /profile/{id} - Update first_name
+- [ ] PATCH /profile/{id} - Update location
+- [ ] PATCH /profile/{id} - Update gender
+- [ ] PATCH /profile/{id} - Update seeking
+- [ ] PATCH /profile/{id} - Update date_of_birth
+- [ ] PATCH /profile/{id} - Validate age ≥ 18
+- [ ] POST /profile/{id}/photos - Upload photo
+- [ ] DELETE /profile/{id}/photos/{id} - Delete photo
+- [ ] POST /profile/{id}/complete - Complete profile
+- [ ] POST /profile/{id}/complete - Reject incomplete profile
 
 ---
 
@@ -927,6 +995,7 @@ Authorization: Bearer {refresh_token}
 - **Added**: `LoginType` enum for phone/email keys
 - **Added**: Centralized OTP messages in ValidationMessages
 - **Frontend**: LoginSetup with 2-step flow (credentials → OTP)
+- **Frontend**: Phone input with country code support
 
 ### v3.1.0 (February 2026)
 - **Frontend**: Updated to unified `handleStepSubmit` function
@@ -940,7 +1009,7 @@ Authorization: Bearer {refresh_token}
 - **Changed**: Step 1 uses `POST /draft` instead of `/register/start`
 - **Changed**: All profile updates use `PATCH /profile/{user_id}`
 - **Changed**: Complete uses `POST /profile/{user_id}/complete`
-- **Simplified**: 5 unique endpoints total
+- **Simplified**: 5 unique endpoints total for registration
 
 ### v2.0.0 (February 2026)
 - Single PATCH endpoint with JWT registration_token
