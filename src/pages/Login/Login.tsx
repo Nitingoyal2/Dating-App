@@ -106,8 +106,9 @@ const Login = () => {
                                 dropdownClass="phone-input-dropdown"
                                 searchClass="phone-input-search"
                                 enableSearch
+                                countryCodeEditable={false}
                                 searchPlaceholder="Search country..."
-                                preferredCountries={['us', 'in', 'gb', 'au', 'ca']}
+                                // preferredCountries={['us', 'in', 'gb', 'au', 'ca']}
                                 placeholder="331-623-8413"
                             />
                         </Form.Item>
@@ -140,6 +141,16 @@ const Login = () => {
                             Continue
                         </PrimaryButton>
                     </Form.Item>
+
+                    <div className="login-signup">
+                        <span className="login-signup-text">Don&apos;t have an account?</span>{' '}
+                        <span
+                            className="login-signup-link"
+                            onClick={() => navigate(Routes.PROFILE_SETUP)}
+                        >
+                            Sign up
+                        </span>
+                    </div>
                 </Form>
 
                 {/* Terms */}

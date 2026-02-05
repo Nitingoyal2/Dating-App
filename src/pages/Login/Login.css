@@ -175,7 +175,8 @@
   height: 52px !important;
   border-radius: 12px !important;
   border: 1px solid var(--color-border-light) !important;
-  padding-left: 60px !important;
+  /* Prevent number overlap with the flag button */
+  padding-left: 76px !important;
   font-family: 'Poppins', sans-serif !important;
   font-size: 1rem !important;
   background: var(--color-bg-primary) !important;
@@ -199,6 +200,7 @@
   border-radius: 12px 0 0 12px !important;
   background: var(--color-bg-tertiary) !important;
   padding: 0 8px !important;
+  width: 64px !important;
   transition: background 0.3s ease !important;
 }
 
@@ -208,8 +210,9 @@
 
 .phone-input-container .phone-input-button .selected-flag {
   padding: 0 8px !important;
-  width: 52px !important;
+  width: 64px !important;
   border-radius: 12px 0 0 12px !important;
+  background: transparent !important;
 }
 
 .phone-input-container .phone-input-button .selected-flag:hover,
@@ -227,7 +230,7 @@
   border-radius: 12px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
   margin-top: 4px !important;
-  max-height: 250px !important;
+  max-height: 190px !important;
   z-index: 99999 !important;
   position: fixed !important;
   left: 24px !important;
@@ -236,8 +239,11 @@
   top: auto !important;
 }
 
+.react-tel-input .flag-dropdown.open .selected-flag
+
 .phone-input-container .phone-input-dropdown .country-list {
-  max-height: 200px !important;
+  /* Show ~2 countries and make the rest scrollable */
+  max-height: 96px !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
 }
@@ -266,15 +272,26 @@
   padding: 10px 12px !important;
   background: var(--color-bg-primary) !important;
   border-bottom: 1px solid var(--color-border-light) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.phone-input-container .phone-input-search .search-emoji {
+  /* Remove magnifier icon from dropdown search */
+  display: none !important;
 }
 
 .phone-input-container .phone-input-search .search-box {
   width: 100% !important;
-  padding: 8px 12px !important;
+  flex: 1 1 auto !important;
+  height: 36px !important;
+  padding: 0 12px !important;
   border: 1px solid var(--color-border-light) !important;
   border-radius: 8px !important;
   font-family: 'Poppins', sans-serif !important;
   font-size: 0.875rem !important;
+  line-height: 36px !important;
   background: var(--color-bg-tertiary) !important;
   color: var(--color-text-primary) !important;
 }
@@ -305,6 +322,32 @@
 
 .login-trouble span:hover {
   color: var(--color-accent-secondary);
+}
+
+/* Sign up link */
+.login-signup {
+  text-align: center;
+  margin-top: 14px;
+}
+
+.login-signup-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+}
+
+.login-signup-link {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.login-signup-link:hover {
+  color: var(--color-accent-secondary);
+  text-decoration: underline;
 }
 
 /* Divider */

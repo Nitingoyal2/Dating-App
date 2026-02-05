@@ -16,7 +16,6 @@ const StepEmail = ({ value, onChange, onNext, onBack }: StepEmailProps) => {
         <AuthLayout
             title="What's your email?"
             description="Don't lose access to your account, verify your email."
-            descriptionColor="accent"
             onBackClick={onBack}
         >
             <Form

@@ -66,7 +66,7 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
                                     handleRemovePhoto(i);
                                 }}
                             >
-                                <CloseOutlined style={{ fontSize: 12 }} />
+                                <CloseOutlined style={{ fontSize:8 }} />
                             </button>
                         </>
                     ) : (

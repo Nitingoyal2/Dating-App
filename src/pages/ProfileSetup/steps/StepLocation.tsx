@@ -3,6 +3,7 @@ import { EnvironmentOutlined } from '@ant-design/icons';
 import type { StepLocationProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
+import { LocationIcon } from '@/utils/svg';
 
 const StepLocation = ({ onAllow, onSkip, onBack }: StepLocationProps) => {
     const handleAllowLocation = () => {
@@ -29,7 +30,7 @@ const StepLocation = ({ onAllow, onSkip, onBack }: StepLocationProps) => {
             centered
         >
             <div className="auth-location-icon">
-                <EnvironmentOutlined />
+                <LocationIcon />
             </div>
 
             <Space direction="vertical" size="middle" style={{ width: '100%', marginTop: 'auto' }}>

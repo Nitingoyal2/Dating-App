@@ -16,7 +16,6 @@ const StepName = ({ value, onChange, onNext, onBack }: StepNameProps) => {
         <AuthLayout
             title="Enter your First Name"
             description="This is how your name will appear in Prosto."
-            descriptionColor="accent"
             onBackClick={onBack}
         >
             <Form

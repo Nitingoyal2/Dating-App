@@ -1,4 +1,5 @@
-import { Space, Typography } from 'antd';
+import { useState } from 'react';
+import { Checkbox, Typography } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import type { StepProps, WelcomeRule } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
@@ -33,29 +34,67 @@ const rules: WelcomeRule[] = [
 ];
 
 const StepWelcome = ({ onNext, onBack }: StepProps) => {
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+
     return (
         <AuthLayout
             title="Welcome to Prosto"
             description="Please follow these House Rules."
             onBackClick={onBack}
         >
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                {rules.map((rule, index) => (
-                    <div key={index} className="auth-rule">
-                        <div className="auth-rule-icon">
-                            <CheckOutlined style={{ fontSize: 20 }} />
+            <div className="auth-welcome-content">
+                <div className="auth-rules">
+                    {rules.map((rule, index) => (
+                        <div key={index} className="auth-rule">
+                            <div className="auth-rule-icon">
+                                <CheckOutlined style={{ fontSize: 20 }} />
+                            </div>
+                            <div className="auth-rule-content">
+                                <h3 className="auth-rule-title">{rule.title}</h3>
+                                <p className="auth-rule-description">{rule.description}</p>
+                            </div>
                         </div>
-                        <div className="auth-rule-content">
-                            <h3 className="auth-rule-title">{rule.title}</h3>
-                            <p className="auth-rule-description">{rule.description}</p>
-                        </div>
-                    </div>
-                ))}
-            </Space>
+                    ))}
+                </div>
 
-            <PrimaryButton onClick={onNext} style={{ marginTop: 'auto' }}>
-                Continue
-            </PrimaryButton>
+                <div className="auth-welcome-actions">
+                    <Checkbox
+                        checked={acceptedTerms}
+                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                        className="auth-terms"
+                    >
+                        <span className="auth-terms-text">
+                            I agree to the{' '}
+                            <span
+                                className="auth-terms-link"
+                                onClick={(e) => e.stopPropagation()}
+                                role="button"
+                                tabIndex={0}
+                            >
+                                Terms &amp; Conditions
+                            </span>{' '}
+                            and{' '}
+                            <span
+                                className="auth-terms-link"
+                                onClick={(e) => e.stopPropagation()}
+                                role="button"
+                                tabIndex={0}
+                            >
+                                Privacy Policy
+                            </span>
+                            .
+                        </span>
+                    </Checkbox>
+
+                    <PrimaryButton
+                        onClick={onNext}
+                        disabled={!acceptedTerms}
+                        className="auth-continue-btn"
+                    >
+                        Continue
+                    </PrimaryButton>
+                </div>
+            </div>
         </AuthLayout>
     );
 };
