@@ -30,7 +30,7 @@ const StepGender = ({ value, onChange, onNext, onBack }: StepGenderProps) => {
             <PrimaryButton
                 disabled={!value}
                 onClick={onNext}
-                style={{ marginTop: 'auto' }}
+                style={{ marginTop: '24px' }}
             >
                 Continue
             </PrimaryButton>

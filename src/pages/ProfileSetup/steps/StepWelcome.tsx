@@ -1,37 +1,10 @@
 import { useState } from 'react';
-import { Checkbox, Typography } from 'antd';
+import { Checkbox } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
-import type { StepProps, WelcomeRule } from '@interfaces';
+import type { StepProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
-
-const { Text } = Typography;
-
-const rules: WelcomeRule[] = [
-    {
-        title: 'Be yourself',
-        description: 'Make sure your photos, age, and bio are true to who you are.',
-    },
-    {
-        title: 'Stay safe',
-        description: (
-            <>
-                Don't be too quick to give out personal information.{' '}
-                <Text type="danger" underline style={{ cursor: 'pointer' }}>
-                    Date Safely
-                </Text>
-            </>
-        ),
-    },
-    {
-        title: 'Play it cool',
-        description: 'Respect others and treat them as you would like to be treated.',
-    },
-    {
-        title: 'Be Proactive',
-        description: 'Always report bad behavior.',
-    },
-];
+import { welcomeRules } from '@/data';
 
 const StepWelcome = ({ onNext, onBack }: StepProps) => {
     const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -44,15 +17,13 @@ const StepWelcome = ({ onNext, onBack }: StepProps) => {
         >
             <div className="auth-welcome-content">
                 <div className="auth-rules">
-                    {rules.map((rule, index) => (
+                    {welcomeRules?.map((rule, index) => (
                         <div key={index} className="auth-rule">
-                            <div className="auth-rule-icon">
-                                <CheckOutlined style={{ fontSize: 20 }} />
-                            </div>
-                            <div className="auth-rule-content">
+                            <div className="auth-rule-header">
+                                <CheckOutlined className="auth-rule-icon" />
                                 <h3 className="auth-rule-title">{rule.title}</h3>
-                                <p className="auth-rule-description">{rule.description}</p>
                             </div>
+                            <p className="auth-rule-description">{rule.description}</p>
                         </div>
                     ))}
                 </div>

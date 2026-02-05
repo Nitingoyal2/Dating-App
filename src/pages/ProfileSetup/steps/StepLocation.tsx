@@ -33,7 +33,7 @@ const StepLocation = ({ onAllow, onSkip, onBack }: StepLocationProps) => {
                 <LocationIcon />
             </div>
 
-            <Space direction="vertical" size="middle" style={{ width: '100%', marginTop: 'auto' }}>
+            <Space direction="vertical" size="middle" style={{ width: '100%', marginTop: '24px' }}>
                 <PrimaryButton onClick={handleAllowLocation}>
                     Continue
                 </PrimaryButton>

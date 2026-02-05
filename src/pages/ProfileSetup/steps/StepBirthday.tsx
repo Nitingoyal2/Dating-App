@@ -51,7 +51,7 @@ const StepBirthday = ({ value, onChange, onNext, onBack }: StepBirthdayProps) =>
             <PrimaryButton
                 disabled={!isValid}
                 onClick={() => setShowConfirm(true)}
-                style={{ marginTop: 'auto' }}
+                style={{ marginTop: '24px' }}
             >
                 Continue
             </PrimaryButton>

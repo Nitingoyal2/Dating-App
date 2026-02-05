@@ -98,7 +98,7 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
             <PrimaryButton
                 disabled={!isValid}
                 onClick={onNext}
-                style={{ marginTop: 'auto' }}
+                style={{ marginTop: '24px' }}
             >
                 Continue
             </PrimaryButton>

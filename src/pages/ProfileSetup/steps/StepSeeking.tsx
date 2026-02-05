@@ -30,7 +30,7 @@ const StepSeeking = ({ value, onChange, onNext, onBack }: StepSeekingProps) => {
             <PrimaryButton
                 disabled={!value}
                 onClick={onNext}
-                style={{ marginTop: 'auto' }}
+                style={{ marginTop: '24px' }}
             >
                 Continue
             </PrimaryButton>

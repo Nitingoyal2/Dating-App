@@ -24,8 +24,8 @@ import StepSuccess from './steps/StepSuccess';
 const ProfileSetup = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [currentStep, setCurrentStep] = useState(8);
-    const [userId, setUserId] = useState<string | null>("12333");
+    const [currentStep, setCurrentStep] = useState(1);
+    const [userId, setUserId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [profileData, setProfileData] = useState<ProfileData>({
         email: '',
@@ -79,7 +79,7 @@ const ProfileSetup = () => {
             if (step === 1) {
                 if (!profileData.email) return;
                 const response = await registrationDraftApi({ email: profileData.email });
-                setUserId(response.user_id ?? "123");
+                setUserId(response.user_id);
                 setCurrentStep(2);
                 return;
             }

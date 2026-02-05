@@ -3,7 +3,7 @@ import { Form, Input, Typography, Space } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import type { StepSuccessProps, PasswordFormData } from '@interfaces';
 import { PrimaryButton } from '@components/Button';
-import { ProstoLogo } from '@svg';
+import { ProstoLogo, HeartFilledIcon, TwoHeartsIcon } from '@svg';
 import { ValidationMessages } from '@constants';
 import './StepSuccess.css';
 
@@ -29,10 +29,10 @@ const StepSuccess = ({ onComplete, isLoading }: StepSuccessProps) => {
     return (
         <div className="step-success">
             <div className="success-hearts-bg">
-                <div className="heart heart-1">💗</div>
-                <div className="heart heart-2">💕</div>
-                <div className="heart heart-3">💗</div>
-                <div className="heart heart-4">💕</div>
+                <div className="heart heart-1"><HeartFilledIcon size={24} /></div>
+                <div className="heart heart-2"><TwoHeartsIcon size={20} /></div>
+                <div className="heart heart-3"><HeartFilledIcon size={28} /></div>
+                <div className="heart heart-4"><TwoHeartsIcon size={22} /></div>
             </div>
 
             <div className="step-success-content">
@@ -69,6 +69,7 @@ const StepSuccess = ({ onComplete, isLoading }: StepSuccessProps) => {
                             prefix={<LockOutlined />}
                             placeholder="Create password"
                             size="large"
+                            style={{ borderRadius: 12, height: 52 }}
                         />
                     </Form.Item>
 
@@ -91,6 +92,7 @@ const StepSuccess = ({ onComplete, isLoading }: StepSuccessProps) => {
                             prefix={<LockOutlined />}
                             placeholder="Confirm password"
                             size="large"
+                            style={{ borderRadius: 12, height: 52 }}
                         />
                     </Form.Item>
                 </Form>
