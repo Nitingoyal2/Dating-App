@@ -472,6 +472,39 @@
   text-decoration: underline;
 }
 
+/* OTP resend link */
+.auth-resend {
+  text-align: center;
+  margin-top: -6px;
+  margin-bottom: 12px;
+}
+
+.auth-resend-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+}
+
+.auth-resend-link {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.auth-resend-link:hover {
+  color: var(--color-accent-secondary);
+  text-decoration: underline;
+}
+
+.auth-resend-disabled {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
 .auth-rule {
   display: flex;
   flex-direction: column;
