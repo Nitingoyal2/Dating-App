@@ -1,15 +1,16 @@
 import type { ReactNode } from 'react';
 import { Modal, Space, Typography } from 'antd';
-import { CheckCircleFilled, ExclamationCircleFilled, InfoCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import { InfoCircleFilled, CloseCircleFilled } from '@ant-design/icons';
 import { PrimaryButton } from '@components/Button';
 import type { ConfirmModalProps, ModalType } from '@interfaces';
 import './ConfirmModal.css';
+import { SuccessIcon, WarningIcon } from '@/utils/svg';
 
 const { Text } = Typography;
 
 const iconMap: Record<ModalType, { icon: ReactNode; color: string }> = {
-  success: { icon: <CheckCircleFilled />, color: '#22c55e' },
-  warning: { icon: <ExclamationCircleFilled />, color: '#f59e0b' },
+  success: { icon: <SuccessIcon />, color: '#22c55e' },
+  warning: { icon: <WarningIcon />, color: '#f59e0b' },
   info: { icon: <InfoCircleFilled />, color: '#3b82f6' },
   error: { icon: <CloseCircleFilled />, color: '#ef4444' },
 };
@@ -46,9 +47,9 @@ const ConfirmModal = ({
         <div className="confirm-modal-icon" style={{ color }}>
           {displayIcon}
         </div>
-        
+
         <h3 className="confirm-modal-title">{title}</h3>
-        
+
         {description && (
           <Text type="secondary" className="confirm-modal-description">
             {description}

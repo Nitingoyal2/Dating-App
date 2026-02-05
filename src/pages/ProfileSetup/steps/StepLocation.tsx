@@ -1,5 +1,4 @@
 import { Space } from 'antd';
-import { EnvironmentOutlined } from '@ant-design/icons';
 import type { StepLocationProps } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
