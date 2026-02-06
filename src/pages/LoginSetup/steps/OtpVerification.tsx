@@ -5,7 +5,7 @@ import type { OtpVerificationProps } from '@/interfaces';
 import { ValidationMessages } from '@constants';
 import { Form, Input, message } from 'antd';
 
-const RESEND_COOLDOWN_SECONDS = 30;
+const RESEND_COOLDOWN_SECONDS = 60;
 
 const OtpVerification = ({ value, onChange, identifier, onResend, onNext, onBack }: OtpVerificationProps) => {
   const [form] = Form.useForm();
