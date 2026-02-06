@@ -39,6 +39,7 @@ export type {
 // Page interfaces
 export type {
   GenderType,
+  PhotoItem,
   ProfileData,
   StepProps,
   StepEmailProps,
@@ -65,6 +66,7 @@ export type {
   ProfileUpdateResponse,
   Photo,
   PhotoUploadResponse,
+  PhotoBatchUploadResponse,
   PhotoDeleteResponse,
   CompleteRequest,
   CompleteUser,

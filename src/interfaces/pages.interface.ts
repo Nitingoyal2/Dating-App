@@ -7,6 +7,14 @@ import type { LoginType } from '@/types';
 export type GenderType = 'man' | 'woman';
 
 // ============================================
+// Photo Types
+// ============================================
+export interface PhotoItem {
+  file: File;
+  preview: string;
+}
+
+// ============================================
 // Profile Setup interfaces
 // ============================================
 export interface ProfileData {
@@ -16,7 +24,7 @@ export interface ProfileData {
   gender: GenderType | null;
   seeking: GenderType | null;
   dateOfBirth: string;
-  photos: string[];
+  photos: PhotoItem[];
 }
 
 export interface StepProps {
@@ -75,9 +83,8 @@ export interface StepBirthdayProps extends StepProps {
 }
 
 export interface StepPhotosProps extends StepProps {
-  value: string[];
-  onChange: (value: string[]) => void;
-  userId: string | null;
+  value: PhotoItem[];
+  onChange: (value: PhotoItem[]) => void;
 }
 
 export interface StepSuccessProps {

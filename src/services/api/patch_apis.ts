@@ -1,10 +1,10 @@
 import { patchApi } from "../api_methods";
-import type { ProfileUpdateRequest, ProfileUpdateResponse } from "@interfaces";
+import type { ApiResponse, ProfileUpdateRequest, ProfileUpdateResponse } from "@interfaces";
 
 // ============================================
 // API ENDPOINTS
 // ============================================
-const PROFILE_STEP_API = '/api/profile/{user_id}';
+const PROFILE_STEP_API = '/profile/{user_id}';
 
 // ============================================
 // PATCH APIs
@@ -15,10 +15,10 @@ export const profileStepPatchApi = async (
     userId: string,
     data: ProfileUpdateRequest
 ): Promise<ProfileUpdateResponse> => {
-    const response = await patchApi<ProfileUpdateResponse>(
+    const response = await patchApi<ApiResponse<ProfileUpdateResponse>>(
         PROFILE_STEP_API.replace('{user_id}', userId),
         data
     );
-    return response;
+    return response.data;
 };
 

@@ -1,5 +1,4 @@
-import login1 from '@assets/images/login1.jpg';
-import login2 from '@assets/images/login2.jpg';
+import { login1, login2 } from '@assets';
 
 export const loginBackgroundImages: string[] = [
   login1,

@@ -1,15 +1,23 @@
 // ============================================
 // API Response Wrapper
 // ============================================
+export interface ApiMeta {
+    timestamp: string;
+    path: string;
+    version: string;
+    requestId: string;
+}
+
 export interface ApiResponse<T> {
     success: boolean;
-    data?: T;
+    data: T;
+    message?: string;
+    meta?: ApiMeta;
     error?: {
         code: string;
         message: string;
         details?: Record<string, unknown>;
     };
-    message?: string;
 }
 
 // ============================================
@@ -120,6 +128,11 @@ export interface Photo {
 
 export interface PhotoUploadResponse {
     photo: Photo;
+    photos: Photo[];
+    photo_count: number;
+}
+
+export interface PhotoBatchUploadResponse {
     photos: Photo[];
     photo_count: number;
 }

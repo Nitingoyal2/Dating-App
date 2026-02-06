@@ -34,6 +34,7 @@
       "@types": ["src/types"],
       "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
+      "@assets": ["src/assets"],
       "@assets/*": ["src/assets/*"],
       "@svg": ["src/utils/svg"],
       "@store": ["src/store"],

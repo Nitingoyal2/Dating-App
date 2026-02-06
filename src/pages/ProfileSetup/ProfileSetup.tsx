@@ -9,6 +9,7 @@ import {
     registrationDraftApi,
     registrationCompleteApi,
     profileStepPatchApi,
+    uploadPhotosApi,
 } from '@services';
 import { ValidationMessages } from '@constants';
 import StepEmail from './steps/StepEmail';
@@ -24,7 +25,7 @@ import StepSuccess from './steps/StepSuccess';
 const ProfileSetup = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [currentStep, setCurrentStep] = useState(6);
+    const [currentStep, setCurrentStep] = useState(1);
     const [userId, setUserId] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [profileData, setProfileData] = useState<ProfileData>({
@@ -67,12 +68,6 @@ const ProfileSetup = () => {
         step: number,
         extraData?: { location?: { lat: number; lng: number }; locationSkipped?: boolean; password?: string }
     ) => {
-        // Step 7 (Photos): Just move to next step, photos are handled in component
-        if (step === 7) {
-            setCurrentStep(8);
-            return;
-        }
-
         setIsLoading(true);
         try {
             // Step 1: Create draft
@@ -81,6 +76,18 @@ const ProfileSetup = () => {
                 const response = await registrationDraftApi({ email: profileData.email });
                 setUserId(response.user_id);
                 setCurrentStep(2);
+                return;
+            }
+
+            // Step 7: Batch upload photos
+            if (step === 7) {
+                if (!userId || profileData.photos.length === 0) return;
+
+                // Extract File objects from PhotoItems
+                const files = profileData.photos.map((item) => item.file);
+                await uploadPhotosApi(userId, files);
+
+                setCurrentStep(8);
                 return;
             }
 
@@ -206,7 +213,6 @@ const ProfileSetup = () => {
                         value={profileData.photos}
                         onChange={(v) => updateProfileData('photos', v)}
                         isLoading={isLoading}
-                        userId={userId}
                     />
                 );
             case 8:

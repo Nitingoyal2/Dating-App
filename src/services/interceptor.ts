@@ -2,7 +2,7 @@ import axios, { type AxiosError, type AxiosResponse, type InternalAxiosRequestCo
 import { store } from '@store/index';
 import { logout } from '@store/slices/authSlice';
 
-const BaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const BaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Api = axios.create({
     timeout: 60000,
@@ -11,7 +11,6 @@ const Api = axios.create({
 
 // Default headers
 Api.defaults.headers.post['Content-Type'] = 'application/json';
-Api.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 // Request interceptor - Add auth token to requests
 Api.interceptors.request.use(

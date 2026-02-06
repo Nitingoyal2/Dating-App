@@ -4,7 +4,7 @@ import type { PhotoDeleteResponse } from "@interfaces";
 // ============================================
 // API ENDPOINTS
 // ============================================
-const PROFILE_PHOTO_DELETE_API = '/api/profile/{user_id}/photos/{photo_id}';
+const PROFILE_PHOTO_DELETE_API = '/profile/{user_id}/photos/{photo_id}';
 
 // ============================================
 // DELETE APIs
