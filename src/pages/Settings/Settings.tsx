@@ -2,14 +2,9 @@ import { useAppDispatch } from '@store/hooks';
 import { logout } from '@store/slices';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '@/types';
-import { ArrowLeftIcon } from '@svg';
 import './Settings.css';
 
-interface SettingsProps {
-    onBack?: () => void;
-}
-
-const Settings = ({ onBack }: SettingsProps) => {
+const Settings = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -18,24 +13,8 @@ const Settings = ({ onBack }: SettingsProps) => {
         navigate(Routes.LOGIN);
     };
 
-    const handleBack = () => {
-        if (onBack) {
-            onBack();
-        } else {
-            navigate(-1);
-        }
-    };
-
     return (
         <div className="settings-page">
-            <div className="settings-header">
-                <button className="settings-back-btn" onClick={handleBack}>
-                    <ArrowLeftIcon size={24} color="#000" />
-                </button>
-                <h1 className="settings-title">Settings</h1>
-                <div className="settings-header-spacer"></div>
-            </div>
-
             <div className="settings-content">
                 <div className="settings-section">
                     <h2 className="settings-section-title">Account</h2>
@@ -75,14 +54,14 @@ const Settings = ({ onBack }: SettingsProps) => {
                         <span>Contact Us</span>
                         <span className="settings-arrow">→</span>
                     </div>
-                    <div 
+                    <div
                         className="settings-item"
                         onClick={() => navigate(Routes.TERMS_OF_SERVICE)}
                     >
                         <span>Terms of Service</span>
                         <span className="settings-arrow">→</span>
                     </div>
-                    <div 
+                    <div
                         className="settings-item"
                         onClick={() => navigate(Routes.PRIVACY_POLICY)}
                     >

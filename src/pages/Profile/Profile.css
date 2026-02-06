@@ -4,7 +4,10 @@
     padding: 20px;
     gap: 32px;
     overflow-y: auto;
+    overflow-x: hidden;
     height: 100%;
+    min-height: 0; /* Important for flex children */
+    padding-bottom: 94px; /* Space for footer */
 }
 
 .profile-section {

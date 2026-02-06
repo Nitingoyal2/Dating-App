@@ -74,3 +74,13 @@ export interface AntdProviderProps {
     children: ReactNode;
 }
 
+// ============================================
+// DashboardLayout Component Types
+// ============================================
+export type DashboardScreen = 'discover' | 'matches' | 'explore' | 'chat' | 'profile' | 'settings';
+
+export interface DashboardLayoutProps {
+    activeScreen?: DashboardScreen;
+    onScreenChange?: (screen: DashboardScreen) => void;
+}
+

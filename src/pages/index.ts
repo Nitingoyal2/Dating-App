@@ -2,7 +2,7 @@ export { default as Splash } from './Splash';
 export { default as Home } from './Home';
 export { default as Login } from './LoginSetup/LoginSetup';
 export { default as ForgotPassword } from './ForgotPassword';
-export { default as Dashboard } from './Dashboard';
+export { default as Dashboard } from './Dashboard/Dashboard';
 export { ProfileSetup } from './ProfileSetup';
 export { Profile } from './Profile';
 export { Discover } from './Discover';

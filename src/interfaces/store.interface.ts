@@ -10,13 +10,29 @@ export interface AuthState {
 
 export interface UserState {
   id: string;
-  name: string;
+  name: string; // Maps to first_name from API
   email: string;
+  first_name: string;
+  age: number;
+  gender: 'man' | 'woman';
+  seeking: 'man' | 'woman';
+  date_of_birth: string;
+  photos: Array<{
+    id: string;
+    url: string;
+    order: number;
+    is_primary?: boolean;
+  }>;
+  latitude: number | null;
+  longitude: number | null;
+  created_at: string;
+  // Optional fields for backward compatibility
   avatar?: string;
   bio?: string;
-  age?: number;
   location?: string;
   interests?: string[];
+  // Allow any additional fields from API
+  [key: string]: unknown;
 }
 
 // App State

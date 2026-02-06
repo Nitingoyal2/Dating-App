@@ -42,7 +42,11 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                         >
                             <div className="profile-avatar-inner">
                                 <img
-                                    src="https://picsum.photos/160/160?random=profile"
+                                    src={
+                                        user?.photos && user.photos.length > 0
+                                            ? `${import.meta.env.VITE_API_BASE_URL || ''}${user.photos.find(p => p.is_primary)?.url || user.photos[0]?.url || ''}`
+                                            : "https://picsum.photos/160/160?random=profile"
+                                    }
                                     alt="Profile"
                                     className="profile-avatar-image"
                                 />
@@ -56,7 +60,7 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
 
                 <div className="profile-info">
                     <div className="profile-name-row">
-                        <h2>{user?.name || user?.email?.split('@')[0] || 'User'}, {user?.age || 28}</h2>
+                        <h2>{user?.first_name || user?.name || user?.email?.split('@')[0] || 'User'}, {user?.age || 28}</h2>
                         <VerifiedIcon size={36} color="#9E9E9E" />
                     </div>
                     <p className="profile-verify-text">Get Verified</p>
@@ -65,7 +69,7 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
 
             {/* Action Buttons Grid */}
             <div className="profile-actions-grid">
-                {profileActions.map((action, index) => (
+                {profileActions?.map((action, index) => (
                     <div
                         key={index}
                         className="profile-action-item"

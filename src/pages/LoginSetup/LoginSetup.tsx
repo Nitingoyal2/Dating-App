@@ -96,12 +96,14 @@ const LoginSetup = () => {
 
             const response = await otpVerifyApi(payload);
 
+            // Save all user data from API response, including any additional fields
             dispatch(
                 loginSuccess({
                     user: {
-                        id: response.user.id,
-                        name: response.user.first_name,
-                        email: response.user.email ?? '',
+                        // Spread all fields from API response first
+                        ...response.user,
+                        // Override/add computed fields
+                        name: response.user.first_name, // Map first_name to name for backward compatibility
                     },
                     token: response.access_token,
                 })

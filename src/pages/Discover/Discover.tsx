@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ProstoLogo, VerifiedIcon, LocationSymbol, StartIcon, HeartIcon, CloseIcon } from '@svg';
+import { VerifiedIcon, LocationSymbol, StartIcon, HeartIcon, CloseIcon } from '@svg';
 import './Discover.css';
 
 const Discover = () => {
@@ -53,19 +53,6 @@ const Discover = () => {
 
     return (
         <div className="discover-screen">
-            {/* App Header */}
-            <div className="discover-header">
-                <div className="discover-logo">
-                    <ProstoLogo size={32} />
-                    <span className="discover-logo-text">Prosto</span>
-                </div>
-                <button className="discover-filter-btn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 6H21M7 12H17M10 18H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                </button>
-            </div>
-
             {/* Profile Card */}
             <div className="discover-content">
                 <div className="profile-card">

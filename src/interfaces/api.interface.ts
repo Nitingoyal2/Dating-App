@@ -59,9 +59,16 @@ export type OtpVerifyRequest = OtpVerifyPhoneRequest | OtpVerifyEmailRequest;
 export interface OtpVerifyResponse {
     user: {
         id: string;
-        email?: string;
-        phone?: string;
+        email: string;
         first_name: string;
+        age: number;
+        gender: 'man' | 'woman';
+        seeking: 'man' | 'woman';
+        date_of_birth: string;
+        photos: Photo[];
+        latitude: number | null;
+        longitude: number | null;
+        created_at: string;
     };
     access_token: string;
 }
@@ -100,6 +107,14 @@ export interface ForgotPasswordVerifyResponse {
         id: string;
         email: string;
         first_name: string;
+        age: number;
+        gender: 'man' | 'woman';
+        seeking: 'man' | 'woman';
+        date_of_birth: string;
+        photos: Photo[];
+        latitude: number | null;
+        longitude: number | null;
+        created_at: string;
     };
     access_token: string;
 }
@@ -184,7 +199,10 @@ export interface CompleteUser {
     age: number;
     gender: 'man' | 'woman';
     seeking: 'man' | 'woman';
+    date_of_birth: string;
     photos: Photo[];
+    latitude: number | null;
+    longitude: number | null;
     created_at: string;
 }
 

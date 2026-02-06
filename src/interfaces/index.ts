@@ -104,4 +104,6 @@ export type {
   ConfirmModalProps,
   SuccessScreenProps,
   AntdProviderProps,
+  DashboardScreen,
+  DashboardLayoutProps,
 } from './components.interface';

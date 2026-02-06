@@ -7,7 +7,7 @@
 }
 
 .settings-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
@@ -17,7 +17,7 @@
     justify-content: space-between;
     padding: 16px 20px;
     border-bottom: 1px solid #e0e0e0;
-    background: #fff;
+    background: var(--color-bg-primary);
     flex-shrink: 0;
     height: 56px;
 }
@@ -50,9 +50,8 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
-    margin-top: 56px; /* Header height */
-    margin-bottom: 74px; /* Footer height */
-    height: calc(100vh - 56px - 74px);
+    min-height: 0; /* Important for flex children */
+    padding-bottom: 94px; /* Space for footer */
 }
 
 .settings-section {

@@ -7,44 +7,6 @@
     overflow: hidden;
 }
 
-.discover-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    background: #fff;
-    border-bottom: 1px solid #e0e0e0;
-    height: 56px;
-}
-
-.discover-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.discover-logo-text {
-    font-size: 20px;
-    font-weight: 700;
-    color: #6C5CE7;
-}
-
-.discover-filter-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-}
-
 .discover-content {
     flex: 1;
     display: flex;
@@ -53,9 +15,8 @@
     gap: 24px;
     overflow-y: auto;
     overflow-x: hidden;
-    height: calc(100vh - 56px - 74px);
-    margin-top: 56px; /* Header height */
-    margin-bottom: 74px; /* Footer height */
+    min-height: 0; /* Important for flex children */
+    padding-bottom: 94px; /* Space for footer */
 }
 
 .profile-card {
