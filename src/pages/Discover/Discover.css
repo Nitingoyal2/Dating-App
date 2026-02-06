@@ -16,7 +16,6 @@
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0; /* Important for flex children */
-    padding-bottom: 94px; /* Space for footer */
 }
 
 .profile-card {

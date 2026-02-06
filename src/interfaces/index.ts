@@ -57,6 +57,8 @@ export type {
   SplashProps,
   TermsSection,
   PrivacySection,
+  StepEmailSentProps,
+  StepVerifyOtpProps,
 } from './pages.interface';
 
 // API interfaces
@@ -95,6 +97,7 @@ export type {
 // Component interfaces
 export type {
   IconProps,
+  VerifiedIconProps,
   ButtonVariant,
   ButtonSize,
   PrimaryButtonProps,
@@ -106,4 +109,8 @@ export type {
   AntdProviderProps,
   DashboardScreen,
   DashboardLayoutProps,
+  ProfileProps,
+  ProfileActionConfig,
+  SpinnerProps,
+  SettingsItemConfig,
 } from './components.interface';

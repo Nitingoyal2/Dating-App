@@ -1,5 +1,6 @@
 import type { ReactNode, SVGProps } from 'react';
 import type { ButtonProps } from 'antd';
+import type { ProfileAction, SettingsItem as SettingsItemType } from '@/types';
 
 // ============================================
 // Icon Types
@@ -7,6 +8,10 @@ import type { ButtonProps } from 'antd';
 export interface IconProps extends SVGProps<SVGSVGElement> {
     size?: number;
     color?: string;
+}
+
+export interface VerifiedIconProps extends IconProps {
+    verified?: boolean;
 }
 
 // ============================================
@@ -82,5 +87,38 @@ export type DashboardScreen = 'discover' | 'matches' | 'explore' | 'chat' | 'pro
 export interface DashboardLayoutProps {
     activeScreen?: DashboardScreen;
     onScreenChange?: (screen: DashboardScreen) => void;
+}
+
+// ============================================
+// Profile Component Types
+// ============================================
+export interface ProfileProps {
+    onSettingsClick?: () => void;
+}
+
+export interface ProfileActionConfig {
+    action: ProfileAction;
+    label: string;
+    color: string;
+    icon: string;
+    filter: string;
+}
+
+// ============================================
+// Spinner Component Types
+// ============================================
+export interface SpinnerProps {
+    size?: 'small' | 'default' | 'large';
+    fullScreen?: boolean;
+    tip?: string;
+}
+
+// ============================================
+// Settings Component Types
+// ============================================
+export interface SettingsItemConfig {
+    item: SettingsItemType;
+    label: string;
+    route: string | null;
 }
 

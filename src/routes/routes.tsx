@@ -1,4 +1,4 @@
-import { Home, Login, ForgotPassword, Dashboard, ProfileSetup, Profile, NotFound, TermsOfService, PrivacyPolicy } from '@/pages';
+import { Home, Login, ForgotPassword, Dashboard, ProfileSetup, NotFound, TermsOfService, PrivacyPolicy } from '@/pages';
 import { Routes } from '@/types';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
@@ -88,7 +88,7 @@ export const protectedRoutes: RouteConfig[] = [
         path: Routes.PROFILE,
         element: (
             <ProtectedRoute>
-                <Profile />
+                <Dashboard />
             </ProtectedRoute>
         ),
         isProtected: true,

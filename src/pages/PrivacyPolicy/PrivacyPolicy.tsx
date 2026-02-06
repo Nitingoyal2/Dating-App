@@ -1,14 +1,22 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthLayout from '@components/AuthLayout';
 import { privacyPolicyData } from '@/data';
+import { Routes } from '@/types';
 import type { PrivacySection } from '@interfaces';
 import './PrivacyPolicy.css';
 
 const PrivacyPolicy = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleBack = () => {
-        navigate(-1);
+        // Check if we came from Settings page
+        const fromSettings = (location.state as { from?: string } | null)?.from === Routes.SETTINGS;
+        if (fromSettings) {
+            navigate(Routes.SETTINGS);
+        } else {
+            navigate(-1);
+        }
     };
 
     const renderContent = (section: PrivacySection) => {

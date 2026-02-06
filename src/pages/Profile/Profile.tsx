@@ -1,32 +1,38 @@
+import { Progress } from 'antd';
 import { useAppSelector } from '@store/hooks';
 import { VerifiedIcon } from '@svg';
-import { coinIcon, diamondIcon, fireIcon, pencilIcon, settingIcon, shieldIcon } from '@assets';
+import {
+    getAllProfileActions,
+    DEFAULT_PROFILE_AGE,
+    DEFAULT_PROFILE_NAME,
+    DEFAULT_PROFILE_PROGRESS,
+    DEFAULT_PROFILE_IMAGE_URL,
+    VERIFIED_ICON_SIZE,
+    PROFILE_VERIFY_TEXT,
+    PROFILE_PROGRESS_SUFFIX,
+    PROFILE_PROGRESS_STROKE_COLOR_START,
+    PROFILE_PROGRESS_STROKE_COLOR_END,
+    PROFILE_PROGRESS_TRAIL_COLOR,
+    PROFILE_PROGRESS_BADGE_GRADIENT_START,
+    PROFILE_PROGRESS_BADGE_GRADIENT_END,
+} from '@constants';
+import { ProfileAction } from '@/types';
+import type { ProfileProps } from '@interfaces';
 import './Profile.css';
-
-interface ProfileProps {
-    onSettingsClick?: () => void;
-}
 
 const Profile = ({ onSettingsClick }: ProfileProps) => {
     const { user } = useAppSelector((state) => state.auth);
+    const profileActions = getAllProfileActions();
 
-    const profileActions = [
-        { icon: settingIcon, label: 'Settings', color: '#FF6B9D', action: 'settings' },
-        { icon: pencilIcon, label: 'Edit Profile', color: '#8B4513', action: 'edit' },
-        { icon: shieldIcon, label: 'Safety', color: '#4CAF50', action: 'safety' },
-        { icon: coinIcon, label: 'Prosto Gold', color: '#FFD700', action: 'gold' },
-        { icon: fireIcon, label: 'Prosto Platinum', color: '#FF9500', action: 'platinum' },
-        { icon: diamondIcon, label: 'Prosto Diamond', color: '#4A90E2', action: 'diamond' },
-    ];
-
-    const handleActionClick = (action: string) => {
-        if (action === 'settings' && onSettingsClick) {
+    const handleActionClick = (action: ProfileAction) => {
+        if (action === ProfileAction.SETTINGS && onSettingsClick) {
             onSettingsClick();
         }
         // Handle other actions here
     };
 
-    const profileProgress = 65; // This should come from user data
+    const profileProgress = DEFAULT_PROFILE_PROGRESS; // This should come from user data
+    const isVerified = user?.verified === true || user?.is_verified === true;
 
     return (
         <div className="profile-page">
@@ -34,58 +40,77 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
             <div className="profile-section">
                 <div className="profile-avatar-container">
                     <div className="profile-avatar-wrapper">
-                        <div
-                            className="profile-avatar-border"
-                            style={{
-                                background: `conic-gradient(from 0deg, #FF6B9D 0%, #FF6B9D ${profileProgress * 3.6}deg, #e0e0e0 ${profileProgress * 3.6}deg, #e0e0e0 360deg)`
-                            }}
-                        >
+                        <div className="profile-avatar-progress-wrapper">
+                            <Progress
+                                type="circle"
+                                percent={profileProgress}
+                                size={180}
+                                strokeWidth={20}
+                                strokeColor={{
+                                    '0%': PROFILE_PROGRESS_STROKE_COLOR_START,
+                                    '100%': PROFILE_PROGRESS_STROKE_COLOR_END,
+                                }}
+                                trailColor={PROFILE_PROGRESS_TRAIL_COLOR}
+                                format={() => null}
+                                className="profile-progress-circle"
+                            />
                             <div className="profile-avatar-inner">
                                 <img
                                     src={
                                         user?.photos && user.photos.length > 0
                                             ? `${import.meta.env.VITE_API_BASE_URL || ''}${user.photos.find(p => p.is_primary)?.url || user.photos[0]?.url || ''}`
-                                            : "https://picsum.photos/160/160?random=profile"
+                                            : DEFAULT_PROFILE_IMAGE_URL
                                     }
                                     alt="Profile"
                                     className="profile-avatar-image"
                                 />
                             </div>
                         </div>
-                        <div className="profile-progress-badge">
-                            {profileProgress}% COMPLETE
+                        <div
+                            className="profile-progress-badge"
+                            style={{
+                                background: `linear-gradient(to right, ${PROFILE_PROGRESS_BADGE_GRADIENT_START}, ${PROFILE_PROGRESS_BADGE_GRADIENT_END})`
+                            }}
+                        >
+                            {profileProgress}{PROFILE_PROGRESS_SUFFIX}
                         </div>
                     </div>
                 </div>
 
                 <div className="profile-info">
                     <div className="profile-name-row">
-                        <h2>{user?.first_name || user?.name || user?.email?.split('@')[0] || 'User'}, {user?.age || 28}</h2>
-                        <VerifiedIcon size={36} color="#9E9E9E" />
+                        <h2>
+                            {user?.first_name || user?.name || user?.email?.split('@')[0] || DEFAULT_PROFILE_NAME}, {user?.age || DEFAULT_PROFILE_AGE}
+                        </h2>
+                        <div className="profile-verification-section">
+                            <VerifiedIcon
+                                size={VERIFIED_ICON_SIZE}
+                                verified={isVerified}
+                            />
+                            {!isVerified && (
+                                <p className="profile-verify-text">{PROFILE_VERIFY_TEXT}</p>
+                            )}
+                        </div>
                     </div>
-                    <p className="profile-verify-text">Get Verified</p>
                 </div>
             </div>
 
             {/* Action Buttons Grid */}
             <div className="profile-actions-grid">
-                {profileActions?.map((action, index) => (
+                {profileActions.map((actionConfig) => (
                     <div
-                        key={index}
+                        key={actionConfig.action}
                         className="profile-action-item"
-                        onClick={() => handleActionClick(action.action)}
+                        onClick={() => handleActionClick(actionConfig.action)}
                     >
-                        <div
-                            className="profile-action-icon"
-                            style={{ backgroundColor: `${action.color}15` }}
-                        >
+                        <div className="profile-action-icon">
                             <img
-                                src={action.icon}
-                                alt={action.label}
-                                style={{ filter: `hue-rotate(${action.color === '#FF6B9D' ? '0deg' : action.color === '#8B4513' ? '180deg' : action.color === '#4CAF50' ? '120deg' : action.color === '#FFD700' ? '45deg' : action.color === '#FF9500' ? '30deg' : '210deg'})` }}
+                                src={actionConfig.icon}
+                                alt={actionConfig.label}
+                            // style={{ filter: `hue-rotate(${actionConfig.filter})` }}
                             />
                         </div>
-                        <h5 className="profile-action-label">{action.label}</h5>
+                        <h5 className="profile-action-label">{actionConfig.label}</h5>
                     </div>
                 ))}
             </div>

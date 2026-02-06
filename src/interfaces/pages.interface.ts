@@ -134,3 +134,27 @@ export interface PrivacySection {
   }[];
 }
 
+// ============================================
+// Forgot Password Step interfaces
+// ============================================
+export interface StepEmailProps extends StepProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export interface StepEmailSentProps {
+  email: string;
+  onNext: () => void;
+  onBack: () => void;
+}
+
+export interface StepVerifyOtpProps {
+  email: string;
+  value: string;
+  onChange: (value: string) => void;
+  onVerify: () => void;
+  onResend: () => Promise<void>;
+  onBack: () => void;
+  isLoading?: boolean;
+}
+

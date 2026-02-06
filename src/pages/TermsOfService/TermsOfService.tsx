@@ -1,14 +1,22 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthLayout from '@components/AuthLayout';
 import { termsOfServiceData } from '@/data';
+import { Routes } from '@/types';
 import type { TermsSection } from '@interfaces';
 import './TermsOfService.css';
 
 const TermsOfService = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleBack = () => {
-        navigate(-1);
+        // Check if we came from Settings page
+        const fromSettings = (location.state as { from?: string } | null)?.from === Routes.SETTINGS;
+        if (fromSettings) {
+            navigate(Routes.SETTINGS);
+        } else {
+            navigate(-1);
+        }
     };
 
     const renderContent = (section: TermsSection) => {

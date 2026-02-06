@@ -3,18 +3,9 @@ import { Form, Input, message } from 'antd';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 import { ValidationMessages } from '@constants';
+import type { StepVerifyOtpProps } from '@interfaces';
 
 const RESEND_COOLDOWN_SECONDS = 60;
-
-interface StepVerifyOtpProps {
-    email: string;
-    value: string;
-    onChange: (value: string) => void;
-    onVerify: () => void;
-    onResend: () => Promise<void>;
-    onBack: () => void;
-    isLoading?: boolean;
-}
 
 const StepVerifyOtp = ({
     email,

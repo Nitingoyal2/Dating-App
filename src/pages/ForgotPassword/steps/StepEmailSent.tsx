@@ -2,12 +2,7 @@ import { SuccessIcon } from '@/utils/svg';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
-
-interface StepEmailSentProps {
-    email: string;
-    onNext: () => void;
-    onBack: () => void;
-}
+import type { StepEmailSentProps } from '@interfaces';
 
 const StepEmailSent = ({ email, onNext, onBack }: StepEmailSentProps) => {
     return (

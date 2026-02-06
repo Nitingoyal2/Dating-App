@@ -101,3 +101,50 @@ export const ProfileStatus = {
 } as const;
 
 export type ProfileStatus = (typeof ProfileStatus)[keyof typeof ProfileStatus];
+
+// Dashboard screens
+export const DashboardScreen = {
+  DISCOVER: 'discover',
+  MATCHES: 'matches',
+  EXPLORE: 'explore',
+  CHAT: 'chat',
+  PROFILE: 'profile',
+  SETTINGS: 'settings',
+} as const;
+
+export type DashboardScreen = (typeof DashboardScreen)[keyof typeof DashboardScreen];
+
+// Profile actions
+export const ProfileAction = {
+  SETTINGS: 'settings',
+  EDIT_PROFILE: 'edit',
+  SAFETY: 'safety',
+  GOLD: 'gold',
+  PLATINUM: 'platinum',
+  DIAMOND: 'diamond',
+} as const;
+
+export type ProfileAction = (typeof ProfileAction)[keyof typeof ProfileAction];
+
+// Settings sections
+export const SettingsSection = {
+  ACCOUNT: 'account',
+  PREFERENCES: 'preferences',
+  SUPPORT: 'support',
+} as const;
+
+export type SettingsSection = (typeof SettingsSection)[keyof typeof SettingsSection];
+
+// Settings items
+export const SettingsItem = {
+  PRIVACY: 'privacy',
+  SECURITY: 'security',
+  NOTIFICATIONS: 'notifications',
+  LANGUAGE: 'language',
+  HELP_CENTER: 'help_center',
+  CONTACT_US: 'contact_us',
+  TERMS_OF_SERVICE: 'terms_of_service',
+  PRIVACY_POLICY: 'privacy_policy',
+} as const;
+
+export type SettingsItem = (typeof SettingsItem)[keyof typeof SettingsItem];

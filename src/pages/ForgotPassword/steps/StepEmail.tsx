@@ -3,14 +3,7 @@ import { MailOutlined } from '@ant-design/icons';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 import { ValidationMessages } from '@constants';
-
-interface StepEmailProps {
-    value: string;
-    onChange: (value: string) => void;
-    onNext: () => void;
-    onBack: () => void;
-    isLoading?: boolean;
-}
+import type { StepEmailProps } from '@interfaces';
 
 const StepEmail = ({ value, onChange, onNext, onBack, isLoading }: StepEmailProps) => {
     const [form] = Form.useForm();

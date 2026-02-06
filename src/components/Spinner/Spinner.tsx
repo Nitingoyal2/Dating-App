@@ -1,13 +1,8 @@
 import './Spinner.css';
+import type { SpinnerProps } from '@interfaces';
 
 // Logo from public folder - accessible via root path
 const logo = '/favicon.svg';
-
-interface SpinnerProps {
-    size?: 'small' | 'default' | 'large';
-    fullScreen?: boolean;
-    tip?: string;
-}
 
 const Spinner = ({ size = 'default', fullScreen = false, tip }: SpinnerProps) => {
     const sizeMap = {

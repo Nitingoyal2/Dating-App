@@ -63,7 +63,7 @@ const Discover = () => {
                                 <div className="profile-card-name">
                                     <h2>{currentProfile.name}, {currentProfile.age}</h2>
                                     {currentProfile.verified && (
-                                        <VerifiedIcon size={20} color="#4A90E2" />
+                                        <VerifiedIcon size={20} verified={currentProfile.verified} />
                                     )}
                                 </div>
                                 <div className="profile-card-distance">

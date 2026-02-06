@@ -9,4 +9,8 @@ export {
   RelationshipGoal,
   ApiStatus,
   LoginType,
+  DashboardScreen,
+  ProfileAction,
+  SettingsSection,
+  SettingsItem,
 } from './enums';
