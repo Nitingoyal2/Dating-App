@@ -1,14 +1,10 @@
 import { Progress } from 'antd';
 import { useAppSelector } from '@store/hooks';
-import { VerifiedIcon } from '@svg';
 import {
     getAllProfileActions,
     DEFAULT_PROFILE_AGE,
     DEFAULT_PROFILE_NAME,
-    DEFAULT_PROFILE_PROGRESS,
     DEFAULT_PROFILE_IMAGE_URL,
-    VERIFIED_ICON_SIZE,
-    PROFILE_VERIFY_TEXT,
     PROFILE_PROGRESS_SUFFIX,
     PROFILE_PROGRESS_STROKE_COLOR_START,
     PROFILE_PROGRESS_STROKE_COLOR_END,
@@ -16,6 +12,7 @@ import {
     PROFILE_PROGRESS_BADGE_GRADIENT_START,
     PROFILE_PROGRESS_BADGE_GRADIENT_END,
 } from '@constants';
+import { calculateProfileProgress } from '@/utils/profileProgress';
 import { ProfileAction } from '@/types';
 import type { ProfileProps } from '@interfaces';
 import './Profile.css';
@@ -31,8 +28,8 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
         // Handle other actions here
     };
 
-    const profileProgress = DEFAULT_PROFILE_PROGRESS; // This should come from user data
-    const isVerified = user?.verified === true || user?.is_verified === true;
+    // Calculate profile progress based on completed fields
+    const profileProgress = calculateProfileProgress(user);
 
     return (
         <div className="profile-page">
@@ -82,7 +79,7 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                         <h2>
                             {user?.first_name || user?.name || user?.email?.split('@')[0] || DEFAULT_PROFILE_NAME}, {user?.age || DEFAULT_PROFILE_AGE}
                         </h2>
-                        <div className="profile-verification-section">
+                        {/* <div className="profile-verification-section">
                             <VerifiedIcon
                                 size={VERIFIED_ICON_SIZE}
                                 verified={isVerified}
@@ -90,7 +87,7 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                             {!isVerified && (
                                 <p className="profile-verify-text">{PROFILE_VERIFY_TEXT}</p>
                             )}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

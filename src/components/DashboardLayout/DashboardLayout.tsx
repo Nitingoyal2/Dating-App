@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DashboardIcon, MatchesIcon, ChatIcon, ProfileIcon, ExploreIcon, ArrowLeftIcon } from '@svg';
+import { DashboardIcon, MatchesIcon, ChatIcon, ProfileIcon, ExploreIcon, ArrowLeftIcon, FilterIcon, ProstoLogo } from '@svg';
 import { Discover } from '@/pages/Discover';
 import { Profile } from '@/pages/Profile';
 import { Settings } from '@/pages/Settings';
@@ -74,19 +74,40 @@ const DashboardLayout = ({ activeScreen: propActiveScreen, onScreenChange }: Das
         }
     };
 
+    const isDiscoverScreen = activeScreen === DashboardScreenEnum.DISCOVER;
+
     return (
         <div className="dashboard-layout">
             {/* Always show header */}
             <div className="dashboard-head">
-                <div className="dashboard-header-slot">
-                    {showBackButton && (
-                        <button className="header-back-btn" onClick={handleBack}>
-                            <ArrowLeftIcon size={24} color="#000" />
-                        </button>
-                    )}
-                </div>
-                <div className="dashboard-header-title">{getScreenTitle(activeScreen)}</div>
-                <div className="dashboard-header-slot"></div>
+                {isDiscoverScreen ? (
+                    <>
+                        <div className="dashboard-header-slot"></div>
+                        <div className="dashboard-header-logo">
+                            <ProstoLogo size={32} color="#FF6B9D" />
+                        </div>
+                        <div className="dashboard-header-slot">
+                            <button className="header-filter-btn" onClick={() => {
+                                // Handle filter click
+                                console.log('Filter clicked');
+                            }}>
+                                <FilterIcon size={24} color="#000" />
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="dashboard-header-slot">
+                            {showBackButton && (
+                                <button className="header-back-btn" onClick={handleBack}>
+                                    <ArrowLeftIcon size={24} color="#000" />
+                                </button>
+                            )}
+                        </div>
+                        <div className="dashboard-header-title">{getScreenTitle(activeScreen)}</div>
+                        <div className="dashboard-header-slot"></div>
+                    </>
+                )}
             </div>
 
             {/* Content area - changes based on activeScreen */}

@@ -50,6 +50,23 @@
     justify-content: center;
 }
 
+.dashboard-header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.header-filter-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .dashboard-content-wrapper {
     flex: 1;
     overflow: hidden;
