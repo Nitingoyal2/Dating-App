@@ -1,0 +1,115 @@
+/* ============================================
+   PRIVACY POLICY PAGE STYLES
+   ============================================ */
+
+.legal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+    margin-bottom: 24px;
+}
+
+.legal-section {
+    margin-bottom: 32px;
+}
+
+.legal-section:last-child {
+    margin-bottom: 0;
+}
+
+.legal-section-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 12px 0;
+    transition: color 0.3s ease;
+}
+
+.legal-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 20px 0 10px 0;
+    transition: color 0.3s ease;
+}
+
+.legal-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin: 0 0 12px 0;
+    transition: color 0.3s ease;
+}
+
+.legal-text strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.legal-list {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    margin: 12px 0;
+    padding-left: 24px;
+    transition: color 0.3s ease;
+}
+
+.legal-list li {
+    margin-bottom: 8px;
+}
+
+.legal-list li::marker {
+    color: var(--color-accent-primary);
+}
+
+.legal-contact {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    margin: 12px 0 0 0;
+    padding: 16px;
+    background: var(--color-bg-secondary);
+    border-radius: 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar Styling */
+.legal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.legal-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.legal-content::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb);
+    border-radius: 3px;
+}
+
+.legal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--color-scrollbar-thumb-hover);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .legal-section-title {
+        font-size: 1.1rem;
+    }
+
+    .legal-subtitle {
+        font-size: 1rem;
+    }
+
+    .legal-text,
+    .legal-list {
+        font-size: 0.9rem;
+    }
+}
+

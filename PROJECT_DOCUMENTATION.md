@@ -51,9 +51,13 @@ dating-app/
 ├── public/                    # Static assets
 ├── src/
 │   ├── assets/               # Images, fonts, etc.
+│   │   ├── index.ts          # Centralized asset exports
+│   │   ├── react.svg         # React logo
 │   │   └── images/
+│   │       ├── index.ts      # Centralized image exports
 │   │       ├── crousal1.jpg, crousal2.jpg, crousal5.png  # Home carousel
-│   │       └── login1.jpg, login2.jpg                    # Login background
+│   │       ├── login1.jpg, login2.jpg                    # Login background
+│   │       └── coin.png, diamond.png, fire.png, etc.    # Icons
 │   │
 │   ├── components/           # Reusable UI components (each in own folder)
 │   │   ├── AntdProvider/     # Ant Design theme provider
@@ -61,8 +65,9 @@ dating-app/
 │   │   ├── Button/           # Reusable button component (PrimaryButton)
 │   │   ├── ConfirmModal/     # Reusable confirmation modal
 │   │   ├── Layout/           # Main app layout (phone frame + side panel)
+│   │   ├── Spinner/          # Custom logo-based loading spinner
 │   │   ├── SuccessScreen/    # Success/celebration screen
-│   │   └── ThemeToggle/      # Theme switcher component
+│   │   └── ThemeToggle/     # Theme switcher component
 │   │
 │   ├── constants/            # Centralized constants & messages
 │   │   ├── index.ts          # Exports all constants
@@ -72,7 +77,9 @@ dating-app/
 │   │   ├── index.ts          # Exports all data
 │   │   ├── homeCarousel.ts   # Home page carousel data
 │   │   ├── loginCarousel.ts  # Login background images
-│   │   └── welcomeRules.tsx  # Welcome step rules data
+│   │   ├── welcomeRules.tsx  # Welcome step rules data
+│   │   ├── termsOfService.ts # Terms of Service content
+│   │   └── privacyPolicy.ts  # Privacy Policy content
 │   │
 │   ├── hooks/                # Custom React hooks
 │   │   ├── index.ts
@@ -101,8 +108,24 @@ dating-app/
 │   │   │       ├── Login.tsx         # Phone/Email entry
 │   │   │       ├── Login.css
 │   │   │       └── OtpVerification.tsx  # OTP verification
-│   │   ├── ForgotPassword/   # Password recovery
+│   │   ├── ForgotPassword/   # 3-step password recovery
+│   │   │   ├── ForgotPassword.tsx  # Main controller
+│   │   │   ├── index.ts
+│   │   │   └── steps/              # Forgot password steps
+│   │   │       ├── index.ts
+│   │   │       ├── StepEmail.tsx      # Email entry
+│   │   │       ├── StepEmailSent.tsx  # Confirmation page
+│   │   │       └── StepVerifyOtp.tsx  # OTP verification
 │   │   ├── Dashboard/        # Main app (protected)
+│   │   ├── NotFound/         # 404 error page
+│   │   ├── TermsOfService/   # Terms of Service page
+│   │   │   ├── TermsOfService.tsx
+│   │   │   ├── TermsOfService.css
+│   │   │   └── index.ts
+│   │   └── PrivacyPolicy/     # Privacy Policy page
+│   │       ├── PrivacyPolicy.tsx
+│   │       ├── PrivacyPolicy.css
+│   │       └── index.ts
 │   │   └── ProfileSetup/     # Multi-step profile creation
 │   │       ├── ProfileSetup.tsx  # Main controller with API integration
 │   │       ├── index.ts
@@ -121,9 +144,9 @@ dating-app/
 │   │
 │   ├── routes/               # Routing configuration
 │   │   ├── index.tsx         # AppRoutes component
-│   │   ├── routes.tsx        # Route definitions
-│   │   ├── ProtectedRoute.tsx # Auth guard (logged in only)
-│   │   └── PublicRoute.tsx   # Public guard (redirects if logged in)
+│   │   ├── routes.tsx        # Route definitions (all routes with guards)
+│   │   ├── ProtectedRoute.tsx # Auth guard (logged in only, with loading)
+│   │   └── PublicRoute.tsx   # Public guard (redirects if logged in, with loading)
 │   │
 │   ├── services/             # API services
 │   │   ├── index.ts          # Exports all services
@@ -187,7 +210,8 @@ Configured in `tsconfig.app.json` and `vite.config.ts`:
 | `@services` | `src/services` | `import { loginApi, otpVerifyApi } from '@services'` |
 | `@utils/*` | `src/utils/*` | `import { formatDate } from '@utils/helpers'` |
 | `@svg` | `src/utils/svg` | `import { HeartIcon, ProstoLogo } from '@svg'` |
-| `@assets/*` | `src/assets/*` | `import logo from '@assets/images/logo.png'` |
+| `@assets` | `src/assets` | `import { crousal1, login1, coinIcon } from '@assets'` |
+| `@assets/*` | `src/assets/*` | `import { Images } from '@assets'` |
 
 ---
 
@@ -254,12 +278,12 @@ export type ProfileStatus = (typeof ProfileStatus)[keyof typeof ProfileStatus];
 
 | File | Contents |
 |------|----------|
-| `api.interface.ts` | `LoginRequest`, `LoginResponse`, `OtpVerifyRequest`, `OtpVerifyResponse`, `DraftRequest`, `DraftResponse`, `ProfileUpdateRequest`, `CompleteResponse`, etc. |
+| `api.interface.ts` | `LoginRequest`, `LoginResponse`, `OtpVerifyRequest`, `OtpVerifyResponse`, `DraftRequest`, `DraftResponse`, `ProfileUpdateRequest`, `CompleteResponse`, `ForgotPasswordRequest`, `ForgotPasswordResponse`, `PhotoBatchUploadResponse`, etc. |
 | `auth.interface.ts` | `AuthLayoutProps`, `LoginFormData`, `LoginPayload`, etc. |
 | `common.interface.ts` | `User`, `ApiResponse<T>`, `PaginatedResponse<T>` |
 | `components.interface.ts` | `IconProps`, `PrimaryButtonProps`, `ConfirmModalProps` (with `showCancel`, `width`), `ThemeToggleProps` |
 | `layout.interface.ts` | `LayoutProps` |
-| `pages.interface.ts` | `GenderType`, `ProfileData`, `StepProps`, `LoginSetupLoginProps`, `OtpVerificationProps`, etc. |
+| `pages.interface.ts` | `GenderType`, `PhotoItem`, `ProfileData`, `StepProps`, `LoginSetupLoginProps`, `OtpVerificationProps`, `TermsSection`, `PrivacySection`, `WelcomeRule`, etc. |
 | `routes.interface.ts` | `RouteConfig`, `ProtectedRouteProps`, `PublicRouteProps` |
 | `store.interface.ts` | `AuthState`, `UserState`, `AppState`, `LoginSuccessPayload` |
 
@@ -401,10 +425,80 @@ export const welcomeRules: WelcomeRule[] = [
 ];
 ```
 
+### `data/termsOfService.ts`
+
+```typescript
+import type { TermsSection } from '@interfaces';
+
+export const termsOfServiceData: TermsSection[] = [
+  {
+    title: '1. Acceptance of Terms',
+    content: 'By accessing and using Prosto...',
+  },
+  {
+    title: '2. Use License',
+    content: 'Permission is granted...',
+    subsections: [
+      {
+        title: '',
+        content: [
+          'Modify or copy the materials',
+          'Use the materials for any commercial purpose...',
+        ],
+      },
+    ],
+  },
+  // ... more sections
+];
+```
+
+### `data/privacyPolicy.ts`
+
+```typescript
+import type { PrivacySection } from '@interfaces';
+
+export const privacyPolicyData: PrivacySection[] = [
+  {
+    title: '1. Introduction',
+    content: 'Prosto ("we," "our," or "us") is committed...',
+  },
+  {
+    title: '2. Information We Collect',
+    subsections: [
+      {
+        title: '2.1 Information You Provide',
+        content: [
+          'Name, email address, phone number',
+          'Date of birth and age',
+          // ... more items
+        ],
+      },
+      {
+        title: '2.2 Automatically Collected Information',
+        content: [
+          'Device information...',
+          'Log data...',
+        ],
+      },
+    ],
+  },
+  // ... more sections
+];
+```
+
 ### Usage
 
 ```typescript
-import { homeCarouselData, loginBackgroundImages, welcomeRules } from '@/data';
+import { 
+  homeCarouselData, 
+  loginBackgroundImages, 
+  welcomeRules,
+  termsOfServiceData,
+  privacyPolicyData 
+} from '@/data';
+
+// Import interfaces from @interfaces
+import type { TermsSection, PrivacySection } from '@interfaces';
 ```
 
 ---
@@ -506,6 +600,31 @@ import { PrimaryButton } from '@components/Button';
 </PrimaryButton>
 ```
 
+### Spinner
+
+```typescript
+import { Spinner } from '@components/Spinner';
+
+// Basic usage
+<Spinner />
+
+// With size
+<Spinner size="large" />
+
+// Full screen (for route guards)
+<Spinner size="large" fullScreen />
+
+// With loading message
+<Spinner size="default" tip="Loading..." />
+```
+
+**Features**:
+- Uses app logo (`/favicon.svg`) with rotation animation
+- Three sizes: `small` (40px), `default` (60px), `large` (80px)
+- Full screen mode for route loading states
+- Optional tip text with fade animation
+- Theme-aware (works with light/dark themes)
+
 ### ConfirmModal
 
 ```typescript
@@ -561,9 +680,13 @@ import AuthLayout from '@components/AuthLayout';
 | Splash | (initial) | Loading screen with Prosto logo |
 | Home | `/` | Onboarding carousel screen |
 | LoginSetup | `/login` | 2-step login with OTP (Phone/Email → OTP) |
-| ForgotPassword | `/forgot-password` | Password recovery |
+| ForgotPassword | `/forgot-password` | 3-step password recovery (Email → Confirmation → OTP) |
 | ProfileSetup | `/profile-setup` | 9-step profile creation with API |
 | Dashboard | `/dashboard` | Main app (after authentication) |
+| Profile | `/profile` | User profile page (protected) |
+| TermsOfService | `/terms-of-service` | Terms of Service page (public) |
+| PrivacyPolicy | `/privacy-policy` | Privacy Policy page (public) |
+| NotFound | `*` | 404 error page (catch-all route) |
 
 ---
 
@@ -656,7 +779,7 @@ const handleResendOtp = async () => {
 | 4 | `StepGender` | `PATCH /api/profile/{user_id}` | `{ gender }` |
 | 5 | `StepSeeking` | `PATCH /api/profile/{user_id}` | `{ seeking }` |
 | 6 | `StepBirthday` | `PATCH /api/profile/{user_id}` | `{ date_of_birth }` |
-| 7 | `StepPhotos` | `POST /api/profile/{user_id}/photos` | Photos handled in component |
+| 7 | `StepPhotos` | `POST /api/profile/{user_id}/photos` | Batch upload (all photos at once on Continue) |
 | 8 | `StepWelcome` | `PATCH /api/profile/{user_id}` | `{ rules_accepted: true }` |
 | 9 | `StepSuccess` | `POST /api/profile/{user_id}/complete` | `{ password, confirm_password }` |
 
@@ -670,6 +793,10 @@ const handleStepSubmit = async (step: number, extraData?: {...}) => {
     if (step === 1) {
       const response = await registrationDraftApi({ email: profileData.email });
       setUserId(response.user_id);
+    } else if (step === 7) {
+      // Batch upload all photos at once
+      const files = profileData.photos.map((item) => item.file);
+      await uploadPhotosApi(userId, files);
     } else if (step === 9) {
       const response = await registrationCompleteApi(userId, { password, confirm_password });
       dispatch(loginSuccess({ user: response.user, token: response.tokens.access_token }));
@@ -684,6 +811,53 @@ const handleStepSubmit = async (step: number, extraData?: {...}) => {
   } finally {
     setIsLoading(false);
   }
+};
+```
+
+**Photo Upload Pattern**:
+- Photos stored as `PhotoItem[]` with `file: File` and `preview: string` (URL.createObjectURL)
+- No API calls during photo selection
+- Single batch upload when user clicks "Continue"
+- All photos sent together using FormData with `photos[]` key
+
+---
+
+## 🔑 Forgot Password Flow
+
+3-step password recovery with **OTP verification**:
+
+| Step | Component | API Call | Data |
+|------|-----------|----------|------|
+| 1 | `StepEmail` | `POST /api/forgot-password` | `{ email }` |
+| 2 | `StepEmailSent` | (Frontend) | Confirmation page |
+| 3 | `StepVerifyOtp` | `POST /api/forgot-password/verify` | `{ email, otp }` |
+
+### ForgotPassword Implementation
+
+```typescript
+import { forgotPasswordApi, forgotPasswordVerifyApi, forgotPasswordResendApi } from '@services';
+
+// Step 1: Send OTP
+const handleSendOtp = async () => {
+  await forgotPasswordApi({ email });
+  setCurrentStep(2);
+};
+
+// Step 2: Go to OTP verification
+const handleProceedToVerify = () => {
+  setCurrentStep(3);
+};
+
+// Step 3: Verify OTP and auto-login
+const handleVerifyOtp = async () => {
+  const response = await forgotPasswordVerifyApi({ email, otp });
+  dispatch(loginSuccess({ user: response.user, token: response.access_token }));
+  navigate(Routes.DASHBOARD);
+};
+
+// Resend OTP
+const handleResendOtp = async () => {
+  await forgotPasswordResendApi({ email });
 };
 ```
 
@@ -714,9 +888,11 @@ services/
 | `POST /api/login` | `post_apis.ts` | `loginApi()` |
 | `POST /api/login/verify-otp` | `post_apis.ts` | `otpVerifyApi()` |
 | `POST /api/login/resend-otp` | `post_apis.ts` | `resendOtpApi()` |
+| `POST /api/forgot-password` | `post_apis.ts` | `forgotPasswordApi()` |
+| `POST /api/forgot-password/verify` | `post_apis.ts` | `forgotPasswordVerifyApi()` |
 | `POST /api/draft` | `post_apis.ts` | `registrationDraftApi()` |
 | `PATCH /api/profile/{id}` | `patch_apis.ts` | `profileStepPatchApi()` |
-| `POST /api/profile/{id}/photos` | `post_apis.ts` | `profilePhotoUploadApi()` |
+| `POST /api/profile/{id}/photos` | `post_apis.ts` | `uploadPhotosApi()` (batch) |
 | `DELETE /api/profile/{id}/photos/{id}` | `delete_apis.ts` | `profilePhotoDeleteApi()` |
 | `POST /api/profile/{id}/complete` | `post_apis.ts` | `registrationCompleteApi()` |
 
@@ -806,19 +982,48 @@ export interface CompleteResponse {
 
 ```typescript
 // routes/ProtectedRoute.tsx
+import { Spinner } from '@components/Spinner';
+
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-  if (!isAuthenticated) return <Navigate to={Routes.LOGIN} />;
+  const { isAuthenticated, status } = useAppSelector((state) => state.auth);
+  
+  // Show loading spinner while checking auth
+  if (status === AuthStatus.LOADING || status === AuthStatus.IDLE) {
+    return <Spinner size="large" fullScreen />;
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to={Routes.LOGIN} state={{ from: location }} replace />;
+  }
+  
   return <>{children}</>;
 };
 
 // routes/PublicRoute.tsx
+import { Spinner } from '@components/Spinner';
+
 const PublicRoute = ({ children, restricted = false }: PublicRouteProps) => {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-  if (restricted && isAuthenticated) return <Navigate to={Routes.DASHBOARD} />;
+  const { isAuthenticated, status } = useAppSelector((state) => state.auth);
+  
+  // Show loading spinner for restricted routes
+  if (restricted && status === AuthStatus.LOADING) {
+    return <Spinner size="large" fullScreen />;
+  }
+  
+  if (restricted && isAuthenticated) {
+    const from = location.state?.from?.pathname || Routes.DASHBOARD;
+    return <Navigate to={from} replace />;
+  }
+  
   return <>{children}</>;
 };
 ```
+
+**Route Types**:
+- **Public Routes**: Accessible to everyone (Home, ProfileSetup)
+- **Restricted Public Routes**: Only for non-authenticated users (Login, ForgotPassword)
+- **Protected Routes**: Only for authenticated users (Dashboard, Profile, Matches, Chat, Settings, Discover)
+- **Catch-All Route**: 404 NotFound page for unmatched routes
 
 ---
 
@@ -939,6 +1144,34 @@ import { HeartIcon, ProstoLogo, WarningIcon } from '@svg';
 2. Export from `data/index.ts`
 3. Use: `import { newData } from '@/data'`
 
+### Adding Images
+
+1. Add image file to `src/assets/images/`
+2. Import and export from `src/assets/images/index.ts`:
+   ```typescript
+   import newImage from './newImage.png';
+   export { newImage };
+   ```
+3. Use: `import { newImage } from '@assets'` or `import { Images } from '@assets'`
+
+### Adding a New Route
+
+1. Add route path to `types/enums.ts` (`Routes` object)
+2. Create page component in `src/pages/`
+3. Add route config to `routes/routes.tsx`:
+   ```typescript
+   {
+     path: Routes.NEW_ROUTE,
+     element: (
+       <ProtectedRoute>  // or <PublicRoute restricted>
+         <NewPage />
+       </ProtectedRoute>
+     ),
+     isProtected: true,  // or false
+   }
+   ```
+4. Export page from `pages/index.ts`
+
 ---
 
 ## 🚀 Commands
@@ -963,4 +1196,51 @@ npm run lint
 ---
 
 *Last Updated: February 2026*
-*Version: 3.3.0*
+*Version: 3.5.0*
+
+## 📝 Recent Updates
+
+### v3.5.0 (February 2026)
+
+### Interface Centralization
+- **All interfaces centralized**: All TypeScript interfaces now imported from `@interfaces` folder
+- **Legal page interfaces**: `TermsSection` and `PrivacySection` added to `pages.interface.ts`
+- **Data files updated**: Data files (`termsOfService.ts`, `privacyPolicy.ts`) now import interfaces instead of defining locally
+- **Consistent pattern**: All data files follow the same pattern of importing interfaces from `@interfaces`
+
+### Legal Pages
+- **Terms of Service page**: Custom page component with content from data file
+- **Privacy Policy page**: Custom page component with content from data file
+- **Content management**: All legal content stored in `src/data/` folder for easy maintenance
+- **Dynamic rendering**: Pages dynamically render sections and subsections from data
+- **Routes added**: `/terms-of-service` and `/privacy-policy` routes added as public routes
+
+### v3.4.0 (February 2026)
+
+### Photo Upload Refactoring
+- **Batch Upload**: Photos stored locally as `File` objects, uploaded together on Continue
+- **PhotoItem Interface**: `{ file: File, preview: string }` for efficient memory usage
+- **Single API Call**: All photos sent in one request using FormData with `photos[]` key
+- **No Base64**: Uses `URL.createObjectURL()` for previews instead of base64 strings
+
+### Image Assets Centralization
+- **Centralized Exports**: All images exported from `@assets/images/index.ts`
+- **Grouped Object**: `Images` object with categorized access (`Images.carousel`, `Images.icons`)
+- **Clean Imports**: `import { crousal1, login1 } from '@assets'`
+
+### Forgot Password Flow
+- **3-Step Process**: Email → Confirmation → OTP Verification
+- **Auto-Login**: Automatically logs user in after successful OTP verification
+- **Resend Support**: 30-second cooldown timer for resending OTP
+
+### Route Guards Enhancement
+- **Loading States**: Custom spinner shown during auth checks
+- **All Routes Guarded**: Every route properly protected with guards
+- **404 Page**: Catch-all route with NotFound component
+- **Better UX**: Smooth transitions with loading indicators
+
+### Custom Spinner Component
+- **Logo-Based**: Uses app logo (`/favicon.svg`) with rotation animation
+- **Theme-Aware**: Works seamlessly with light/dark themes
+- **Multiple Sizes**: Small, default, and large variants
+- **Full Screen Mode**: For route loading states

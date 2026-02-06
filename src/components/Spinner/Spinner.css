@@ -1,0 +1,112 @@
+/* ============================================
+   LOGO SPINNER STYLES
+   ============================================ */
+
+.spinner-fullscreen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background: var(--color-bg-primary);
+}
+
+.spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.spinner-logo-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-logo {
+    animation: spinner-rotate 2s linear infinite;
+    filter: drop-shadow(0 4px 12px rgba(108, 92, 231, 0.3));
+    will-change: transform;
+}
+
+/* Tip text */
+.spinner-tip {
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    animation: spinner-fade 2s ease-in-out infinite;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes spinner-rotate {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.05);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+}
+
+@keyframes spinner-fade {
+    0%, 100% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   PULSE VARIANT (Alternative animation)
+   ============================================ */
+
+.spinner-logo-pulse {
+    animation: spinner-rotate-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes spinner-rotate-pulse {
+    0% {
+        transform: rotate(0deg) scale(0.95);
+        opacity: 0.8;
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(360deg) scale(0.95);
+        opacity: 0.8;
+    }
+}
+
+/* ============================================
+   BOUNCE VARIANT (Alternative animation)
+   ============================================ */
+
+.spinner-logo-bounce {
+    animation: spinner-rotate-bounce 1.2s ease-in-out infinite;
+}
+
+@keyframes spinner-rotate-bounce {
+    0%, 100% {
+        transform: rotate(0deg) translateY(0);
+    }
+    25% {
+        transform: rotate(90deg) translateY(-8px);
+    }
+    50% {
+        transform: rotate(180deg) translateY(0);
+    }
+    75% {
+        transform: rotate(270deg) translateY(-8px);
+    }
+}

@@ -13,6 +13,10 @@ import type {
     OtpVerifyResponse,
     ResendOtpRequest,
     ResendOtpResponse,
+    ForgotPasswordRequest,
+    ForgotPasswordResponse,
+    ForgotPasswordVerifyRequest,
+    ForgotPasswordVerifyResponse,
 } from "@interfaces";
 
 // ============================================
@@ -26,6 +30,10 @@ const PROFILE_PHOTO_API = '/profile/{user_id}/photos';
 const LOGIN_API = '/login';
 const OTP_VERIFY_API = '/login/verify-otp';
 const RESEND_OTP_API = '/login/resend-otp';
+
+// Forgot Password APIs
+const FORGOT_PASSWORD_API = '/forgot-password';
+const FORGOT_PASSWORD_VERIFY_API = '/forgot-password/verify';
 
 // ============================================
 // POST APIs
@@ -97,6 +105,28 @@ export const otpVerifyApi = async (data: OtpVerifyRequest): Promise<OtpVerifyRes
 // Resend OTP
 export const resendOtpApi = async (data: ResendOtpRequest): Promise<ResendOtpResponse> => {
     const response = await postApi<ApiResponse<ResendOtpResponse>>(RESEND_OTP_API, data);
+    return response.data;
+};
+
+// ============================================
+// FORGOT PASSWORD APIs
+// ============================================
+
+// Send OTP to email for password recovery
+export const forgotPasswordApi = async (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    const response = await postApi<ApiResponse<ForgotPasswordResponse>>(FORGOT_PASSWORD_API, data);
+    return response.data;
+};
+
+// Verify OTP and get auth tokens for password recovery
+export const forgotPasswordVerifyApi = async (data: ForgotPasswordVerifyRequest): Promise<ForgotPasswordVerifyResponse> => {
+    const response = await postApi<ApiResponse<ForgotPasswordVerifyResponse>>(FORGOT_PASSWORD_VERIFY_API, data);
+    return response.data;
+};
+
+// Resend forgot password OTP
+export const forgotPasswordResendApi = async (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    const response = await postApi<ApiResponse<ForgotPasswordResponse>>(FORGOT_PASSWORD_API, data);
     return response.data;
 };
 

@@ -4,6 +4,8 @@ export const Routes = {
   HOME: '/',
   LOGIN: '/login',
   FORGOT_PASSWORD: '/forgot-password',
+  TERMS_OF_SERVICE: '/terms-of-service',
+  PRIVACY_POLICY: '/privacy-policy',
 
   // Protected routes
   DASHBOARD: '/dashboard',

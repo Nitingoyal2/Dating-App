@@ -1,4 +1,4 @@
-import { Home, Login, ForgotPassword, Dashboard, ProfileSetup, Profile } from '@/pages';
+import { Home, Login, ForgotPassword, Dashboard, ProfileSetup, Profile, NotFound, TermsOfService, PrivacyPolicy } from '@/pages';
 import { Routes } from '@/types';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
@@ -7,23 +7,47 @@ import type { RouteConfig } from '@interfaces';
 // Re-export Routes enum for convenience
 export { Routes } from '@/types';
 
-// Public routes - accessible to everyone
+// ============================================
+// PUBLIC ROUTES
+// Accessible to everyone (authenticated or not)
+// ============================================
 export const publicRoutes: RouteConfig[] = [
     {
+        // Home page - redirects to dashboard if authenticated
         path: Routes.HOME,
-        element: <Home />,
+        element: (
+            <PublicRoute restricted>
+                <Home />
+            </PublicRoute>
+        ),
         isProtected: false,
     },
     {
-        // Profile Setup is public for new user registration
+        // Profile Setup is public for new user registration flow
+        // Users in registration process are not yet authenticated
         path: Routes.PROFILE_SETUP,
         element: <ProfileSetup />,
         isProtected: false,
     },
+    {
+        // Terms of Service - accessible to everyone
+        path: Routes.TERMS_OF_SERVICE,
+        element: <TermsOfService />,
+        isProtected: false,
+    },
+    {
+        // Privacy Policy - accessible to everyone
+        path: Routes.PRIVACY_POLICY,
+        element: <PrivacyPolicy />,
+        isProtected: false,
+    },
 ];
 
-// Restricted public routes - only for non-authenticated users
+// ============================================
+// RESTRICTED PUBLIC ROUTES
+// Only for non-authenticated users
 // Authenticated users will be redirected to dashboard
+// ============================================
 export const restrictedPublicRoutes: RouteConfig[] = [
     {
         path: Routes.LOGIN,
@@ -45,7 +69,11 @@ export const restrictedPublicRoutes: RouteConfig[] = [
     },
 ];
 
-// Protected routes - require authentication
+// ============================================
+// PROTECTED ROUTES
+// Require authentication to access
+// Non-authenticated users will be redirected to login
+// ============================================
 export const protectedRoutes: RouteConfig[] = [
     {
         path: Routes.DASHBOARD,
@@ -64,12 +92,67 @@ export const protectedRoutes: RouteConfig[] = [
             </ProtectedRoute>
         ),
         isProtected: true,
-    }
+    },
+    {
+        path: Routes.MATCHES,
+        element: (
+            <ProtectedRoute>
+                {/* TODO: Add Matches page */}
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    },
+    {
+        path: Routes.CHAT,
+        element: (
+            <ProtectedRoute>
+                {/* TODO: Add Chat page */}
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    },
+    {
+        path: Routes.SETTINGS,
+        element: (
+            <ProtectedRoute>
+                {/* TODO: Add Settings page */}
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    },
+    {
+        path: Routes.DISCOVER,
+        element: (
+            <ProtectedRoute>
+                {/* TODO: Add Discover page */}
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    },
 ];
 
-// Combine all routes
+// ============================================
+// CATCH-ALL ROUTE (404)
+// Must be last to catch any unmatched routes
+// ============================================
+export const catchAllRoute: RouteConfig[] = [
+    {
+        path: '*',
+        element: <NotFound />,
+        isProtected: false,
+    },
+];
+
+// ============================================
+// ALL ROUTES COMBINED
+// ============================================
 export const allRoutes: RouteConfig[] = [
     ...publicRoutes,
     ...restrictedPublicRoutes,
     ...protectedRoutes,
+    ...catchAllRoute, // Must be last
 ];

@@ -163,9 +163,36 @@ const Login = ({
 
                 {/* Terms */}
                 <p className="login-terms">
-                    By taping continue, you agree to our{' '}
-                    <span className="login-link">Terms</span> and{' '}
-                    <span className="login-link">Privacy Policy</span>
+                    By tapping continue, you agree to our{' '}
+                    <span
+                        className="login-link"
+                        onClick={() => navigate(Routes.TERMS_OF_SERVICE)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                navigate(Routes.TERMS_OF_SERVICE);
+                            }
+                        }}
+                    >
+                        Terms
+                    </span>{' '}
+                    and{' '}
+                    <span
+                        className="login-link"
+                        onClick={() => navigate(Routes.PRIVACY_POLICY)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                navigate(Routes.PRIVACY_POLICY);
+                            }
+                        }}
+                    >
+                        Privacy Policy
+                    </span>
                 </p>
             </div>
         </div>

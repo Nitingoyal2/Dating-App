@@ -113,3 +113,24 @@ export interface SplashProps {
   duration?: number;
 }
 
+// ============================================
+// Legal Pages interfaces
+// ============================================
+export interface TermsSection {
+  title: string;
+  content: string | string[];
+  subsections?: {
+    title: string;
+    content: string | string[];
+  }[];
+}
+
+export interface PrivacySection {
+  title: string;
+  content?: string | string[];
+  subsections?: {
+    title: string;
+    content: string | string[];
+  }[];
+}
+

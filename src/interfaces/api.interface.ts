@@ -78,6 +78,33 @@ export interface ResendOtpResponse {
 }
 
 // ============================================
+// Forgot Password API
+// ============================================
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ForgotPasswordResponse {
+    message: string;
+    otp_sent: boolean;
+    expires_in: number;
+}
+
+export interface ForgotPasswordVerifyRequest {
+    email: string;
+    otp: string;
+}
+
+export interface ForgotPasswordVerifyResponse {
+    user: {
+        id: string;
+        email: string;
+        first_name: string;
+    };
+    access_token: string;
+}
+
+// ============================================
 // Draft API (Step 1)
 // ============================================
 export interface DraftRequest {

@@ -1,13 +1,26 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Checkbox } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import type { StepProps } from '@interfaces';
+import { Routes } from '@/types';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 import { welcomeRules } from '@/data';
 
 const StepWelcome = ({ onNext, onBack }: StepProps) => {
+    const navigate = useNavigate();
     const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+    const handleTermsClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigate(Routes.TERMS_OF_SERVICE);
+    };
+
+    const handlePrivacyClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigate(Routes.PRIVACY_POLICY);
+    };
 
     return (
         <AuthLayout
@@ -38,18 +51,30 @@ const StepWelcome = ({ onNext, onBack }: StepProps) => {
                             I agree to the{' '}
                             <span
                                 className="auth-terms-link"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={handleTermsClick}
                                 role="button"
                                 tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handleTermsClick(e as any);
+                                    }
+                                }}
                             >
                                 Terms &amp; Conditions
                             </span>{' '}
                             and{' '}
                             <span
                                 className="auth-terms-link"
-                                onClick={(e) => e.stopPropagation()}
+                                onClick={handlePrivacyClick}
                                 role="button"
                                 tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        handlePrivacyClick(e as any);
+                                    }
+                                }}
                             >
                                 Privacy Policy
                             </span>

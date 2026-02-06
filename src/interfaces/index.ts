@@ -55,6 +55,8 @@ export type {
   PasswordFormData,
   WelcomeRule,
   SplashProps,
+  TermsSection,
+  PrivacySection,
 } from './pages.interface';
 
 // API interfaces
@@ -83,6 +85,11 @@ export type {
   OtpVerifyResponse,
   ResendOtpRequest,
   ResendOtpResponse,
+  // Forgot Password APIs
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ForgotPasswordVerifyRequest,
+  ForgotPasswordVerifyResponse,
 } from './api.interface';
 
 // Component interfaces

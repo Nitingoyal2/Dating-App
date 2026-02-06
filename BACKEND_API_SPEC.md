@@ -467,10 +467,18 @@ Step 9:  POST   /api/profile/{user_id}/complete  → Finalize & activate account
 
 **Content-Type**: `multipart/form-data`
 
-**Request**:
+**Purpose**: Upload one or multiple photos in a single request (batch upload)
+
+**Request (Single Photo)**:
 ```
 photo: [File]
 order: 0  (optional)
+```
+
+**Request (Batch Upload - Multiple Photos)**:
+```
+photos: [File, File, File, ...]
+orders: [0, 1, 2, ...]  (optional, array of order indices)
 ```
 
 **Response (200 OK)**:
@@ -478,19 +486,18 @@ order: 0  (optional)
 {
     "success": true,
     "data": {
-        "photo": {
-            "id": "photo-uuid-123",
-            "url": "https://storage.example.com/photos/abc123.jpg",
-            "order": 0
-        },
         "photos": [
             { "id": "photo-uuid-123", "url": "https://...", "order": 0 },
-            { "id": "photo-uuid-456", "url": "https://...", "order": 1 }
+            { "id": "photo-uuid-456", "url": "https://...", "order": 1 },
+            { "id": "photo-uuid-789", "url": "https://...", "order": 2 }
         ],
-        "photo_count": 2
+        "photo_count": 3
     },
-    "message": "Photo uploaded successfully"
+    "message": "Photos uploaded successfully"
 }
+```
+
+**Note**: Frontend implements batch upload pattern - all photos are stored locally as File objects and uploaded together when user clicks "Continue" button.
 ```
 
 ---
@@ -575,6 +582,144 @@ order: 0  (optional)
 
 ---
 
+## 🔑 Forgot Password (Account Recovery)
+
+The app provides a **3-step password recovery flow** using OTP verification.
+
+### Forgot Password Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        FORGOT PASSWORD FLOW                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Step 1:  POST   /api/forgot-password      → { email }
+                                        ← { message, otp_sent, expires_in }
+
+Step 2:  (Frontend) Show confirmation page with "Enter Code" button
+
+Step 3:  POST   /api/forgot-password/verify → { email, otp }
+                                        ← { user, access_token }
+
+Resend:  POST   /api/forgot-password     → { email }
+                                        ← { message, otp_sent, expires_in }
+```
+
+---
+
+### Step 1: Send OTP (Forgot Password)
+
+**Endpoint**: `POST /api/forgot-password`
+
+**Purpose**: Send OTP to user's email for password recovery
+
+**Request**:
+```json
+{
+    "email": "user@example.com"
+}
+```
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "message": "OTP sent successfully",
+        "otp_sent": true,
+        "expires_in": 60
+    }
+}
+```
+
+**Errors**:
+```json
+// 404 - User not found
+{
+    "success": false,
+    "error": {
+        "code": "USER_NOT_FOUND",
+        "message": "No account found with this email"
+    }
+}
+```
+
+---
+
+### Step 2: Verify OTP (Forgot Password)
+
+**Endpoint**: `POST /api/forgot-password/verify`
+
+**Purpose**: Verify OTP and get authentication token (auto-login)
+
+**Request**:
+```json
+{
+    "email": "user@example.com",
+    "otp": "123456"
+}
+```
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "user": {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "email": "user@example.com",
+            "first_name": "John"
+        },
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+}
+```
+
+**Errors**:
+```json
+// 400 - Invalid OTP
+{
+    "success": false,
+    "error": {
+        "code": "INVALID_OTP",
+        "message": "Invalid OTP"
+    }
+}
+
+// 400 - OTP Expired
+{
+    "success": false,
+    "error": {
+        "code": "OTP_EXPIRED",
+        "message": "OTP has expired. Please request a new one."
+    }
+}
+```
+
+---
+
+### Resend OTP (Forgot Password)
+
+**Endpoint**: `POST /api/forgot-password`
+
+**Purpose**: Resend OTP to user's email
+
+**Request**: Same as Step 1
+
+**Response (200 OK)**:
+```json
+{
+    "success": true,
+    "data": {
+        "message": "OTP sent successfully",
+        "otp_sent": true,
+        "expires_in": 60
+    }
+}
+```
+
+---
+
 ## 📋 API Summary
 
 ### Login APIs
@@ -595,10 +740,19 @@ order: 0  (optional)
 | 4 | PATCH | `/api/profile/{user_id}` | `{ gender }` |
 | 5 | PATCH | `/api/profile/{user_id}` | `{ seeking }` |
 | 6 | PATCH | `/api/profile/{user_id}` | `{ date_of_birth }` |
-| 7 | POST | `/api/profile/{user_id}/photos` | `multipart/form-data` |
+| 7 | POST | `/api/profile/{user_id}/photos` | `multipart/form-data` (batch: `photos[]`, `orders[]`) |
 | 7 | DELETE | `/api/profile/{user_id}/photos/{photo_id}` | - |
 | 8 | PATCH | `/api/profile/{user_id}` | `{ rules_accepted }` |
 | 9 | POST | `/api/profile/{user_id}/complete` | `{ password, confirm_password }` |
+
+### Forgot Password APIs
+
+| Step | Method | Endpoint | Request Body |
+|------|--------|----------|--------------|
+| 1 | POST | `/api/forgot-password` | `{ email }` |
+| 2 | (Frontend) | Confirmation page | - |
+| 3 | POST | `/api/forgot-password/verify` | `{ email, otp }` |
+| Resend | POST | `/api/forgot-password` | `{ email }` |
 
 ### Token Refresh
 
@@ -621,7 +775,7 @@ Authorization: Bearer {refresh_token}
 }
 ```
 
-**Total: 8 unique endpoints**
+**Total: 10 unique endpoints**
 
 ---
 
@@ -722,7 +876,15 @@ CREATE TABLE otp_codes (
 
 ### TypeScript Interfaces
 
-All interfaces are centralized in `src/interfaces/api.interface.ts`:
+All interfaces are centralized in `src/interfaces/` folder:
+- **API interfaces**: `api.interface.ts` (request/response types)
+- **Page interfaces**: `pages.interface.ts` (page-specific types including legal pages)
+- **Component interfaces**: `components.interface.ts` (component props)
+- **Other interfaces**: `auth.interface.ts`, `common.interface.ts`, `routes.interface.ts`, `store.interface.ts`
+
+### API Interfaces
+
+All API-related interfaces are in `src/interfaces/api.interface.ts`:
 
 ```typescript
 // interfaces/api.interface.ts
@@ -851,6 +1013,46 @@ export interface CompleteResponse {
     user: CompleteUser;
     tokens: CompleteTokens;
 }
+
+// ============================================
+// Forgot Password API Types
+// ============================================
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ForgotPasswordResponse {
+    message: string;
+    otp_sent: boolean;
+    expires_in: number;
+}
+
+export interface ForgotPasswordVerifyRequest {
+    email: string;
+    otp: string;
+}
+
+export interface ForgotPasswordVerifyResponse {
+    user: {
+        id: string;
+        email: string;
+        first_name: string;
+    };
+    access_token: string;
+}
+
+// ============================================
+// Photo Upload Types (Batch)
+// ============================================
+export interface PhotoBatchUploadResponse {
+    photos: Photo[];
+    photo_count: number;
+}
+
+export interface PhotoItem {
+    file: File;
+    preview: string;  // URL.createObjectURL for preview
+}
 ```
 
 ### API Service Structure
@@ -890,6 +1092,8 @@ export const registrationCompleteApi = async (
     return await postApi<CompleteResponse>(`/api/profile/${userId}/complete`, data);
 };
 
+// Single photo upload (legacy)
+// Single photo upload (legacy)
 export const profilePhotoUploadApi = async (
     userId: string,
     file: File,
@@ -899,6 +1103,58 @@ export const profilePhotoUploadApi = async (
     formData.append('photo', file);
     if (order !== undefined) formData.append('order', order.toString());
     return await postFormDataApi<PhotoUploadResponse>(`/api/profile/${userId}/photos`, formData);
+};
+
+// Batch photo upload (recommended - uploads all photos at once)
+export const uploadPhotosApi = async (
+    userId: string,
+    files: File[]
+): Promise<PhotoBatchUploadResponse> => {
+    const formData = new FormData();
+    files.forEach((file, index) => {
+        formData.append('photos', file);
+        formData.append('orders', index.toString());
+    });
+    return await postFormDataApi<PhotoBatchUploadResponse>(`/api/profile/${userId}/photos`, formData);
+};
+
+// Forgot Password APIs
+export const forgotPasswordApi = async (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    return await postApi<ForgotPasswordResponse>('/api/forgot-password', data);
+};
+
+export const forgotPasswordVerifyApi = async (data: ForgotPasswordVerifyRequest): Promise<ForgotPasswordVerifyResponse> => {
+    return await postApi<ForgotPasswordVerifyResponse>('/api/forgot-password/verify', data);
+};
+
+export const forgotPasswordResendApi = async (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    return await postApi<ForgotPasswordResponse>('/api/forgot-password', data);
+};
+
+// Batch photo upload (recommended)
+export const uploadPhotosApi = async (
+    userId: string,
+    files: File[]
+): Promise<PhotoBatchUploadResponse> => {
+    const formData = new FormData();
+    files.forEach((file, index) => {
+        formData.append('photos', file);
+        formData.append('orders', index.toString());
+    });
+    return await postFormDataApi<PhotoBatchUploadResponse>(`/api/profile/${userId}/photos`, formData);
+};
+
+// Forgot Password APIs
+export const forgotPasswordApi = async (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    return await postApi<ForgotPasswordResponse>('/api/forgot-password', data);
+};
+
+export const forgotPasswordVerifyApi = async (data: ForgotPasswordVerifyRequest): Promise<ForgotPasswordVerifyResponse> => {
+    return await postApi<ForgotPasswordVerifyResponse>('/api/forgot-password/verify', data);
+};
+
+export const forgotPasswordResendApi = async (data: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+    return await postApi<ForgotPasswordResponse>('/api/forgot-password', data);
 };
 
 // services/api/patch_apis.ts
@@ -1005,6 +1261,25 @@ export const ValidationMessages = {
 
 ## 📝 Changelog
 
+### v3.5.0 (February 2026)
+- **Frontend**: All interfaces centralized in `src/interfaces/` folder
+- **Frontend**: Terms of Service and Privacy Policy pages created
+- **Frontend**: Legal content moved to data files (`termsOfService.ts`, `privacyPolicy.ts`)
+- **Frontend**: `TermsSection` and `PrivacySection` interfaces added to `pages.interface.ts`
+- **Frontend**: Data files now import interfaces from `@interfaces` instead of defining locally
+- **Frontend**: Consistent interface import pattern across all data files
+
+### v3.4.0 (February 2026)
+- **Added**: Forgot Password API (`POST /api/forgot-password`)
+- **Added**: Forgot Password Verify API (`POST /api/forgot-password/verify`)
+- **Added**: Batch photo upload support (multiple photos in one request)
+- **Frontend**: ForgotPassword 3-step flow (Email → Confirmation → OTP Verify)
+- **Frontend**: Photo upload refactored to batch upload pattern
+- **Frontend**: Images centralized in `@assets` with index exports
+- **Frontend**: Custom logo-based spinner component
+- **Frontend**: Enhanced route guards with loading states
+- **Frontend**: 404 NotFound page with catch-all route
+
 ### v3.3.0 (February 2026)
 - **Added**: Suspended account handling (403 error on login)
 - **Added**: `ProfileStatus` enum with `SUSPENDED` status
@@ -1042,6 +1317,6 @@ export const ValidationMessages = {
 
 ---
 
-*Document Version: 3.3.0*  
+*Document Version: 3.5.0*  
 *Created: February 2026*  
-*Frontend Version: 3.3.0*
+*Frontend Version: 3.5.0*

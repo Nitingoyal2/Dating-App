@@ -1,5 +1,16 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import type { UnknownAction } from '@reduxjs/toolkit';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { authReducer, appReducer } from './slices';
 
 // Combine all reducers
@@ -31,10 +42,33 @@ const rootReducer = (state: CombinedState | undefined, action: UnknownAction): C
   return appCombinedReducer(state, action);
 };
 
+// Redux Persist configuration
+const persistConfig = {
+  key: 'root',
+  storage,
+  // Only persist auth state (not app state like notifications)
+  whitelist: ['auth'],
+  // Transform: customize what gets persisted
+  // We can add transforms here if needed
+};
+
+// Create persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Configure store with persisted reducer
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
   devTools: import.meta.env.DEV,
 });
+
+// Create persistor
+export const persistor = persistStore(store);
 
 // Infer types from the store
 export type RootState = ReturnType<typeof store.getState>;

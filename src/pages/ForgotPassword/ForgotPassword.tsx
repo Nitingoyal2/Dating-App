@@ -1,64 +1,124 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Input } from 'antd';
-import { MailOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 import { Routes } from '@/types';
-import type { ForgotPasswordFormData } from '@interfaces';
-import AuthLayout from '@components/AuthLayout';
-import { PrimaryButton } from '@components/Button';
-import { ValidationMessages } from '@constants';
+import { useAppDispatch } from '@store/hooks';
+import { loginSuccess } from '@store/slices';
+import { forgotPasswordApi, forgotPasswordVerifyApi, forgotPasswordResendApi } from '@services';
+import { StepEmail, StepEmailSent, StepVerifyOtp } from './steps';
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
     const navigate = useNavigate();
-    const [form] = Form.useForm();
+    const dispatch = useAppDispatch();
+    const [currentStep, setCurrentStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
 
     const handleBack = () => {
-        navigate(Routes.LOGIN);
+        if (currentStep > 1) {
+            setCurrentStep((prev) => prev - 1);
+        } else {
+            navigate(Routes.LOGIN);
+        }
     };
 
-    const handleSubmit = (values: ForgotPasswordFormData) => {
-        console.log('Reset password for:', values.email);
-        // TODO: Call API to send reset email
+    // Step 1: Send OTP to email
+    const handleSendOtp = async () => {
+        if (!email) return;
+
+        setIsLoading(true);
+        try {
+            await forgotPasswordApi({ email });
+            message.success('Verification code sent to your email');
+            setCurrentStep(2);
+        } catch (error) {
+            const err = error as Error;
+            message.error(err.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    return (
-        <AuthLayout
-            title="Account Recovery"
-            description="We'll email you a link that will instantly log you in"
-            onBackClick={handleBack}
-        >
-            <Form
-                form={form}
-                layout="vertical"
-                onFinish={handleSubmit}
-                style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
-            >
-                <Form.Item
-                    name="email"
-                    label="Your Email"
-                    rules={[
-                        { required: true, message: ValidationMessages.EMAIL_REQUIRED },
-                        { type: 'email', message: ValidationMessages.EMAIL_INVALID },
-                    ]}
-                >
-                    <Input
-                        prefix={<MailOutlined style={{ color: 'var(--color-text-tertiary)' }} />}
-                        placeholder="Email Address"
-                        size="large"
-                        style={{ borderRadius: 12, height: 52 }}
+    // Step 2: Go to OTP verification
+    const handleProceedToVerify = () => {
+        setCurrentStep(3);
+    };
+
+    // Step 3: Verify OTP and login
+    const handleVerifyOtp = async () => {
+        if (!email || !otp) return;
+
+        setIsLoading(true);
+        try {
+            const response = await forgotPasswordVerifyApi({ email, otp });
+
+            // Login user with received token
+            dispatch(
+                loginSuccess({
+                    user: {
+                        id: response.user.id,
+                        name: response.user.first_name,
+                        email: response.user.email,
+                    },
+                    token: response.access_token,
+                })
+            );
+
+            message.success('Account recovered successfully!');
+            navigate(Routes.DASHBOARD, { replace: true });
+        } catch (error) {
+            const err = error as Error;
+            message.error(err.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Resend OTP
+    const handleResendOtp = async () => {
+        await forgotPasswordResendApi({ email });
+    };
+
+    const renderStep = () => {
+        switch (currentStep) {
+            case 1:
+                return (
+                    <StepEmail
+                        value={email}
+                        onChange={setEmail}
+                        onNext={handleSendOtp}
+                        onBack={handleBack}
+                        isLoading={isLoading}
                     />
-                </Form.Item>
+                );
+            case 2:
+                return (
+                    <StepEmailSent
+                        email={email}
+                        onNext={handleProceedToVerify}
+                        onBack={handleBack}
+                    />
+                );
+            case 3:
+                return (
+                    <StepVerifyOtp
+                        email={email}
+                        value={otp}
+                        onChange={setOtp}
+                        onVerify={handleVerifyOtp}
+                        onResend={handleResendOtp}
+                        onBack={handleBack}
+                        isLoading={isLoading}
+                    />
+                );
+            default:
+                return null;
+        }
+    };
 
-                <span className="form-link">Resend email</span>
-
-                <Form.Item style={{ marginTop: 32, marginBottom: 0 }}>
-                    <PrimaryButton htmlType="submit">
-                        Send Email
-                    </PrimaryButton>
-                </Form.Item>
-            </Form>
-        </AuthLayout>
-    );
+    return <div style={{ minHeight: '100%' }}>{renderStep()}</div>;
 };
 
 export default ForgotPassword;
