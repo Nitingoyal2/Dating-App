@@ -1,11 +1,18 @@
 .dashboard-layout{
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh;
     width: 100%;
+    overflow: hidden;
+    position: relative;
 }
 
 .dashboard-head{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,6 +21,7 @@
     padding: 14px 20px;
     background-color: #fff;
     border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
 }
 
 .dashboard-head .dashboard-header-title{
@@ -21,16 +29,66 @@
     font-weight: 600;
     color: #000;
     text-align: center;
+    flex: 1;
+}
+
+.dashboard-head .dashboard-header-slot{
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-back-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard-content-wrapper {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-top: 56px; /* Header height when shown */
+    margin-bottom: 74px; /* Footer height */
+    height: calc(100vh - 56px - 74px);
+}
+
+/* When no header is shown (Discover has its own) */
+.dashboard-content-wrapper.no-header {
+    margin-top: 0;
+    height: calc(100vh - 74px);
+}
+
+.dashboard-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #999;
+    font-size: 18px;
+    gap: 8px;
 }
 
 .content{
     width: 100%;
-    height: calc(100vh - 56px - 74px);
+    height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
+}
 
-    /* scroll-snap-type: y mandatory;
-    -webkit-overflow-scrolling: touch; */
+.dashboard-content-wrapper::-webkit-scrollbar,
+.content::-webkit-scrollbar {
+    display: none;
 }
 
 .content .avatar-content{
@@ -145,13 +203,37 @@
 } */
 
 .dashboard-footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
     display: grid;
     grid-template-columns: repeat(5, minmax(60px, 1fr));
-    /* place-content: center; */
     place-items: center;
     width: 100%;
     height: 74px;
     background-color: #fff;
     padding: 8px 16px 16px 16px;
     border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
 }
+
+.footer-nav-item {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    width: 100%;
+    height: 100%;
+}
+
+.footer-nav-item:active {
+    transform: scale(0.9);
+}
+
+/* Active state styling handled by icon color */

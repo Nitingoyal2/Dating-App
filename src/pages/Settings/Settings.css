@@ -1,0 +1,118 @@
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: #fff;
+}
+
+.settings-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #fff;
+    flex-shrink: 0;
+    height: 56px;
+}
+
+.settings-back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.settings-header-spacer {
+    width: 40px;
+}
+
+.settings-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    margin-top: 56px; /* Header height */
+    margin-bottom: 74px; /* Footer height */
+    height: calc(100vh - 56px - 74px);
+}
+
+.settings-section {
+    margin-bottom: 32px;
+}
+
+.settings-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    margin: 0 0 12px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.settings-item:active {
+    background-color: #f5f5f5;
+}
+
+.settings-item span:first-child {
+    font-size: 16px;
+    color: #000;
+    font-weight: 400;
+}
+
+.settings-arrow {
+    color: #999;
+    font-size: 18px;
+}
+
+.settings-logout-btn {
+    width: 100%;
+    padding: 16px;
+    background: #FF6B9D;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: 8px;
+}
+
+.settings-logout-btn:active {
+    background-color: #e55a8a;
+    transform: scale(0.98);
+}
+
+.settings-content::-webkit-scrollbar {
+    display: none;
+}
+

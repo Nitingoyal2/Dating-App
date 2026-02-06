@@ -25,7 +25,17 @@ export {
   AppleIcon,
   GoogleIcon,
   WarningIcon,
-  SuccessIcon
+  SuccessIcon,
+  DashboardIcon,
+  MatchesIcon,
+  ChatIcon,
+  ProfileIcon,
+  ExploreIcon,
+  StartIcon,
+  VerifiedIcon,
+  LocationSymbol,
+  CancleIcon,
+  FilterIcon
 } from './icons';
 
 export { default as ProstoLogo } from './ProstoLogo';

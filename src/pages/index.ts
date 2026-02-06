@@ -5,6 +5,8 @@ export { default as ForgotPassword } from './ForgotPassword';
 export { default as Dashboard } from './Dashboard';
 export { ProfileSetup } from './ProfileSetup';
 export { Profile } from './Profile';
+export { Discover } from './Discover';
+export { Settings } from './Settings';
 export { default as NotFound } from './NotFound';
 export { default as TermsOfService } from './TermsOfService';
 export { default as PrivacyPolicy } from './PrivacyPolicy';
