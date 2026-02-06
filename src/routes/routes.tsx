@@ -1,4 +1,4 @@
-import { Home, Login, ForgotPassword, Dashboard, ProfileSetup } from '@/pages';
+import { Home, Login, ForgotPassword, Dashboard, ProfileSetup, Profile } from '@/pages';
 import { Routes } from '@/types';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
@@ -56,6 +56,15 @@ export const protectedRoutes: RouteConfig[] = [
         ),
         isProtected: true,
     },
+    {
+        path: Routes.PROFILE,
+        element: (
+            <ProtectedRoute>
+                <Profile />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    }
 ];
 
 // Combine all routes
