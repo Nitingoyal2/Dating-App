@@ -66,6 +66,8 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
         return () => document.removeEventListener("mousedown", handleOutside);
     }, [isWorkEditing]);
 
+    
+
     const handlePhotoRemove = (index: number) => {
         setPhotos((prev) => prev.filter((_, i) => i !== index));
     };
