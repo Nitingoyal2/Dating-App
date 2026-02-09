@@ -87,104 +87,7 @@
   margin: 0;
 }
 
-/* Photos Grid */
-.edit-profile-photos-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  width: 100%;
-}
-
-.edit-profile-photo-slot {
-  aspect-ratio: 1;
-  width: 100%;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #f5f5f5;
-  position: relative;
-}
-
-.edit-profile-photo-wrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.edit-profile-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.edit-profile-photo-remove {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #ff2c29;
-  border: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 0;
-}
-
-.edit-profile-photo-add {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #f5f5f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-}
-
-.edit-profile-photo-add-icon {
-  font-size: 32px;
-  color: #ff2c29;
-  font-weight: 300;
-  line-height: 1;
-}
-
-.edit-profile-photos-hint {
-  font-size: 12px;
-  color: #999;
-  margin: 0;
-  text-align: center;
-}
-
 /* Form Fields */
-.edit-profile-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  .edit-profile-birthday {
-    cursor: pointer;
-    input {
-      background: none;
-      border: none;
-      font-size: 14px;
-      color: #000;
-      width: 100%;
-    }
-    input:focus {
-      outline: none;
-    }
-  }
-}
-
-.edit-profile-field-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #000;
-}
 
 .edit-profile-field-value {
   background: #f5f5f5;
@@ -236,12 +139,6 @@
   background-color: #ff2c29;
 }
 
-.edit-profile-field-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .edit-profile-char-count {
   font-size: 12px;
   color: #999;
@@ -267,44 +164,7 @@
   border: none;
   box-shadow: none;
   outline: none;
-}
-
- .edit-profile-edit-icon-about {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
 } 
-
-.edit-profile-edit-icon-about:hover {
-  color: #000;
-}
-
-.about-view-box {
-  background: #f5f5f5;
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 14px;
-  color: #00000050;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  position: relative
-}
-
-.about-view-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 /* Option Items */
 .edit-profile-option-item {

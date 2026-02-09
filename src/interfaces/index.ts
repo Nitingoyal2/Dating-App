@@ -116,4 +116,5 @@ export type {
   EditProfileProps,
   EditProfileItemConfig,
   CommonSelectorProps,
+  CommonTextareaProps,
 } from './components.interface';
