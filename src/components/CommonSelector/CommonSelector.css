@@ -1,0 +1,63 @@
+.common-selector-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    background-color: var(--color-bg-secondary);
+    margin: 10px 20px;
+  }
+  
+  .common-selector-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(23, 26, 32, 0.1);
+    cursor: pointer;
+  
+    h3 {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--color-text-primary);
+    }
+  }
+  
+  .common-selector-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* ================= RADIO ================= */
+  
+  .radio {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--color-border-dark);
+    border-radius: 50%;
+    background-color: transparent;
+  }
+  
+  .radio.active {
+    border: 3px solid transparent;
+    background:
+      linear-gradient(var(--color-bg-secondary), var(--color-bg-secondary)) padding-box,
+      linear-gradient(268.55deg, #ff483c 0%, #ff2c5a 100%) border-box;
+  }
+  
+  /* ================= CHECKBOX ================= */
+  
+  .checkbox {
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 6px;
+    background-color: rgba(23, 26, 32, 0.1);
+    color: var(--color-text-inverse);
+  }
+  
+  .checkbox svg {
+    fill: currentColor;
+  }
+  
+  .checkbox.active {
+    background: linear-gradient(268.55deg, #ff483c 0%, #ff2c5a 100%);
+  }
