@@ -25,6 +25,7 @@ export const EditProfileItemLabels = {
     [EditProfileItemEnum.GENDER]: 'My Gender',
     [EditProfileItemEnum.ABOUT_ME]: 'About Me',
     [EditProfileItemEnum.CURRENT_WORK]: 'Current Work',
+    [EditProfileItemEnum.SCHOOL]: 'School',
     // PERSONAL section
     [EditProfileItemEnum.LOOKING_FOR]: 'Looking For',
     [EditProfileItemEnum.PETS]: 'Pets',
@@ -51,6 +52,7 @@ export const EditProfileItemIcons: Record<EditProfileItemEnum, string> = {
     [EditProfileItemEnum.GENDER]: '⚧️',
     [EditProfileItemEnum.ABOUT_ME]: '📝',
     [EditProfileItemEnum.CURRENT_WORK]: '💼',
+    [EditProfileItemEnum.SCHOOL]: '🏫',
     // PERSONAL section
     [EditProfileItemEnum.LOOKING_FOR]: '🔍',
     [EditProfileItemEnum.PETS]: '🐾',
@@ -96,6 +98,7 @@ export const EditProfileItemsBySection: Record<EditProfileSection, EditProfileIt
         EditProfileItemEnum.GENDER,
         EditProfileItemEnum.ABOUT_ME,
         EditProfileItemEnum.CURRENT_WORK,
+        EditProfileItemEnum.SCHOOL,
     ],
     [EditProfileSection.PERSONAL]: [
         EditProfileItemEnum.LOOKING_FOR,

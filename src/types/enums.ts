@@ -168,6 +168,7 @@ export const EditProfileItem = {
   GENDER: 'gender',
   ABOUT_ME: 'about_me',
   CURRENT_WORK: 'current_work',
+  SCHOOL: 'school',
   // PERSONAL section
   LOOKING_FOR: 'looking_for',
   PETS: 'pets',
