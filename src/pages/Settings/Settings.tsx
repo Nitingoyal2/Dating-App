@@ -20,7 +20,7 @@ const Settings = () => {
             // Pass state to indicate we came from Settings
             navigate(route, { state: { from: Routes.SETTINGS } });
         }
-        // Handle other items here (e.g., Edit Profile, Privacy, etc.)
+        // Handle other items here (e.g., Edit, Privacy, etc.)
     };
 
     const settingsSections = getAllSettingsSections();

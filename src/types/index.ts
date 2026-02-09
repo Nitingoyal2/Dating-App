@@ -13,4 +13,6 @@ export {
   ProfileAction,
   SettingsSection,
   SettingsItem,
+  EditProfileSection,
+  EditProfileItem,
 } from './enums';

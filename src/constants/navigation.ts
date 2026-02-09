@@ -17,6 +17,7 @@ export const ScreenTitles = {
     [DashboardScreen.CHAT]: 'Messages',
     [DashboardScreen.PROFILE]: 'My Profile',
     [DashboardScreen.SETTINGS]: 'Settings',
+    [DashboardScreen.EDIT]: 'Edit',
 } as const satisfies Record<DashboardScreenType, string>;
 
 /**
@@ -32,6 +33,7 @@ export const DEFAULT_DASHBOARD_SCREEN: DashboardScreenType = DashboardScreen.DIS
 export const BackNavigation: Partial<Record<DashboardScreenType, DashboardScreenType>> = {
     [DashboardScreen.SETTINGS]: DashboardScreen.PROFILE,
     [DashboardScreen.PROFILE]: DashboardScreen.DISCOVER,
+    [DashboardScreen.EDIT]: DashboardScreen.PROFILE,
 } as const;
 
 /**
@@ -40,6 +42,7 @@ export const BackNavigation: Partial<Record<DashboardScreenType, DashboardScreen
 export const ScreensWithBackButton: DashboardScreenType[] = [
     DashboardScreen.PROFILE,
     DashboardScreen.SETTINGS,
+    DashboardScreen.EDIT,
 ] as const;
 
 /**

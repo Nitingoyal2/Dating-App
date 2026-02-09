@@ -675,18 +675,500 @@ import AuthLayout from '@components/AuthLayout';
 
 ## 📄 Pages
 
-| Page | Route | Description |
-|------|-------|-------------|
-| Splash | (initial) | Loading screen with Prosto logo |
-| Home | `/` | Onboarding carousel screen |
-| LoginSetup | `/login` | 2-step login with OTP (Phone/Email → OTP) |
-| ForgotPassword | `/forgot-password` | 3-step password recovery (Email → Confirmation → OTP) |
-| ProfileSetup | `/profile-setup` | 9-step profile creation with API |
-| Dashboard | `/dashboard` | Main app (after authentication) |
-| Profile | `/profile` | User profile page (protected) |
-| TermsOfService | `/terms-of-service` | Terms of Service page (public) |
-| PrivacyPolicy | `/privacy-policy` | Privacy Policy page (public) |
-| NotFound | `*` | 404 error page (catch-all route) |
+This section documents every page component, their enums/types, constants, and rendering logic.
+
+### Page Overview
+
+| Page | Route | Type | Description |
+|------|-------|------|-------------|
+| Splash | (initial) | Public | Loading screen with Prosto logo |
+| Home | `/` | Public | Onboarding carousel screen |
+| LoginSetup | `/login` | Restricted Public | 2-step login with OTP (Phone/Email → OTP) |
+| ForgotPassword | `/forgot-password` | Restricted Public | 3-step password recovery (Email → Confirmation → OTP) |
+| ProfileSetup | `/profile-setup` | Public | 9-step profile creation with API |
+| Dashboard | `/dashboard` | Protected | Main app container with DashboardLayout |
+| Discover | `/dashboard` (screen) | Protected | Swipeable profile cards |
+| Profile | `/profile` (screen) | Protected | User profile page with actions |
+| EditProfile | `/profile` (screen) | Protected | Edit form with sections |
+| Settings | `/settings` (screen) | Protected | Settings page with sections |
+| TermsOfService | `/terms-of-service` | Public | Terms of Service page |
+| PrivacyPolicy | `/privacy-policy` | Public | Privacy Policy page |
+| NotFound | `*` | Public | 404 error page (catch-all route) |
+
+---
+
+### 1. Dashboard Page
+
+**File**: `src/pages/Dashboard/Dashboard.tsx`
+
+**Purpose**: Main container that maps routes to dashboard screens using `DashboardLayout`.
+
+**Enums/Types Used**:
+```typescript
+import { DashboardScreen, Routes } from '@/types';
+import type { DashboardScreen as DashboardScreenType } from '@interfaces';
+```
+
+**Enums**:
+- `DashboardScreen`: `DISCOVER`, `MATCHES`, `EXPLORE`, `CHAT`, `PROFILE`, `SETTINGS`, `EDIT`
+
+**How It Renders**:
+1. Uses `useLocation()` to get current route
+2. Maps route pathname to `DashboardScreen` enum value
+3. Passes active screen to `DashboardLayout` component
+4. `DashboardLayout` handles rendering the appropriate screen component
+
+**Component Structure**:
+```typescript
+const Dashboard = () => {
+  const location = useLocation();
+  const getActiveScreenFromRoute = (): DashboardScreenType => {
+    switch (location.pathname) {
+      case Routes.DASHBOARD:
+      case Routes.DISCOVER:
+        return DashboardScreen.DISCOVER;
+      case Routes.PROFILE:
+        return DashboardScreen.PROFILE;
+      // ... more cases
+    }
+  };
+  return <DashboardLayout activeScreen={getActiveScreenFromRoute()} />;
+};
+```
+
+---
+
+### 2. Profile Page
+
+**File**: `src/pages/Profile/Profile.tsx`
+
+**Purpose**: Displays user profile with circular progress indicator and action buttons grid.
+
+**Enums/Types Used**:
+```typescript
+import { ProfileAction } from '@/types';
+import type { ProfileProps } from '@interfaces';
+```
+
+**Enums**:
+- `ProfileAction`: `SETTINGS`, `EDIT`, `SAFETY`, `GOLD`, `PLATINUM`, `DIAMOND`
+
+**Constants Used** (`src/constants/profile.ts`):
+- `getAllProfileActions()`: Returns array of `ProfileActionConfig[]`
+- `ProfileActionLabels`: Maps action to label string
+- `ProfileActionIcons`: Maps action to icon path
+- `ProfileActionFilters`: Maps action to CSS filter value
+- `DEFAULT_PROFILE_AGE`, `DEFAULT_PROFILE_NAME`, `DEFAULT_PROFILE_IMAGE_URL`
+- `PROFILE_PROGRESS_SUFFIX`, `PROFILE_PROGRESS_STROKE_COLOR_START`, etc.
+
+**Interfaces**:
+```typescript
+interface ProfileProps {
+  onSettingsClick?: () => void;
+  onEditProfileClick?: () => void;
+}
+
+interface ProfileActionConfig {
+  action: ProfileAction;
+  label: string;
+  color: string;
+  icon: string;
+  filter: string;
+}
+```
+
+**How It Renders**:
+1. Gets user data from Redux store (`useAppSelector`)
+2. Gets all profile actions using `getAllProfileActions()`
+3. Calculates profile progress using `calculateProfileProgress(user)`
+4. Renders circular progress indicator (Ant Design `Progress` component)
+5. Displays user avatar (primary photo or default)
+6. Shows user name and age
+7. Renders action buttons grid (3 columns) with icons and labels
+8. Handles clicks: `SETTINGS` → `onSettingsClick()`, `EDIT` → `onEditProfileClick()`
+
+**Component Structure**:
+```typescript
+const Profile = ({ onSettingsClick, onEditProfileClick }: ProfileProps) => {
+  const { user } = useAppSelector((state) => state.auth);
+  const profileActions = getAllProfileActions();
+  const profileProgress = calculateProfileProgress(user);
+
+  return (
+    <div className="profile-page">
+      {/* Circular Progress with Avatar */}
+      <Progress type="circle" percent={profileProgress} />
+      {/* User Info */}
+      <h2>{user?.first_name}, {user?.age}</h2>
+      {/* Action Grid */}
+      {profileActions.map((actionConfig) => (
+        <div onClick={() => handleActionClick(actionConfig.action)}>
+          <img src={actionConfig.icon} />
+          <h5>{actionConfig.label}</h5>
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+---
+
+### 3. EditProfile Page
+
+**File**: `src/pages/EditProfile/EditProfile.tsx`
+
+**Purpose**: Form to edit user profile with multiple sections (BASIC, PERSONAL, APPEARANCE, HABITS).
+
+**Enums/Types Used**:
+```typescript
+import { EditProfileSection, EditProfileItem } from '@/types';
+import type { EditProfileProps } from '@interfaces';
+```
+
+**Enums**:
+- `EditProfileSection`: `BASIC`, `PERSONAL`, `APPEARANCE`, `HABITS`
+- `EditProfileItem`: `BIRTHDAY`, `GENDER`, `ABOUT_ME`, `CURRENT_WORK`, `LOOKING_FOR`, `PETS`, `CHILDREN`, `ASTROLOGICAL_SIGN`, `RELIGION`, `EDUCATION`, `HEIGHT`, `BODY_TYPE`, `EXERCISE`, `DRINK`, `SMOKER`, `MARIJUANA`
+
+**Constants Used** (`src/constants/editProfile.ts`):
+- `getAllEditProfileSections()`: Returns array of sections with items
+- `EditProfileSectionTitles`: Maps section to title string
+- `EditProfileItemLabels`: Maps item to label string
+- `EditProfileItemIcons`: Maps item to emoji/icon string
+- `EditProfileItemDefaults`: Maps item to default value (e.g., `SMOKER: 'Never'`)
+
+**Interfaces**:
+```typescript
+interface EditProfileProps {
+  onDone?: () => void;
+  onPreview?: () => void;
+}
+
+interface EditProfileItemConfig {
+  item: EditProfileItem;
+  label: string;
+  icon: string;
+  defaultValue: string | null;
+}
+```
+
+**How It Renders**:
+1. Gets user data from Redux store
+2. Gets all sections using `getAllEditProfileSections()`
+3. **Header**: Shows "Preview" link and "Done" button
+4. **UPLOAD IMAGES Section**: 
+   - 3x3 grid of photo slots (9 max)
+   - Shows existing photos or "+" add button
+   - Remove button (X) on each photo
+5. **BASIC Section**: Renders custom fields:
+   - `BIRTHDAY`: Read-only formatted date
+   - `GENDER`: Radio buttons (Man/Woman)
+   - `ABOUT_ME`: TextArea with character count (500 max)
+   - `CURRENT_WORK`: Text field with edit icon
+6. **Other Sections** (PERSONAL, APPEARANCE, HABITS): Renders as clickable option items:
+   - Icon + Label on left
+   - Placeholder/default value + arrow on right
+7. Uses `renderBasicField()` for BASIC section items
+8. Uses `renderOptionItem()` for other section items
+
+**Component Structure**:
+```typescript
+const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
+  const editProfileSections = getAllEditProfileSections();
+  
+  return (
+    <div className="edit-profile-page">
+      {/* Header */}
+      <div className="edit-profile-header">
+        <button onClick={onPreview}>Preview</button>
+        <button onClick={onDone}>Done</button>
+      </div>
+      
+      {/* UPLOAD IMAGES */}
+      <div className="edit-profile-section">
+        <h2>UPLOAD IMAGES</h2>
+        {/* 3x3 photo grid */}
+      </div>
+      
+      {/* Dynamic Sections */}
+      {editProfileSections.map(({ section, title, items }) => (
+        <div key={section}>
+          <h2>{title}</h2>
+          {section === EditProfileSection.BASIC ? (
+            items.map(item => renderBasicField(item.item))
+          ) : (
+            items.map(item => renderOptionItem(item))
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+```
+
+---
+
+### 4. Settings Page
+
+**File**: `src/pages/Settings/Settings.tsx`
+
+**Purpose**: Displays settings sections with items, handles navigation and logout.
+
+**Enums/Types Used**:
+```typescript
+import { Routes } from '@/types';
+import { getAllSettingsSections, SETTINGS_LOGOUT_TEXT } from '@constants';
+```
+
+**Enums**:
+- `SettingsSection`: `ACCOUNT`, `PREFERENCES`, `SUPPORT`
+- `SettingsItem`: `PRIVACY`, `SECURITY`, `NOTIFICATIONS`, `LANGUAGE`, `HELP_CENTER`, `CONTACT_US`, `TERMS_OF_SERVICE`, `PRIVACY_POLICY`
+
+**Constants Used** (`src/constants/settings.ts`):
+- `getAllSettingsSections()`: Returns array of sections with items
+- `SettingsSectionTitles`: Maps section to title string
+- `SettingsItemLabels`: Maps item to label string
+- `SettingsItemRoutes`: Maps item to route path (partial)
+- `SETTINGS_LOGOUT_TEXT`: "Logout" button text
+
+**Interfaces**:
+```typescript
+interface SettingsItemConfig {
+  item: SettingsItem;
+  label: string;
+  route: string | null;
+}
+```
+
+**How It Renders**:
+1. Gets all settings sections using `getAllSettingsSections()`
+2. Renders sections dynamically:
+   - Section title (uppercase)
+   - Items as clickable rows with label and arrow icon
+   - Each item navigates to its route (if available)
+3. **Logout Button**: Separate section at bottom with styled button
+4. Handles logout: dispatches `logout()` action and navigates to login
+
+**Component Structure**:
+```typescript
+const Settings = () => {
+  const settingsSections = getAllSettingsSections();
+  
+  return (
+    <div className="settings-page">
+      {settingsSections.map(({ section, title, items }) => (
+        <div key={section}>
+          <h2>{title}</h2>
+          {items.map(itemConfig => (
+            <div onClick={() => handleItemClick(itemConfig.route)}>
+              <span>{itemConfig.label}</span>
+              <ArrowRightIcon />
+            </div>
+          ))}
+        </div>
+      ))}
+      <button onClick={handleLogout}>{SETTINGS_LOGOUT_TEXT}</button>
+    </div>
+  );
+};
+```
+
+---
+
+### 5. Discover Page
+
+**File**: `src/pages/Discover/Discover.tsx`
+
+**Purpose**: Swipeable profile cards with like/dislike/superlike actions.
+
+**Enums/Types Used**: None (uses mock data currently)
+
+**How It Renders**:
+1. Maintains `currentProfileIndex` state
+2. Displays current profile card:
+   - Large image
+   - Overlay with name, age, verified badge
+   - Distance indicator
+3. **Action Buttons** (bottom):
+   - Dislike (X icon, orange)
+   - Super Like (star icon, white)
+   - Like (heart icon, pink)
+4. On action click, moves to next profile
+
+**Component Structure**:
+```typescript
+const Discover = () => {
+  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const currentProfile = profiles[currentProfileIndex];
+  
+  return (
+    <div className="discover-screen">
+      <div className="profile-card">
+        <img src={currentProfile.image} />
+        <div className="profile-card-overlay">
+          <h2>{currentProfile.name}, {currentProfile.age}</h2>
+          <VerifiedIcon />
+          <span>{currentProfile.distance} miles away</span>
+        </div>
+      </div>
+      <div className="discover-actions">
+        <button onClick={handleDislike}><CloseIcon /></button>
+        <button onClick={handleSuperLike}><StartIcon /></button>
+        <button onClick={handleLike}><HeartIcon /></button>
+      </div>
+    </div>
+  );
+};
+```
+
+---
+
+### 6. DashboardLayout Component
+
+**File**: `src/components/DashboardLayout/DashboardLayout.tsx`
+
+**Purpose**: Wrapper component that manages dashboard screen navigation and renders appropriate page.
+
+**Enums/Types Used**:
+```typescript
+import { DashboardScreen as DashboardScreenEnum, Routes } from '@/types';
+import type { DashboardLayoutProps, DashboardScreen } from '@interfaces';
+```
+
+**Constants Used** (`src/constants/navigation.ts`):
+- `DEFAULT_DASHBOARD_SCREEN`: Default screen (DISCOVER)
+- `getScreenTitle()`: Gets title for screen
+- `getBackNavigationTarget()`: Gets back navigation target
+- `shouldShowBackButton()`: Checks if screen should show back button
+- `ScreenTitles`: Maps screen to title
+- `BackNavigation`: Maps screen to back target
+- `ScreensWithBackButton`: Array of screens with back button
+
+**How It Renders**:
+1. **Header**: 
+   - Discover screen: Logo center, filter button right
+   - Other screens: Back button (if applicable), title center
+2. **Content**: Renders based on `activeScreen`:
+   - `DISCOVER` → `<Discover />`
+   - `PROFILE` → `<Profile onSettingsClick={...} onEditProfileClick={...} />`
+   - `SETTINGS` → `<Settings />`
+   - `EDIT` → `<EditProfile onDone={...} onPreview={...} />`
+   - Others → Placeholder "Coming Soon"
+3. **Footer**: Navigation bar with 5 buttons (Discover, Matches, Explore, Chat, Profile)
+4. Handles screen changes and URL updates
+
+**Component Structure**:
+```typescript
+const DashboardLayout = ({ activeScreen, onScreenChange }: DashboardLayoutProps) => {
+  const renderContent = () => {
+    switch (activeScreen) {
+      case DashboardScreenEnum.DISCOVER:
+        return <Discover />;
+      case DashboardScreenEnum.PROFILE:
+        return <Profile onSettingsClick={...} onEditProfileClick={...} />;
+      case DashboardScreenEnum.SETTINGS:
+        return <Settings />;
+      case DashboardScreenEnum.EDIT:
+        return <EditProfile onDone={...} onPreview={...} />;
+      default:
+        return <div>Coming Soon</div>;
+    }
+  };
+  
+  return (
+    <div className="dashboard-layout">
+      <div className="dashboard-head">{/* Header */}</div>
+      <div className="dashboard-content-wrapper">{renderContent()}</div>
+      <div className="dashboard-footer">{/* Navigation */}</div>
+    </div>
+  );
+};
+```
+
+---
+
+### 7. Other Pages
+
+#### Splash Page
+- **Purpose**: Initial loading screen
+- **Renders**: Prosto logo with animation
+- **Duration**: 2.5 seconds, then redirects
+
+#### Home Page
+- **Purpose**: Onboarding carousel
+- **Data**: Uses `homeCarouselData` from `@/data`
+- **Renders**: Carousel slides with "Get Started" button
+
+#### LoginSetup Page
+- **Purpose**: 2-step OTP login
+- **Enums**: `LoginType` (PHONE, EMAIL)
+- **Steps**: Login → OtpVerification
+- **See**: [Login Setup Flow](#-login-setup-flow)
+
+#### ProfileSetup Page
+- **Purpose**: 9-step profile creation
+- **Steps**: Email → Name → Location → Gender → Seeking → Birthday → Photos → Welcome → Success
+- **See**: [Profile Setup Flow](#-profile-setup-flow)
+
+#### ForgotPassword Page
+- **Purpose**: 3-step password recovery
+- **Steps**: Email → EmailSent → VerifyOtp
+- **See**: [Forgot Password Flow](#-forgot-password-flow)
+
+#### TermsOfService & PrivacyPolicy Pages
+- **Purpose**: Legal content display
+- **Data**: Uses `termsOfServiceData` and `privacyPolicyData` from `@/data`
+- **Renders**: Sections and subsections dynamically
+
+#### NotFound Page
+- **Purpose**: 404 error page
+- **Renders**: "Page Not Found" message with back button
+
+---
+
+### Page Rendering Pattern
+
+All pages follow this pattern:
+
+1. **Import Enums/Types**: From `@/types` and `@interfaces`
+2. **Import Constants**: From `@constants` (section configs, labels, etc.)
+3. **Get Data**: From Redux store or props
+4. **Render Structure**:
+   - Header (if custom)
+   - Content sections (dynamically from constants)
+   - Action buttons/handlers
+5. **Handle Events**: Click handlers, navigation, API calls
+
+**Example Pattern**:
+```typescript
+// 1. Imports
+import { SomeEnum } from '@/types';
+import { getAllSections } from '@constants';
+import type { SomeProps } from '@interfaces';
+
+// 2. Component
+const SomePage = ({ onAction }: SomeProps) => {
+  // 3. Get data
+  const sections = getAllSections();
+  const { user } = useAppSelector((state) => state.auth);
+  
+  // 4. Render
+  return (
+    <div className="page">
+      {sections.map(({ section, title, items }) => (
+        <div key={section}>
+          <h2>{title}</h2>
+          {items.map(item => (
+            <div onClick={() => handleClick(item)}>
+              {item.label}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
+```
 
 ---
 

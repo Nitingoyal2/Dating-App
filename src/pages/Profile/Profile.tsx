@@ -1,5 +1,5 @@
-import { Progress } from 'antd';
-import { useAppSelector } from '@store/hooks';
+import { Progress } from "antd";
+import { useAppSelector } from "@store/hooks";
 import {
     getAllProfileActions,
     DEFAULT_PROFILE_AGE,
@@ -11,21 +11,22 @@ import {
     PROFILE_PROGRESS_TRAIL_COLOR,
     PROFILE_PROGRESS_BADGE_GRADIENT_START,
     PROFILE_PROGRESS_BADGE_GRADIENT_END,
-} from '@constants';
-import { calculateProfileProgress } from '@/utils/profileProgress';
-import { ProfileAction } from '@/types';
-import type { ProfileProps } from '@interfaces';
-import './Profile.css';
+} from "@constants";
+import { calculateProfileProgress } from "@/utils/profileProgress";
+import { ProfileAction } from "@/types";
+import type { ProfileProps } from "@interfaces";
+import "./Profile.css";
 
-const Profile = ({ onSettingsClick }: ProfileProps) => {
+const Profile = ({ onSettingsClick, onEditProfileClick }: ProfileProps) => {
     const { user } = useAppSelector((state) => state.auth);
     const profileActions = getAllProfileActions();
 
     const handleActionClick = (action: ProfileAction) => {
         if (action === ProfileAction.SETTINGS && onSettingsClick) {
             onSettingsClick();
+        } else if (action === ProfileAction.EDIT && onEditProfileClick) {
+            onEditProfileClick(); // Handle other actions here
         }
-        // Handle other actions here
     };
 
     // Calculate profile progress based on completed fields
@@ -44,8 +45,8 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                                 size={180}
                                 strokeWidth={20}
                                 strokeColor={{
-                                    '0%': PROFILE_PROGRESS_STROKE_COLOR_START,
-                                    '100%': PROFILE_PROGRESS_STROKE_COLOR_END,
+                                    "0%": PROFILE_PROGRESS_STROKE_COLOR_START,
+                                    "100%": PROFILE_PROGRESS_STROKE_COLOR_END,
                                 }}
                                 trailColor={PROFILE_PROGRESS_TRAIL_COLOR}
                                 format={() => null}
@@ -55,7 +56,7 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                                 <img
                                     src={
                                         user?.photos && user.photos.length > 0
-                                            ? `${import.meta.env.VITE_API_BASE_URL || ''}${user.photos.find(p => p.is_primary)?.url || user.photos[0]?.url || ''}`
+                                            ? `${import.meta.env.VITE_API_BASE_URL || ""}${user.photos.find((p) => p.is_primary)?.url || user.photos[0]?.url || ""}`
                                             : DEFAULT_PROFILE_IMAGE_URL
                                     }
                                     alt="Profile"
@@ -66,10 +67,11 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                         <div
                             className="profile-progress-badge"
                             style={{
-                                background: `linear-gradient(to right, ${PROFILE_PROGRESS_BADGE_GRADIENT_START}, ${PROFILE_PROGRESS_BADGE_GRADIENT_END})`
+                                background: `linear-gradient(to right, ${PROFILE_PROGRESS_BADGE_GRADIENT_START}, ${PROFILE_PROGRESS_BADGE_GRADIENT_END})`,
                             }}
                         >
-                            {profileProgress}{PROFILE_PROGRESS_SUFFIX}
+                            {profileProgress}
+                            {PROFILE_PROGRESS_SUFFIX}
                         </div>
                     </div>
                 </div>
@@ -77,7 +79,11 @@ const Profile = ({ onSettingsClick }: ProfileProps) => {
                 <div className="profile-info">
                     <div className="profile-name-row">
                         <h2>
-                            {user?.first_name || user?.name || user?.email?.split('@')[0] || DEFAULT_PROFILE_NAME}, {user?.age || DEFAULT_PROFILE_AGE}
+                            {user?.first_name ||
+                                user?.name ||
+                                user?.email?.split("@")[0] ||
+                                DEFAULT_PROFILE_NAME}
+                            , {user?.age || DEFAULT_PROFILE_AGE}
                         </h2>
                         {/* <div className="profile-verification-section">
                             <VerifiedIcon

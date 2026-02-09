@@ -113,4 +113,7 @@ export type {
   ProfileActionConfig,
   SpinnerProps,
   SettingsItemConfig,
+  EditProfileProps,
+  EditProfileItemConfig,
+  CommonSelectorProps,
 } from './components.interface';

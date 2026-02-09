@@ -1,6 +1,6 @@
 import type { ReactNode, SVGProps } from 'react';
 import type { ButtonProps } from 'antd';
-import type { ProfileAction, SettingsItem as SettingsItemType } from '@/types';
+import type { ProfileAction, SettingsItem as SettingsItemType, EditProfileItem as EditProfileItemType } from '@/types';
 
 // ============================================
 // Icon Types
@@ -82,7 +82,7 @@ export interface AntdProviderProps {
 // ============================================
 // DashboardLayout Component Types
 // ============================================
-export type DashboardScreen = 'discover' | 'matches' | 'explore' | 'chat' | 'profile' | 'settings';
+export type DashboardScreen = 'discover' | 'matches' | 'explore' | 'chat' | 'profile' | 'settings' | 'EDIT';
 
 export interface DashboardLayoutProps {
     activeScreen?: DashboardScreen;
@@ -94,6 +94,15 @@ export interface DashboardLayoutProps {
 // ============================================
 export interface ProfileProps {
     onSettingsClick?: () => void;
+    onEditProfileClick?: () => void;
+}
+
+// ============================================
+// EditProfile Component Types
+// ============================================
+export interface EditProfileProps {
+    onDone?: () => void;
+    onPreview?: () => void;
 }
 
 export interface ProfileActionConfig {
@@ -120,5 +129,31 @@ export interface SettingsItemConfig {
     item: SettingsItemType;
     label: string;
     route: string | null;
+}
+
+// ============================================
+// EditProfile Component Types
+// ============================================
+export interface EditProfileItemConfig {
+    item: EditProfileItemType;
+    label: string;
+    icon: string;
+    defaultValue: string | null;
+}
+
+// CommonSelect Component Types
+
+export type SelectorType = "radio" | "checkbox";
+
+export interface SelectorItem<T extends string | number> {
+  id: T;
+  label: string;
+}
+
+export interface CommonSelectorProps<T extends string | number> {
+  data: SelectorItem<T>[];
+  type: SelectorType;
+  value?: T | T[];
+  onChange?: (val: T | T[]) => void;
 }
 

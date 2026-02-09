@@ -15,6 +15,7 @@ export const Routes = {
   CHAT: '/chat',
   SETTINGS: '/settings',
   DISCOVER: '/discover',
+  EDIT: '/edit'
 } as const;
 
 export type Routes = (typeof Routes)[keyof typeof Routes];
@@ -110,6 +111,7 @@ export const DashboardScreen = {
   CHAT: 'chat',
   PROFILE: 'profile',
   SETTINGS: 'settings',
+  EDIT: 'EDIT',
 } as const;
 
 export type DashboardScreen = (typeof DashboardScreen)[keyof typeof DashboardScreen];
@@ -117,7 +119,7 @@ export type DashboardScreen = (typeof DashboardScreen)[keyof typeof DashboardScr
 // Profile actions
 export const ProfileAction = {
   SETTINGS: 'settings',
-  EDIT_PROFILE: 'edit',
+  EDIT: 'edit',
   SAFETY: 'safety',
   GOLD: 'gold',
   PLATINUM: 'platinum',
@@ -148,3 +150,39 @@ export const SettingsItem = {
 } as const;
 
 export type SettingsItem = (typeof SettingsItem)[keyof typeof SettingsItem];
+
+// Edit sections
+export const EditProfileSection = {
+  BASIC: 'basic',
+  PERSONAL: 'personal',
+  APPEARANCE: 'appearance',
+  HABITS: 'habits',
+} as const;
+
+export type EditProfileSection = (typeof EditProfileSection)[keyof typeof EditProfileSection];
+
+// Edit items
+export const EditProfileItem = {
+  // BASIC section
+  BIRTHDAY: 'birthday',
+  GENDER: 'gender',
+  ABOUT_ME: 'about_me',
+  CURRENT_WORK: 'current_work',
+  // PERSONAL section
+  LOOKING_FOR: 'looking_for',
+  PETS: 'pets',
+  CHILDREN: 'children',
+  ASTROLOGICAL_SIGN: 'astrological_sign',
+  RELIGION: 'religion',
+  EDUCATION: 'education',
+  // APPEARANCE section
+  HEIGHT: 'height',
+  BODY_TYPE: 'body_type',
+  // HABITS section
+  EXERCISE: 'exercise',
+  DRINK: 'drink',
+  SMOKER: 'smoker',
+  MARIJUANA: 'marijuana',
+} as const;
+
+export type EditProfileItem = (typeof EditProfileItem)[keyof typeof EditProfileItem];

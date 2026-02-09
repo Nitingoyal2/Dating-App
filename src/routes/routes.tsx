@@ -133,6 +133,17 @@ export const protectedRoutes: RouteConfig[] = [
         ),
         isProtected: true,
     },
+    {
+        path: Routes.EDIT,
+        element: (
+            <ProtectedRoute>
+                {/* TODO: Add Discover page */}
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    },
+
 ];
 
 // ============================================

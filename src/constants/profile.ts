@@ -12,7 +12,7 @@ import { coinIcon, diamondIcon, fireIcon, pencilIcon, settingIcon, shieldIcon } 
  */
 export const ProfileActionLabels = {
     [ProfileAction.SETTINGS]: 'Settings',
-    [ProfileAction.EDIT_PROFILE]: 'Edit Profile',
+    [ProfileAction.EDIT]: 'Edit',
     [ProfileAction.SAFETY]: 'Safety',
     [ProfileAction.GOLD]: 'Prosto Gold',
     [ProfileAction.PLATINUM]: 'Prosto Platinum',
@@ -24,7 +24,7 @@ export const ProfileActionLabels = {
  */
 export const ProfileActionColors = {
     [ProfileAction.SETTINGS]: '#',
-    [ProfileAction.EDIT_PROFILE]: '',
+    [ProfileAction.EDIT]: '',
     [ProfileAction.SAFETY]: '',
     [ProfileAction.GOLD]: '',
     [ProfileAction.PLATINUM]: '',
@@ -36,7 +36,7 @@ export const ProfileActionColors = {
  */
 export const ProfileActionIcons = {
     [ProfileAction.SETTINGS]: settingIcon,
-    [ProfileAction.EDIT_PROFILE]: pencilIcon,
+    [ProfileAction.EDIT]: pencilIcon,
     [ProfileAction.SAFETY]: shieldIcon,
     [ProfileAction.GOLD]: coinIcon,
     [ProfileAction.PLATINUM]: fireIcon,
@@ -48,7 +48,7 @@ export const ProfileActionIcons = {
  */
 export const ProfileActionFilters: Record<ProfileAction, string> = {
     [ProfileAction.SETTINGS]: '0deg',
-    [ProfileAction.EDIT_PROFILE]: '180deg',
+    [ProfileAction.EDIT]: '180deg',
     [ProfileAction.SAFETY]: '120deg',
     [ProfileAction.GOLD]: '45deg',
     [ProfileAction.PLATINUM]: '30deg',
@@ -61,7 +61,7 @@ export const ProfileActionFilters: Record<ProfileAction, string> = {
  */
 export const PROFILE_ACTIONS: ProfileAction[] = [
     ProfileAction.SETTINGS,
-    ProfileAction.EDIT_PROFILE,
+    ProfileAction.EDIT,
     ProfileAction.SAFETY,
     ProfileAction.GOLD,
     ProfileAction.PLATINUM,
