@@ -9,7 +9,6 @@ import {
 } from "@constants";
 import { EditProfileSection, EditProfileItem } from "@/types";
 import {
-  type User,
   type EditProfileItemConfig,
   type EditProfileProps,
   type ProfileUpdateRequest,
@@ -22,19 +21,19 @@ import Spinner from "@/components/Spinner/Spinner";
 import { updateUser } from "@store/slices";
 import { getUserDetails, updateUserProfileApi } from "@/services";
 import { ArrowRightIcon } from "@/utils/svg";
+import { message } from "antd";
 
 const EditProfile = ({ onDone }: EditProfileProps) => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const toFeetInches = (totalInches: number) => {
     const feet = Math.floor(totalInches / 12);
     const inches = totalInches % 12;
     return { feet, inches };
   };
 
-  const [userDetails, setUserDetails] = useState<User | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   // Initialize photos with existing user photos
   const [photos, setPhotos] = useState<UploadedPhoto[]>(
@@ -49,7 +48,6 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
   const [birthday, setBirthday] = useState<string>("");
   const [school, setSchool] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
-  const [submitError, setSubmitError] = useState<string>("");
 
   const editProfileSections = getAllEditProfileSections();
 
@@ -58,7 +56,6 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
     try {
       const response = await getUserDetails(user?.id as string);
       const userData = response.data;
-      setUserDetails(userData);
 
       // Populate form fields with fetched data
       if (userData) {
@@ -114,11 +111,10 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
 
     const validPhotos = photos.filter((p) => Boolean(p?.url));
     if (validPhotos.length < 3) {
-      setSubmitError("Minimum 3 photos mandatory");
+      message.error("Please upload at least 3 photos.");
       return;
     }
 
-    setSubmitError("");
 
     const genderValue =
       gender === "man" || gender === "woman" ? gender : undefined;
@@ -224,6 +220,7 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
       : null;
 
     const displayValue = (() => {
+
       if (Array.isArray(dynamicValue)) {
         const labels = dynamicValue
           .map((v) => String(v))
@@ -233,13 +230,6 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
 
       if (typeof dynamicValue === "string") {
         return (optionsById?.get(dynamicValue) ?? dynamicValue)
-          ? itemConfig?.item === "height"
-            ? toFeetInches(Number(dynamicValue)).feet +
-              "' " +
-              toFeetInches(Number(dynamicValue)).inches +
-              '"'
-            : dynamicValue
-          : "";
       }
 
       return "";
@@ -291,10 +281,6 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
         </div>
       </div>
 
-      {submitError ? (
-        <div className="edit-profile-submit-error">{submitError}</div>
-      ) : null}
-
       <div className="edit-profile-content">
         {/* UPLOAD IMAGES Section */}
         <ImageUpload
@@ -311,9 +297,9 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
             <h2 className="edit-profile-section-title">{title}</h2>
             {section === EditProfileSection.BASIC
               ? // Render BASIC section fields with custom UI
-                items.map((itemConfig) => renderBasicField(itemConfig.item))
+              items.map((itemConfig) => renderBasicField(itemConfig.item))
               : // Render other sections as option items
-                items.map((itemConfig) => renderOptionItem(itemConfig))}
+              items.map((itemConfig) => renderOptionItem(itemConfig))}
           </div>
         ))}
       </div>

@@ -134,7 +134,7 @@ interface UserState {
     latitude: number | null;
     longitude: number | null;
     created_at: string;
-    bio?: string;
+    about_me?: string;
     [key: string]: unknown;
 }
 ```

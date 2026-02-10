@@ -836,9 +836,12 @@ const Profile = ({ onSettingsClick, onEditProfileClick }: ProfileProps) => {
 
 ### 3. EditProfile Page
 
-**File**: `src/pages/EditProfile/EditProfile.tsx`
+**Files**:
+- `src/pages/EditProfile/EditProfile.tsx`
+- `src/pages/EditProfile/pages/EditProfileItemSelector/EditProfileItemSelector.tsx`
+- `src/pages/EditProfile/pages/EditProfileHeight/EditProfileHeight.tsx`
 
-**Purpose**: Form to edit user profile with multiple sections (BASIC, PERSONAL, APPEARANCE, HABITS).
+**Purpose**: Form to edit user profile with multiple sections (BASIC, PERSONAL, APPEARANCE, HABITS). Each non-basic item navigates to its own dedicated page under `/edit/:item`.
 
 **Enums/Types Used**:
 ```typescript
@@ -856,6 +859,29 @@ import type { EditProfileProps } from '@interfaces';
 - `EditProfileItemLabels`: Maps item to label string
 - `EditProfileItemIcons`: Maps item to emoji/icon string
 - `EditProfileItemDefaults`: Maps item to default value (e.g., `SMOKER: 'Never'`)
+
+**Edit Item Pages (constants-driven)** (`src/constants/editProfile.ts`):
+- `EDIT_PROFILE_SELECTOR_PAGES`: config for selector pages (radio/checkbox)
+- `EDIT_PROFILE_SLIDER_PAGES`: config for slider pages (Height)
+- `getEditProfileSelectorPageConfig(item)` / `getEditProfileSliderPageConfig(item)`
+- `buildEditProfileItemRoute(item)` → `/edit/${item}`
+
+**Routes** (`src/types/enums.ts`, `src/routes/routes.tsx`):
+- `Routes.EDIT` → `/edit`
+- `Routes.EDIT_ITEM` → `/edit/:item`
+
+**Rendering approach**:
+- The protected route for `/edit/:item` renders `Dashboard`.
+- `DashboardLayout` detects `/edit/:item` and renders either:
+  - `EditProfileItemSelector` (selector pages)
+  - `EditProfileHeight` (height slider)
+  - otherwise it renders the main `EditProfile` screen.
+
+**API (Edit Profile save)**:
+- `PATCH /api/profile/user/{userId}` via `updateUserProfileApi`.
+- Basic About Me uses `about_me` (not `bio`).
+- Photos are sent as `photos: [{ url, order }]`.
+- Validation: minimum 3 photos required on EditProfile Done.
 
 **Interfaces**:
 ```typescript

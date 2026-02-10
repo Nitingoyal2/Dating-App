@@ -228,6 +228,51 @@ Step 9:  POST   /api/profile/{user_id}/complete  → Finalize & activate account
 
 ---
 
+## 👤 Full Profile Update (Edit Profile)
+
+**Endpoint**: `PATCH /api/profile/user/{userId}`
+
+**Purpose**: Update a user's profile in one request from the Edit Profile flow. This endpoint supports updating profile fields and sending an ordered `photos` array.
+
+**Request** (example):
+```json
+{
+  "first_name": "John",
+  "gender": "man",
+  "seeking": "woman",
+  "date_of_birth": "1995-06-15",
+  "latitude": 40.7128,
+  "longitude": -74.006,
+  "location_skipped": true,
+  "rules_accepted": true,
+  "about_me": "I love hiking and exploring new places...",
+  "current_work": "Software Engineer at Google",
+  "school": "Stanford University",
+  "looking_for": ["Long-term relationship", "Marriage"],
+  "pets": ["Dog", "Cat"],
+  "children": "Want someday",
+  "astrological_sign": "Aries",
+  "religion": "Christian",
+  "education": "Bachelors Degree",
+  "height": "5'10\"",
+  "body_type": "Athletic",
+  "exercise": "Often",
+  "drink": "Socially",
+  "smoker": "No",
+  "marijuana": "Never",
+  "photos": [
+    { "url": "https://example.com/photo1.jpg", "order": 0 },
+    { "url": "https://example.com/photo2.jpg", "order": 1 }
+  ]
+}
+```
+
+**Notes**:
+- The Edit Profile UI sends `about_me` (not `bio`).
+- The `photos` array order is authoritative. The frontend sends `order` based on the current UI order.
+
+---
+
 ### Visual Flow
 
 ```

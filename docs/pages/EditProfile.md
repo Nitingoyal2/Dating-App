@@ -2,7 +2,9 @@
 
 ## 📋 Overview
 
-The EditProfile page allows users to edit their profile information with multiple sections: UPLOAD IMAGES, BASIC, PERSONAL, APPEARANCE, and HABITS. It uses a constants-driven approach similar to the Settings page.
+The EditProfile feature allows users to edit their profile information with multiple sections: UPLOAD IMAGES, BASIC, PERSONAL, APPEARANCE, and HABITS.
+
+For non-basic items (e.g. Religion, Looking For, Pets, Height), clicking an item navigates to a dedicated page under `/edit/:item`.
 
 **Route**: `/profile` → Edit action (Dashboard screen)  
 **File**: `src/pages/EditProfile/EditProfile.tsx`  
@@ -17,6 +19,16 @@ src/pages/EditProfile/
 ├── EditProfile.tsx      # Main component
 ├── EditProfile.css      # Styles
 └── index.ts             # Export file
+
+src/pages/EditProfile/pages/
+├── EditProfileItemSelector/
+│   ├── EditProfileItemSelector.tsx
+│   ├── EditProfileItemSelector.css
+│   └── index.ts
+└── EditProfileHeight/
+    ├── EditProfileHeight.tsx
+    ├── EditProfileHeight.css
+    └── index.ts
 ```
 
 ---
@@ -96,6 +108,12 @@ import { getAllEditProfileSections } from '@constants';
 - `getEditProfileItemConfig()` - Get item configuration
 - `getEditProfileItemsForSection()` - Get items for a section
 
+**Edit Item Pages (constants-driven)**:
+- `EDIT_PROFILE_SELECTOR_PAGES` - config for selector pages (radio/checkbox)
+- `EDIT_PROFILE_SLIDER_PAGES` - config for slider pages (Height)
+- `getEditProfileSelectorPageConfig(item)` / `getEditProfileSliderPageConfig(item)`
+- `buildEditProfileItemRoute(item)` → `/edit/${item}`
+
 **Example Constants Structure**:
 ```typescript
 export const EditProfileSectionTitles = {
@@ -146,9 +164,11 @@ export interface EditProfileItemConfig {
 ```typescript
 import { useAppSelector } from '@store/hooks';
 
-// Access user data
+// Access user id from redux
 const { user } = useAppSelector((state) => state.auth);
 ```
+
+**Note**: In the current app flow, redux may contain only `user.id` initially. The EditProfile page fetches full user details from the backend before rendering the form values.
 
 ### Ant Design Components
 
@@ -381,7 +401,7 @@ export default EditProfile;
 
 ## 🔄 How It Renders
 
-1. **Gets User Data**: Retrieves user from Redux store
+1. **Gets User Id**: Reads `user.id` from Redux store
 2. **Gets Sections**: Calls `getAllEditProfileSections()` to get all sections with items
 3. **Renders Header**: Shows "Preview" link and "Done" button
 4. **Renders UPLOAD IMAGES Section**:
@@ -390,7 +410,12 @@ export default EditProfile;
    - Remove button (X) on each photo
 5. **Renders BASIC Section**: Custom fields for Birthday, Gender, About Me, Current Work
 6. **Renders Other Sections**: PERSONAL, APPEARANCE, HABITS as clickable option items
-7. **Handles Interactions**: Photo add/remove, field edits, item clicks
+7. **Navigation to item pages**:
+   - Clicking a non-basic item navigates to `/edit/:item`.
+   - `DashboardLayout` detects `/edit/:item` and renders the correct page inside the dashboard shell.
+8. **Saving**:
+   - Main EditProfile Done uses `updateUserProfileApi` to update profile.
+   - Selector/Height item pages save via the same API and navigate back to `/edit`.
 
 ---
 
@@ -467,10 +492,17 @@ case EditProfileItem.NEW_ITEM:
 
 - **Constants-Driven**: Sections and items defined in constants for easy maintenance
 - **Dynamic Rendering**: Sections rendered dynamically from constants
-- **Photo Management**: 3x3 grid with add/remove functionality
+- **Photo Management**: Uses `ImageUpload` component, supports reorder. On Done the app sends `photos: [{ url, order }]`.
 - **Custom Fields**: BASIC section has custom UI (radio buttons, textarea, etc.)
 - **Option Items**: Other sections use consistent option item UI
 - **Header Actions**: Preview and Done buttons
+
+**Validation**:
+- Minimum 3 photos are required when submitting EditProfile.
+
+**Display mapping**:
+- Selector-based values are mapped from stored ids to human-readable labels using the selector page constants.
+- Arrays are shown as comma + space separated.
 
 ---
 
@@ -482,6 +514,9 @@ case EditProfileItem.NEW_ITEM:
 **Issue**: Photos not displaying
 - **Solution**: Check `VITE_API_BASE_URL` environment variable
 
+**Issue**: Selector item page doesn't show pre-selected value
+- **Solution**: Ensure the selector page reads the current value from redux user and initializes the selector state.
+
 **Issue**: Date formatting error
 - **Solution**: Verify `dayjs` is installed and date format is correct
 
@@ -492,4 +527,6 @@ case EditProfileItem.NEW_ITEM:
 - `src/constants/editProfile.ts` - EditProfile constants and configurations
 - `src/types/enums.ts` - EditProfileSection and EditProfileItem enums
 - `src/interfaces/components.interface.ts` - EditProfileProps interface
+- `src/services/api/patch_apis.ts` - `updateUserProfileApi` (full profile update)
+- `src/components/DashboardLayout/DashboardLayout.tsx` - Renders `/edit/:item` pages
 
