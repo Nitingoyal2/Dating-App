@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import './DashboardCard.css'
-import { CancleIcon, LocationSymbol, StartIcon } from '@/utils/svg';
+import { CancleIcon, HeartSymbol, LocationSymbol, StartIcon } from '@/utils/svg';
 import { VerifiedOutlined } from '@ant-design/icons';
-import { HeartSymbol } from '@/utils/svg/icons';
 
 const SWIPE_THRESHOLD = 30;
 
@@ -155,7 +154,7 @@ const DashboardCard = () => {
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerUp}
-        >
+      >
         <div className='discover-screen-info-container'>
           <h2>{profile.name} <span><VerifiedOutlined style={{ fontSize: '16px' }} /></span></h2>
           <h6><LocationSymbol />{profile.location}</h6>

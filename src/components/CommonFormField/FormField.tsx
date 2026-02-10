@@ -1,15 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Checkbox, Radio } from "antd";
 import { EditOutlined, EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
+import type { FormFieldProps, ValidationRule } from "@/types";
 import "./FormField.css";
-type ValidationRule =
-  | { type: "required"; message: string }
-  | { type: "minLength"; value: number; message: string }
-  | { type: "maxLength"; value: number; message: string }
-  | { type: "email"; message: string }
-  | { type: "number"; message: string }
-  | { type: "url"; message: string }
-  | { type: "date"; message: string };
 
 function validateValue(value: string, rules: ValidationRule[]): string | null {
   for (const rule of rules) {
@@ -50,48 +43,6 @@ function validateValue(value: string, rules: ValidationRule[]): string | null {
 
   return null;
 }
-type InputType = "text" | "password" | "email" | "number" | "date" | "url";
-
-type BaseProps = {
-  name: string;
-  label?: string;
-  placeholder?: string;
-  rules?: ValidationRule[];
-};
-
-type TextFieldProps = BaseProps & {
-  type: "textarea" | "input";
-  value: string;
-  inputType?: InputType;
-  onChange: (value: string) => void;
-};
-
-type RadioFieldProps = BaseProps & {
-  type: "radio";
-  value: string;
-  radioValue: string[];
-  onChange: (value: string) => void;
-};
-
-type SelectFieldProps = BaseProps & {
-  type: "select";
-  value: string;
-  options: { value: string; label: string }[];
-  onChange: (value: string) => void;
-};
-
-type CheckboxFieldProps = BaseProps & {
-  type: "checkbox";
-  value: string[];
-  options: { value: string; label: string }[];
-  onChange: (value: string[]) => void;
-};
-
-type FormFieldProps =
-  | TextFieldProps
-  | RadioFieldProps
-  | SelectFieldProps
-  | CheckboxFieldProps;
 
 const FormField = (props: FormFieldProps) => {
   const { label, placeholder } = props;

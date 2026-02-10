@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppSelector } from "@store/hooks";
 import { getAllEditProfileSections } from "@constants";
 import { EditProfileSection, EditProfileItem } from "@/types";
-import type { EditProfileProps } from "@interfaces";
+import type { EditProfileItemConfig, EditProfileProps } from "@interfaces";
 import "./EditProfile.css";
 import ImageUpload from "@/components/CommonImageUpload/ImageUpload";
 import FormField from "@/components/CommonFormField";
@@ -37,6 +37,7 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
     };
 
     console.log("FORM VALUES", formValues);
+    onDone?.();
   };
 
   const renderBasicField = (item: EditProfileItem) => {
@@ -102,13 +103,9 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
     }
   };
 
-  const renderOptionItem = (itemConfig: {
-    item: EditProfileItem;
-    label: string;
-    icon: string;
-    defaultValue: string | null;
-  }) => {
+  const renderOptionItem = (itemConfig: EditProfileItemConfig) => {
     const displayValue = itemConfig.defaultValue || "Add to your profile...";
+    const Icon = itemConfig.icon;
     return (
       <div
         key={itemConfig.item}
@@ -116,7 +113,9 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
         onClick={() => handleItemClick(itemConfig.item)}
       >
         <div className="edit-profile-option-left">
-          <span className="edit-profile-option-icon">{itemConfig.icon}</span>
+          <span className="edit-profile-option-icon">
+            <Icon size={18} />
+          </span>
           <span className="edit-profile-option-label">{itemConfig.label}</span>
         </div>
         <div className="edit-profile-option-right">
@@ -150,7 +149,7 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
           onChange={setPhotos}
           onPreview={onPreview}
           description="Drag and drop to reorder Photos"
-          uploadImage={(file) => Promise.resolve({ url: "" })}
+          uploadImage={(_file: File) => Promise.resolve({ url: "" })}
         />
 
         {/* Render sections dynamically */}
@@ -162,7 +161,7 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
                 // Render BASIC section fields with custom UI
                 items.map((itemConfig) => renderBasicField(itemConfig.item))
                 // Render other sections as option items
-              : items.map((itemConfig) => renderOptionItem(itemConfig))
+                : items.map((itemConfig) => renderOptionItem(itemConfig))
             }
           </div>
         ))}

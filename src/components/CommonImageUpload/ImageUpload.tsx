@@ -1,29 +1,14 @@
 import React, { useRef } from "react";
 import { CloseOutlined, EyeFilled } from "@ant-design/icons";
+import type { ImageUploadProps } from "@interfaces";
 import "./ImageUpload.css";
-
-export interface ProfilePhoto {
-  id?: string;
-  url: string;
-  is_primary?: boolean;
-}
-
-interface ImageUploadProps {
-  label?: string;
-  description?: string;
-  photos: string[];
-  maxPhotos?: number;
-  onChange: (photos: string[]) => void;
-  onPreview?: () => void;
-  uploadImage: (file: File) => Promise<ProfilePhoto>;
-}
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
   photos,
   maxPhotos = 9,
   onChange,
   onPreview,
-  uploadImage,
+  uploadImage: _uploadImage,
   label,
   description,
 }) => {
@@ -127,7 +112,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                   <CloseOutlined />
                 </button>
               </div>
-            : <button
+              : <button
                 className="edit-profile-photo-add"
                 onClick={handleAddClick}
                 disabled={photos.length >= maxPhotos}

@@ -117,3 +117,6 @@ export type {
   EditProfileItemConfig,
   CommonSelectorProps,
 } from './components.interface';
+
+// CommonImageUpload interfaces
+export type { ImageUploadProps, ProfilePhoto } from "./imageUpload.interface";

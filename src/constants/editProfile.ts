@@ -3,6 +3,7 @@
  * Centralized configuration for Edit sections, items, and labels
  */
 
+import { EditProfileItemIcons } from '@/utils/svg';
 import { EditProfileSection, EditProfileItem as EditProfileItemEnum } from '@/types';
 import type { EditProfileItemConfig } from '@interfaces';
 
@@ -41,33 +42,6 @@ export const EditProfileItemLabels = {
     [EditProfileItemEnum.DRINK]: 'Drink',
     [EditProfileItemEnum.SMOKER]: 'Smoker',
     [EditProfileItemEnum.MARIJUANA]: 'Marijuana',
-} as const;
-
-/**
- * Edit item icons (emoji or icon identifiers)
- */
-export const EditProfileItemIcons: Record<EditProfileItemEnum, string> = {
-    // BASIC section
-    [EditProfileItemEnum.BIRTHDAY]: '🎂',
-    [EditProfileItemEnum.GENDER]: '⚧️',
-    [EditProfileItemEnum.ABOUT_ME]: '📝',
-    [EditProfileItemEnum.CURRENT_WORK]: '💼',
-    [EditProfileItemEnum.SCHOOL]: '🏫',
-    // PERSONAL section
-    [EditProfileItemEnum.LOOKING_FOR]: '🔍',
-    [EditProfileItemEnum.PETS]: '🐾',
-    [EditProfileItemEnum.CHILDREN]: '👤',
-    [EditProfileItemEnum.ASTROLOGICAL_SIGN]: '♈',
-    [EditProfileItemEnum.RELIGION]: '🕌',
-    [EditProfileItemEnum.EDUCATION]: '🎓',
-    // APPEARANCE section
-    [EditProfileItemEnum.HEIGHT]: '📏',
-    [EditProfileItemEnum.BODY_TYPE]: '👥',
-    // HABITS section
-    [EditProfileItemEnum.EXERCISE]: '🏃',
-    [EditProfileItemEnum.DRINK]: '🍹',
-    [EditProfileItemEnum.SMOKER]: '🚬',
-    [EditProfileItemEnum.MARIJUANA]: '🌿',
 } as const;
 
 /**

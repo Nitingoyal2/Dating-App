@@ -1,4 +1,5 @@
 export type { IconProps } from './icons';
+export type { EditProfileIconComponent } from './editProfileIcons';
 
 export {
   ArrowLeftIcon,
@@ -35,7 +36,29 @@ export {
   VerifiedIcon,
   LocationSymbol,
   CancleIcon,
-  FilterIcon
+  FilterIcon,
+  HeartSymbol,
 } from './icons';
 
 export { default as ProstoLogo } from './ProstoLogo';
+
+export {
+  BirthdayIcon,
+  GenderIcon,
+  AboutMeIcon,
+  CurrentWorkIcon,
+  SchoolIcon,
+  LookingForIcon,
+  PetsIcon,
+  ChildrenIcon,
+  AstrologicalSignIcon,
+  ReligionIcon,
+  EducationIcon,
+  HeightIcon,
+  BodyTypeIcon,
+  ExerciseIcon,
+  DrinkIcon,
+  SmokerIcon,
+  MarijuanaIcon,
+  EditProfileItemIcons,
+} from "./editProfileIcons";

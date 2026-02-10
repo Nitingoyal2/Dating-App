@@ -1,4 +1,4 @@
-import type { ReactNode, SVGProps } from 'react';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
 import type { ButtonProps } from 'antd';
 import type { ProfileAction, SettingsItem as SettingsItemType, EditProfileItem as EditProfileItemType } from '@/types';
 
@@ -137,7 +137,7 @@ export interface SettingsItemConfig {
 export interface EditProfileItemConfig {
     item: EditProfileItemType;
     label: string;
-    icon: string;
+    icon: ComponentType<IconProps>;
     defaultValue: string | null;
 }
 
@@ -146,13 +146,13 @@ export interface EditProfileItemConfig {
 export type SelectorType = "radio" | "checkbox";
 
 export interface SelectorItem<T extends string | number> {
-  id: T;
-  label: string;
+    id: T;
+    label: string;
 }
 
 export interface CommonSelectorProps<T extends string | number> {
-  data: SelectorItem<T>[];
-  type: SelectorType;
-  value?: T | T[];
-  onChange?: (val: T | T[]) => void;
+    data: SelectorItem<T>[];
+    type: SelectorType;
+    value?: T | T[];
+    onChange?: (val: T | T[]) => void;
 }
