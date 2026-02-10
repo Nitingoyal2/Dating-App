@@ -3,15 +3,22 @@ import { useAppSelector } from "@store/hooks";
 import { getAllEditProfileSections } from "@constants";
 import { EditProfileSection, EditProfileItem } from "@/types";
 import type { EditProfileItemConfig, EditProfileProps } from "@interfaces";
+import type { UploadedPhoto } from "@/interfaces/imageUpload.interface";
 import "./EditProfile.css";
 import ImageUpload from "@/components/CommonImageUpload/ImageUpload";
 import FormField from "@/components/CommonFormField";
 
-const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
+const EditProfile = ({ onDone}: EditProfileProps) => {
   const { user } = useAppSelector((state) => state.auth);
-  const [photos, setPhotos] = useState<string[]>(
-    user?.photos?.map((p) => p.url) || [],
+
+  // Initialize photos with existing user photos
+  const [photos, setPhotos] = useState<UploadedPhoto[]>(
+    user?.photos?.map((p) => ({
+      url: p.url,
+      id: p.id
+    })) || []
   );
+
   const [gender, setGender] = useState<string>(user?.gender || "man");
   const [aboutMe, setAboutMe] = useState<string>(user?.bio || "");
   const [currentWork, setCurrentWork] = useState<string>(
@@ -27,8 +34,13 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
   };
 
   const handleSubmit = () => {
+    // Separate existing photos from new uploads
+    const existingPhotos = photos.filter(p => !p.file).map(p => p.url);
+    const newFiles = photos.filter(p => p.file).map(p => p.file);
+
     const formValues = {
-      photos,
+      existingPhotos,
+      newFiles,
       gender,
       aboutMe,
       currentWork,
@@ -147,9 +159,8 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
           label="UPLOAD IMAGES"
           photos={photos}
           onChange={setPhotos}
-          onPreview={onPreview}
           description="Drag and drop to reorder Photos"
-          uploadImage={(_file: File) => Promise.resolve({ url: "" })}
+          maxPhotos={6}
         />
 
         {/* Render sections dynamically */}

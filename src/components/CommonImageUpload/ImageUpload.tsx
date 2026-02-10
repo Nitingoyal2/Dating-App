@@ -1,147 +1,159 @@
-import React, { useRef } from "react";
-import { CloseOutlined, EyeFilled } from "@ant-design/icons";
-import type { ImageUploadProps } from "@interfaces";
+import React, { useRef, useState } from "react";
+import { PlusOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
+import { message } from "antd";
+import type { UploadedPhoto, ImageUploadProps } from "../../interfaces/imageUpload.interface";
 import "./ImageUpload.css";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 const ImageUpload: React.FC<ImageUploadProps> = ({
-  photos,
-  maxPhotos = 9,
+  photos, // Expects UploadedPhoto[]
+  maxPhotos = 6,
   onChange,
   onPreview,
-  uploadImage: _uploadImage,
   label,
   description,
 }) => {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [photoSlots, setPhotoSlots] = React.useState<
-    { index: number; photo: string | null }[]
-  >([
-    {
-      index: 0,
-      photo: photos[0] || null,
-    },
-  ]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewPhoto, setPreviewPhoto] = useState<UploadedPhoto | null>(null);
 
-  /* ---------------- Remove ---------------- */
+  const validateFile = (file: File): string | null => {
+    if (!file.type.startsWith('image/')) {
+      return "Only image files are allowed";
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return "Image must be smaller than 5MB";
+    }
+    return null;
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const remainingSlots = maxPhotos - photos.length;
+    const filesToProcess = Array.from(files).slice(0, remainingSlots);
+    const newPhotos: UploadedPhoto[] = [];
+
+    for (const file of filesToProcess) {
+      const error = validateFile(file);
+      if (error) {
+        message.error(error);
+        continue;
+      }
+
+      // Create object URL for preview
+      const url = URL.createObjectURL(file);
+      newPhotos.push({
+        url,
+        file,
+      });
+    }
+
+    if (newPhotos.length > 0) {
+      onChange([...photos, ...newPhotos]);
+      message.success(`${newPhotos.length} photo${newPhotos.length > 1 ? 's' : ''} added`);
+    }
+
+    // Reset input
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const handleRemove = (index: number) => {
     const updated = photos.filter((_, i) => i !== index);
     onChange(updated);
   };
 
-  /* ---------------- Add ---------------- */
-  const handleAddClick = () => {
-    console.log("Add clicked");
-    fileInputRef.current?.click();
-  };
-
-  const handlePreview = (photo: string | null) => {
-    console.log("Preview clicked", photo);
-    setPreview(photo);
-  };
-
-  const handleFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    setLoading(true);
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const uploadedPhoto = URL.createObjectURL(file);
-      console.log("uploadedPhoto", uploadedPhoto);
-      onChange([...photos, uploadedPhoto]);
-      setPhotoSlots((prevSlots) => {
-        const newSlots = [...prevSlots];
-        newSlots[index].photo = uploadedPhoto;
-        if (newSlots.length === maxPhotos) return newSlots;
-        return [...newSlots, { index: newSlots.length, photo: null }];
-      });
-    } catch (err) {
-      setLoading(false);
-      console.error("Image upload failed", err);
-    } finally {
-      setLoading(false);
-      e.target.value = "";
+  const triggerPreview = (photo: UploadedPhoto) => {
+    if (onPreview) {
+      onPreview(photo);
+    } else {
+      setPreviewPhoto(photo);
     }
   };
 
-  return (
-    <div className="edit-profile-section">
-      {loading && (
-        <div className="preview-photo-overlay">
-          <div className="loading-spin"></div>
+  const closePreview = () => {
+    setPreviewPhoto(null);
+  };
+
+  const renderSlots = () => {
+    const slots = photos.map((photo, index) => (
+      <div
+        key={`photo-${index}-${photo.id || index}`}
+        className="image-upload-slot filled"
+      >
+        <img src={photo.url} alt={`Photo ${index + 1}`} />
+
+        {/* Preview Overlay */}
+        <div
+          className="image-upload-overlay"
+          onClick={() => triggerPreview(photo)}
+        >
+          <EyeFilled />
         </div>
-      )}
-      {preview && (
-        <div className="preview-photo-overlay">
-          <img src={preview} alt="Preview" className="preview-photo" />
-          <button onClick={() => setPreview(null)}>
+
+        <button
+          type="button"
+          className="image-upload-remove"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRemove(index);
+          }}
+        >
+          <CloseOutlined style={{ fontSize: 12 }} />
+        </button>
+      </div>
+    ));
+
+    // Add ONE empty slot if we haven't reached max photos
+    if (photos.length < maxPhotos) {
+      slots.push(
+        <div
+          key="add-slot"
+          className="image-upload-slot"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <span className="image-upload-add">
+            <PlusOutlined />
+          </span>
+        </div>
+      );
+    }
+
+    return slots;
+  };
+
+  return (
+    <div className="image-upload-container">
+      {previewPhoto && (
+        <div className="image-upload-preview-overlay" onClick={closePreview}>
+          <img
+            src={previewPhoto.url}
+            alt="Preview"
+            className="image-upload-preview-img"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button className="image-upload-preview-close" onClick={closePreview}>
             <CloseOutlined />
           </button>
         </div>
       )}
-      <div className="edit-profile-section-header">
-        {label && <h2 className="edit-profile-section-title">{label}</h2>}
-        {onPreview && (
-          <button
-            className="edit-profile-preview-link-inline"
-            onClick={onPreview}
-          >
-            Preview
-          </button>
-        )}
+
+      {label && <h2 className="image-upload-section-title">{label}</h2>}
+
+      <div className="image-upload-grid">
+        {renderSlots()}
       </div>
 
-      <div className="edit-profile-photos-grid">
-        {photoSlots.map(({ photo }, index) => (
-          <div key={index} className="edit-profile-photo-slot">
-            {photo ?
-              <div className="edit-profile-photo-wrapper">
-                <img
-                  src={photo}
-                  alt={`Photo ${index + 1}`}
-                  className="edit-profile-photo"
-                />
-                <button
-                  className="edit-profile-photo-remove"
-                  onClick={() => handleRemove(index)}
-                >
-                  <CloseOutlined />
-                </button>
-              </div>
-              : <button
-                className="edit-profile-photo-add"
-                onClick={handleAddClick}
-                disabled={photos.length >= maxPhotos}
-              >
-                <span className="edit-profile-photo-add-icon">+</span>
-              </button>
-            }
+      {description && <p className="image-upload-hint">{description}</p>}
 
-            {photo && (
-              <div
-                className="edit-profile-photo-overlay"
-                onClick={() => handlePreview(photo)}
-              >
-                <EyeFilled />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {description && <p className="edit-profile-photos-hint">{description}</p>}
-
-      {/* Hidden input */}
       <input
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        hidden
-        onChange={(e) => handleFileChange(e, photoSlots?.length - 1)}
+        multiple
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
       />
     </div>
   );

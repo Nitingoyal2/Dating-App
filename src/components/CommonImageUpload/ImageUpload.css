@@ -1,109 +1,73 @@
-.edit-profile-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.edit-profile-section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.edit-profile-section-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-}
-
-.edit-profile-photos-hint {
-  font-size: 12px;
-  color: #999;
-  margin: 0;
-  text-align: center;
-}
-.edit-profile-photo-add-icon {
-  font-size: 32px;
-  color: #ff2c29;
-  font-weight: 300;
-  line-height: 1;
-}
-.edit-profile-photo-add {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #f5f5f5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-}
-.edit-profile-photo-remove {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  border-top-left-radius: 8px;
-  background: #ff2c29;
-  border: none;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 12px;
-  padding: 0;
-}
-/* Photos Grid */
-.edit-profile-photos-grid {
+/* Image Upload Grid */
+.image-upload-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  margin-bottom: 24px;
   width: 100%;
 }
 
-.edit-profile-photo-slot {
+.image-upload-slot {
   aspect-ratio: 1;
-  width: 100%;
   border-radius: 12px;
-  overflow: hidden;
-  background: #f5f5f5;
+  border: 2px dashed var(--color-border-light, #e0e0e0);
+  background: var(--color-bg-secondary, #fafafa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
 }
 
-.edit-profile-photo-wrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
+.image-upload-slot:hover {
+  border-color: var(--color-accent-secondary, #ff2c29);
+  background: var(--color-bg-tertiary, #f5f5f5);
 }
-.edit-profile-photo {
+
+.image-upload-slot.filled {
+  border: none;
+}
+
+.image-upload-slot img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.edit-profile-preview-link,
-.edit-profile-preview-link-inline {
-  background: none;
+.image-upload-add {
+  color: var(--color-btn-primary, #ff2c29);
+  font-size: 28px;
+  font-weight: 300;
+}
+
+.image-upload-remove {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border-top-left-radius: 8px;
+  background: var(--color-btn-primary, #ff2c29);
+  color: white;
   border: none;
-  color: #0676c9;
-  font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
-  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 5;
+  transition: background-color 0.2s;
 }
 
-.edit-profile-preview-link:hover,
-.edit-profile-preview-link-inline:hover {
-  opacity: 0.8;
+.image-upload-remove:hover {
+  background-color: #d92522;
 }
 
-.edit-profile-photo-overlay {
+/* Hover Overlay for Existing Photos */
+.image-upload-overlay {
   opacity: 0;
   position: absolute;
   top: 0;
@@ -115,64 +79,85 @@
   place-content: center;
   cursor: pointer;
   transition: opacity 0.2s ease;
-  display: none;
   color: #fff;
+  font-size: 24px;
+  border-radius: 12px;
+  z-index: 4;
 }
 
-.edit-profile-photo-slot:hover .edit-profile-photo-overlay {
+.image-upload-slot:hover .image-upload-overlay {
   opacity: 1;
-  display: grid;
 }
 
-.preview-photo-overlay {
+/* Preview Modal */
+.image-upload-preview-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: grid;
-  place-content: center;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: imageUploadFadeIn 0.2s ease-out;
+}
+
+.image-upload-preview-img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.image-upload-preview-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
   cursor: pointer;
-  z-index: 9999;
+  color: white;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
 
-  img {
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    object-fit: cover;
-    cursor: pointer;
+.image-upload-preview-close:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+@keyframes imageUploadFadeIn {
+  from {
+    opacity: 0;
   }
 
-  button {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    background: none;
-    border: none;
-    color: black;
-    font-size: 20px;
-    cursor: pointer;
-  }
-
-  .loading-spin {
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid black;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation-name: spin;
-    animation-duration: 1000ms;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+  to {
+    opacity: 1;
   }
 }
 
-@keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+/* Labels and Hints */
+.image-upload-section-title {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #333);
+  margin: 0 0 12px 0;
+}
+
+.image-upload-hint {
+  font-size: 0.8rem;
+  color: var(--color-text-tertiary, #999);
+  margin: 8px 0;
+  text-align: center;
+}

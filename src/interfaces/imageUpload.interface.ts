@@ -1,17 +1,15 @@
-export interface ProfilePhoto {
+export interface UploadedPhoto {
   id?: string;
-  url: string;
-  is_primary?: boolean;
+  url: string; // Preview URL (blob:...) or Remote URL (http...)
+  file?: File; // Associated file if it's a new upload
 }
 
 export interface ImageUploadProps {
   label?: string;
   description?: string;
-  photos: string[];
+  photos: UploadedPhoto[];
   maxPhotos?: number;
-  onChange: (photos: string[]) => void;
-  onPreview?: () => void;
-  uploadImage: (file: File) => Promise<ProfilePhoto>;
+  minPhotos?: number;
+  onChange: (photos: UploadedPhoto[]) => void;
+  onPreview?: (photo: UploadedPhoto) => void;
 }
-
-
