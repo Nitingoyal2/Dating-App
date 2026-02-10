@@ -1,7 +1,10 @@
 import React, { useRef, useState } from "react";
 import { PlusOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
 import { message } from "antd";
-import type { UploadedPhoto, ImageUploadProps } from "../../interfaces/imageUpload.interface";
+import type {
+  UploadedPhoto,
+  ImageUploadProps,
+} from "../../interfaces/imageUpload.interface";
 import "./ImageUpload.css";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -16,9 +19,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewPhoto, setPreviewPhoto] = useState<UploadedPhoto | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const isInternalDrag = useRef(false);
 
   const validateFile = (file: File): string | null => {
-    if (!file.type.startsWith('image/')) {
+    if (!file.type.startsWith("image/")) {
       return "Only image files are allowed";
     }
     if (file.size > MAX_FILE_SIZE) {
@@ -27,10 +33,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     return null;
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  const reorderPhotos = (from: number, to: number) => {
+    const updated = [...photos];
+    const [moved] = updated.splice(from, 1);
+    updated.splice(to, 0, moved);
+    onChange(updated);
+  };
 
+  const processFiles = (files: FileList | File[]) => {
     const remainingSlots = maxPhotos - photos.length;
     const filesToProcess = Array.from(files).slice(0, remainingSlots);
     const newPhotos: UploadedPhoto[] = [];
@@ -42,21 +52,44 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         continue;
       }
 
-      // Create object URL for preview
       const url = URL.createObjectURL(file);
-      newPhotos.push({
-        url,
-        file,
-      });
+      newPhotos.push({ url, file });
     }
 
     if (newPhotos.length > 0) {
       onChange([...photos, ...newPhotos]);
-      message.success(`${newPhotos.length} photo${newPhotos.length > 1 ? 's' : ''} added`);
+      message.success(
+        `${newPhotos.length} photo${newPhotos.length > 1 ? "s" : ""} added`,
+      );
     }
+  };
 
-    // Reset input
-    if (fileInputRef.current) fileInputRef.current.value = '';
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    processFiles(e.target.files);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (isInternalDrag.current) return;
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (isInternalDrag.current) {
+      isInternalDrag.current = false;
+      return;
+    }
+    e.preventDefault();
+    setIsDragging(false);
+    if (!e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+
+    processFiles(e.dataTransfer.files);
   };
 
   const handleRemove = (index: number) => {
@@ -81,6 +114,24 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       <div
         key={`photo-${index}-${photo.id || index}`}
         className="image-upload-slot filled"
+        draggable
+        onDragStart={(e) => {
+          isInternalDrag.current = true;
+          setDragIndex(index);
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", "drag");
+        }}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.stopPropagation(); // 🚨 THIS IS THE KEY
+
+          if (dragIndex === null || dragIndex === index) return;
+
+          reorderPhotos(dragIndex, index);
+          setDragIndex(null);
+          isInternalDrag.current = false;
+        }}
       >
         <img src={photo.url} alt={`Photo ${index + 1}`} />
 
@@ -112,11 +163,30 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           key="add-slot"
           className="image-upload-slot"
           onClick={() => fileInputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Ignore internal image reordering
+            if (isInternalDrag.current) {
+              isInternalDrag.current = false;
+              return;
+            }
+
+            if (!e.dataTransfer.files || e.dataTransfer.files.length === 0)
+              return;
+            setIsDragging(false);
+            processFiles(e.dataTransfer.files);
+          }}
         >
           <span className="image-upload-add">
             <PlusOutlined />
           </span>
-        </div>
+        </div>,
       );
     }
 
@@ -141,10 +211,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
       {label && <h2 className="image-upload-section-title">{label}</h2>}
 
-      <div className="image-upload-grid">
+      <div
+        className={`image-upload-grid ${isDragging ? "dragging" : ""}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         {renderSlots()}
       </div>
-
       {description && <p className="image-upload-hint">{description}</p>}
 
       <input
@@ -153,7 +227,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         accept="image/*"
         multiple
         onChange={handleFileChange}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
     </div>
   );
