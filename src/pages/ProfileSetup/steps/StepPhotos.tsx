@@ -1,10 +1,11 @@
-import { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { message } from 'antd';
-import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseOutlined, EyeFilled } from '@ant-design/icons';
 import type { StepPhotosProps, PhotoItem } from '@interfaces';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 import { ValidationMessages } from '@constants';
+import './StepPhotos.css';
 
 const MAX_PHOTOS = 6;
 const MIN_PHOTOS = 3;
@@ -12,6 +13,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [preview, setPreview] = React.useState<string | null>(null);
     const isValid = value.length >= MIN_PHOTOS;
 
     // Cleanup object URLs on unmount to prevent memory leaks
@@ -72,37 +74,56 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
         message.info(ValidationMessages.PHOTO_REMOVED);
     };
 
+    const handlePreview = (url: string) => {
+        setPreview(url);
+    };
+
     const renderSlots = () => {
-        return Array.from({ length: MAX_PHOTOS }, (_, i) => {
-            const photoItem = value[i];
-            return (
+        // Show all filled slots
+        const slots = value.map((photoItem, index) => (
+            <div
+                key={`photo-${index}`}
+                className="auth-photo-slot filled"
+            >
+                <img src={photoItem.preview} alt={`Photo ${index + 1}`} />
+
+                {/* Preview Overlay */}
                 <div
-                    key={i}
-                    className={`auth-photo-slot ${photoItem ? 'filled' : ''}`}
-                    onClick={!photoItem ? () => fileInputRef.current?.click() : undefined}
+                    className="auth-photo-overlay"
+                    onClick={() => handlePreview(photoItem.preview)}
                 >
-                    {photoItem ? (
-                        <>
-                            <img src={photoItem.preview} alt={`Photo ${i + 1}`} />
-                            <button
-                                type="button"
-                                className="auth-photo-remove"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleRemovePhoto(i);
-                                }}
-                            >
-                                <CloseOutlined style={{ fontSize: 8 }} />
-                            </button>
-                        </>
-                    ) : (
-                        <span className="auth-photo-add">
-                            <PlusOutlined />
-                        </span>
-                    )}
+                    <EyeFilled />
+                </div>
+
+                <button
+                    type="button"
+                    className="auth-photo-remove"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemovePhoto(index);
+                    }}
+                >
+                    <CloseOutlined style={{ fontSize: 12 }} />
+                </button>
+            </div>
+        ));
+
+        // Add ONE empty slot if we haven't reached max photos
+        if (value.length < MAX_PHOTOS) {
+            slots.push(
+                <div
+                    key="add-slot"
+                    className="auth-photo-slot"
+                    onClick={() => fileInputRef.current?.click()}
+                >
+                    <span className="auth-photo-add">
+                        <PlusOutlined />
+                    </span>
                 </div>
             );
-        });
+        }
+
+        return slots;
     };
 
     return (
@@ -111,6 +132,14 @@ const StepPhotos = ({ value, onChange, onNext, onBack }: StepPhotosProps) => {
             description={`Add at least ${MIN_PHOTOS} photos to continue`}
             onBackClick={onBack}
         >
+            {preview && (
+                <div className="preview-photo-overlay" onClick={() => setPreview(null)}>
+                    <img src={preview} alt="Preview" className="preview-photo" onClick={(e) => e.stopPropagation()} />
+                    <button className="preview-close-btn" onClick={() => setPreview(null)}>
+                        <CloseOutlined />
+                    </button>
+                </div>
+            )}
             <div className="auth-photos-grid">{renderSlots()}</div>
 
             <input

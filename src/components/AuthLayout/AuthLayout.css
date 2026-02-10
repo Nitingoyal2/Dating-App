@@ -2,6 +2,7 @@
 
 .auth-layout {
   min-height: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
   background: var(--color-bg-primary);
@@ -449,7 +450,7 @@
   top: 45%;
 }
 
-.auth-terms .ant-checkbox + span {
+.auth-terms .ant-checkbox+span {
   padding-inline-start: 12px;
 }
 
@@ -623,4 +624,3 @@
 .auth-skip-btn:hover {
   color: var(--color-text-primary) !important;
 }
-
