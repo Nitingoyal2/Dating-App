@@ -15,7 +15,8 @@ export const Routes = {
   CHAT: '/chat',
   SETTINGS: '/settings',
   DISCOVER: '/discover',
-  EDIT: '/edit'
+  EDIT: '/edit',
+  EDIT_ITEM: '/edit/:item',
 } as const;
 
 export type Routes = (typeof Routes)[keyof typeof Routes];

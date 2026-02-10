@@ -66,6 +66,9 @@ export type {
   ApiResponse as ApiResponseType,
   DraftRequest,
   DraftResponse,
+  FullProfileUpdateRequest,
+  FullProfileUpdateResponse,
+  ProfilePhotoUpdate,
   ProfileUpdateRequest,
   ProfileUpdateResponse,
   Photo,
@@ -116,7 +119,9 @@ export type {
   EditProfileProps,
   EditProfileItemConfig,
   CommonSelectorProps,
+  SelectorType,
+  SelectorItem,
 } from './components.interface';
 
 // CommonImageUpload interfaces
-export type { ImageUploadProps, ProfilePhoto } from "./imageUpload.interface";
+export type { ImageUploadProps } from "./imageUpload.interface";

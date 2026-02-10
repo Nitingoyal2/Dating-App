@@ -1,0 +1,84 @@
+.edit-profile-height-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.edit-profile-height-page::-webkit-scrollbar {
+  display: none;
+}
+
+.edit-profile-height-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.edit-profile-height-back {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.edit-profile-height-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+.edit-profile-height-done {
+  background: none;
+  border: none;
+  color: #0676c9;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+}
+
+.edit-profile-height-slider-wrap {
+  padding: 20px;
+}
+
+.edit-profile-height-sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-profile-height-slider-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-profile-height-slider-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+}
+
+.edit-profile-height-value {
+  width: fit-content;
+  background: #ffcc80;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.edit-profile-height-slider {
+  width: 100%;
+}

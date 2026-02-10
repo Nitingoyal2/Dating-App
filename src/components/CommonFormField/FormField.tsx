@@ -43,6 +43,16 @@ function validateValue(value: string, rules: ValidationRule[]): string | null {
 
   return null;
 }
+function formatDateDMY(dateStr: string) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "";
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
 
 const FormField = (props: FormFieldProps) => {
   const { label, placeholder } = props;
@@ -101,7 +111,7 @@ const FormField = (props: FormFieldProps) => {
                   <EditOutlined />
                 </button>
               </div>
-            : <textarea
+              : <textarea
                 rows={7}
                 name={props.name}
                 maxLength={500}
@@ -133,8 +143,10 @@ const FormField = (props: FormFieldProps) => {
                     {isPassword ?
                       props.value ?
                         "••••••••"
-                      : placeholder
-                    : props.value || placeholder}
+                        : placeholder
+                      : props.inputType === "date" ?
+                        (formatDateDMY(props.value) || placeholder)
+                        : props.value || placeholder}
                   </div>
 
                   <button
@@ -149,7 +161,7 @@ const FormField = (props: FormFieldProps) => {
                   </button>
                 </div>
               </>
-            : <div
+              : <div
                 className={isPassword ? "password-input-wrapper" : undefined}
               >
                 <input
@@ -157,8 +169,8 @@ const FormField = (props: FormFieldProps) => {
                     isPassword ?
                       showPassword ?
                         "text"
-                      : "password"
-                    : (props.inputType ?? "text")
+                        : "password"
+                      : (props.inputType ?? "text")
                   }
                   name={props.name}
                   value={props.value}
@@ -175,7 +187,7 @@ const FormField = (props: FormFieldProps) => {
                   >
                     {showPassword ?
                       <EyeInvisibleFilled />
-                    : <EyeFilled />}
+                      : <EyeFilled />}
                   </button>
                 )}
               </div>
@@ -208,7 +220,7 @@ const FormField = (props: FormFieldProps) => {
                 </div>
                 {error && <span className="edit-profile-error">{error}</span>}
               </>
-            : <Radio.Group
+              : <Radio.Group
                 name={props.name}
                 value={props?.value}
                 onChange={(e) => props?.onChange(e.target.value)}
@@ -251,7 +263,7 @@ const FormField = (props: FormFieldProps) => {
                 </div>
                 {error && <span className="edit-profile-error">{error}</span>}
               </>
-            : <select
+              : <select
                 value={props.value}
                 name={props.name}
                 onChange={(e) => props.onChange(e.target.value)}
@@ -281,7 +293,7 @@ const FormField = (props: FormFieldProps) => {
                   <div className="radio-view-text">
                     {props?.value?.length ?
                       props.value.join(", ")
-                    : placeholder}
+                      : placeholder}
                   </div>
 
                   <button
@@ -297,7 +309,7 @@ const FormField = (props: FormFieldProps) => {
 
                 {error && <span className="edit-profile-error">{error}</span>}
               </>
-            : <Checkbox.Group
+              : <Checkbox.Group
                 name={props.name}
                 value={props?.value || []}
                 onChange={(checkedValues) => props?.onChange(checkedValues)}

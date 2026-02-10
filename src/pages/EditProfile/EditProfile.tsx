@@ -1,55 +1,154 @@
-import { useState } from "react";
-import { useAppSelector } from "@store/hooks";
-import { getAllEditProfileSections } from "@constants";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import {
+  buildEditProfileItemRoute,
+  getAllEditProfileSections,
+  getEditProfileSelectorPageConfig,
+  getEditProfileSliderPageConfig,
+} from "@constants";
 import { EditProfileSection, EditProfileItem } from "@/types";
-import type { EditProfileItemConfig, EditProfileProps } from "@interfaces";
+import {
+  type User,
+  type EditProfileItemConfig,
+  type EditProfileProps,
+  type ProfileUpdateRequest,
+} from "@interfaces";
 import type { UploadedPhoto } from "@/interfaces/imageUpload.interface";
 import "./EditProfile.css";
 import ImageUpload from "@/components/CommonImageUpload/ImageUpload";
 import FormField from "@/components/CommonFormField";
+import Spinner from "@/components/Spinner/Spinner";
+import { updateUser } from "@store/slices";
+import { getUserDetails, updateUserProfileApi } from "@/services";
+import { ArrowRightIcon } from "@/utils/svg";
 
-const EditProfile = ({ onDone}: EditProfileProps) => {
+const EditProfile = ({ onDone }: EditProfileProps) => {
   const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  
+  const toFeetInches = (totalInches: number) => {
+    const feet = Math.floor(totalInches / 12);
+    const inches = totalInches % 12;
+    return { feet, inches };
+  };
 
+  const [userDetails, setUserDetails] = useState<User | null>(null);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   // Initialize photos with existing user photos
   const [photos, setPhotos] = useState<UploadedPhoto[]>(
     user?.photos?.map((p) => ({
       url: p.url,
-      id: p.id
-    })) || []
+      id: p.id,
+    })) || [],
   );
+  const [gender, setGender] = useState<string>("");
+  const [aboutMe, setAboutMe] = useState<string>("");
+  const [currentWork, setCurrentWork] = useState<string>("");
+  const [birthday, setBirthday] = useState<string>("");
+  const [school, setSchool] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [submitError, setSubmitError] = useState<string>("");
 
-  const [gender, setGender] = useState<string>(user?.gender || "man");
-  const [aboutMe, setAboutMe] = useState<string>(user?.bio || "");
-  const [currentWork, setCurrentWork] = useState<string>(
-    user?.current_work as string,
-  );
-  const [birthday, setBirthday] = useState<string>(user?.date_of_birth ?? "");
-  const [school, setSchool] = useState<string>(user?.school as string);
   const editProfileSections = getAllEditProfileSections();
 
-  const handleItemClick = (item: EditProfileItem) => {
-    // TODO: Handle item click - open modal or navigate to edit screen
-    console.log("Item clicked:", item);
+  const fetchUserDetails = async () => {
+    if (!user?.id) return;
+    try {
+      const response = await getUserDetails(user?.id as string);
+      const userData = response.data;
+      setUserDetails(userData);
+
+      // Populate form fields with fetched data
+      if (userData) {
+        setGender(userData.gender ?? "");
+        setAboutMe(userData.about_me ?? "");
+        setCurrentWork(userData.current_work ?? "");
+        setSchool(userData.school ?? "");
+        if (userData.date_of_birth) {
+          setBirthday(String(userData.date_of_birth).split("T")[0]);
+        } else {
+          setBirthday("");
+        }
+
+        if (userData.photos?.length) {
+          setPhotos(
+            userData.photos.map((p) => ({
+              id: p.id,
+              url: p.url,
+            })),
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    } finally {
+      setIsInitialLoading(false);
+    }
   };
 
-  const handleSubmit = () => {
-    // Separate existing photos from new uploads
-    const existingPhotos = photos.filter(p => !p.file).map(p => p.url);
-    const newFiles = photos.filter(p => p.file).map(p => p.file);
+  useEffect(() => {
+    fetchUserDetails();
+  }, [user?.id]);
 
-    const formValues = {
-      existingPhotos,
-      newFiles,
-      gender,
-      aboutMe,
-      currentWork,
-      birthday,
-      school,
+  const handleItemClick = (item: EditProfileItem) => {
+    const selectorConfig = getEditProfileSelectorPageConfig(item);
+    if (selectorConfig) {
+      navigate(buildEditProfileItemRoute(item));
+      return;
+    }
+
+    const sliderConfig = getEditProfileSliderPageConfig(item);
+    if (sliderConfig) {
+      navigate(buildEditProfileItemRoute(item));
+      return;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!user?.id) {
+      onDone?.();
+      return;
+    }
+
+    const validPhotos = photos.filter((p) => Boolean(p?.url));
+    if (validPhotos.length < 3) {
+      setSubmitError("Minimum 3 photos mandatory");
+      return;
+    }
+
+    setSubmitError("");
+
+    const genderValue =
+      gender === "man" || gender === "woman" ? gender : undefined;
+
+    const payload: ProfileUpdateRequest = {
+      gender: genderValue,
+      current_work: currentWork || undefined,
+      school: school || undefined,
+      date_of_birth: birthday || undefined,
     };
 
-    console.log("FORM VALUES", formValues);
-    onDone?.();
+    const fullPayload = {
+      ...payload,
+      about_me: aboutMe || undefined,
+      photos: validPhotos?.map((p, index) => ({
+        url: p.url,
+        order: index,
+      })),
+    };
+
+    try {
+      setIsSaving(true);
+      await updateUserProfileApi(user.id, fullPayload);
+      dispatch(updateUser(fullPayload as unknown as Partial<typeof user>));
+      const refreshed = await getUserDetails(user.id);
+      dispatch(updateUser(refreshed.data as unknown as Partial<typeof user>));
+      onDone?.();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const renderBasicField = (item: EditProfileItem) => {
@@ -116,7 +215,38 @@ const EditProfile = ({ onDone}: EditProfileProps) => {
   };
 
   const renderOptionItem = (itemConfig: EditProfileItemConfig) => {
-    const displayValue = itemConfig.defaultValue || "Add to your profile...";
+    const dynamicValue = (user as Record<string, unknown> | null)?.[
+      itemConfig.item
+    ];
+    const selectorConfig = getEditProfileSelectorPageConfig(itemConfig.item);
+    const optionsById = selectorConfig
+      ? new Map(selectorConfig.options.map((o) => [o.id, o.label]))
+      : null;
+
+    const displayValue = (() => {
+      if (Array.isArray(dynamicValue)) {
+        const labels = dynamicValue
+          .map((v) => String(v))
+          .map((id) => optionsById?.get(id) ?? id);
+        return labels.join(", ");
+      }
+
+      if (typeof dynamicValue === "string") {
+        return (optionsById?.get(dynamicValue) ?? dynamicValue)
+          ? itemConfig?.item === "height"
+            ? toFeetInches(Number(dynamicValue)).feet +
+              "' " +
+              toFeetInches(Number(dynamicValue)).inches +
+              '"'
+            : dynamicValue
+          : "";
+      }
+
+      return "";
+    })();
+
+    const finalDisplayValue =
+      displayValue || itemConfig.defaultValue || "Add to your profile...";
     const Icon = itemConfig.icon;
     return (
       <div
@@ -124,24 +254,32 @@ const EditProfile = ({ onDone}: EditProfileProps) => {
         className="edit-profile-option-item"
         onClick={() => handleItemClick(itemConfig.item)}
       >
-        <div className="edit-profile-option-left">
-          <span className="edit-profile-option-icon">
-            <Icon size={18} />
-          </span>
-          <span className="edit-profile-option-label">{itemConfig.label}</span>
+        <div>
+          <div className="edit-profile-option-left">
+            <span className="edit-profile-option-icon">
+              <Icon size={18} />
+            </span>
+            <span className="edit-profile-option-label">
+              {itemConfig.label}
+            </span>
+          </div>
+          <div className="edit-profile-option-right">
+            <span className="edit-profile-option-placeholder">
+              {finalDisplayValue}
+            </span>
+          </div>
         </div>
-        <div className="edit-profile-option-right">
-          <span className="edit-profile-option-placeholder">
-            {displayValue}
-          </span>
-          <span className="edit-profile-option-arrow">›</span>
-        </div>
+        <span className="edit-profile-option-arrow">
+          <ArrowRightIcon size={20} />
+        </span>
       </div>
     );
   };
 
   return (
     <div className="edit-profile-page">
+      {isInitialLoading && <Spinner fullScreen tip="Loading..." />}
+      {isSaving && <Spinner fullScreen tip="Saving..." />}
       {/* Header */}
       <div className="edit-profile-header">
         <div className="edit-profile-header-left"></div>
@@ -152,6 +290,10 @@ const EditProfile = ({ onDone}: EditProfileProps) => {
           </button>
         </div>
       </div>
+
+      {submitError ? (
+        <div className="edit-profile-submit-error">{submitError}</div>
+      ) : null}
 
       <div className="edit-profile-content">
         {/* UPLOAD IMAGES Section */}
@@ -167,13 +309,11 @@ const EditProfile = ({ onDone}: EditProfileProps) => {
         {editProfileSections?.map(({ section, title, items }) => (
           <div key={section} className="edit-profile-section">
             <h2 className="edit-profile-section-title">{title}</h2>
-            {
-              section === EditProfileSection.BASIC ?
-                // Render BASIC section fields with custom UI
+            {section === EditProfileSection.BASIC
+              ? // Render BASIC section fields with custom UI
                 items.map((itemConfig) => renderBasicField(itemConfig.item))
-                // Render other sections as option items
-                : items.map((itemConfig) => renderOptionItem(itemConfig))
-            }
+              : // Render other sections as option items
+                items.map((itemConfig) => renderOptionItem(itemConfig))}
           </div>
         ))}
       </div>

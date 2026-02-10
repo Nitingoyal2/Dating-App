@@ -102,6 +102,7 @@ export interface ProfileProps {
 // ============================================
 export interface EditProfileProps {
     onDone?: () => void;
+    onPreview?: () => void;
 }
 
 export interface ProfileActionConfig {

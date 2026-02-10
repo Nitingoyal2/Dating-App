@@ -144,6 +144,16 @@ export const protectedRoutes: RouteConfig[] = [
         isProtected: true,
     },
 
+    {
+        path: Routes.EDIT_ITEM,
+        element: (
+            <ProtectedRoute>
+                <Dashboard />
+            </ProtectedRoute>
+        ),
+        isProtected: true,
+    },
+
 ];
 
 // ============================================

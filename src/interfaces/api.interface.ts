@@ -143,7 +143,59 @@ export interface ProfileUpdateRequest {
     longitude?: number;
     location_skipped?: boolean;
     rules_accepted?: boolean;
+    bio?: string;
+    current_work?: string;
+    school?: string;
+    looking_for?: string[];
+    pets?: string[];
+    children?: string;
+    astrological_sign?: string;
+    religion?: string;
+    education?: string;
+    height?: string;
+    body_type?: string;
+    exercise?: string;
+    drink?: string;
+    smoker?: string;
+    marijuana?: string;
 }
+
+// ============================================
+// Full Profile Update API (Edit Profile)
+// ============================================
+export interface ProfilePhotoUpdate {
+    url: string;
+    order: number;
+}
+
+export interface FullProfileUpdateRequest {
+    first_name?: string;
+    gender?: 'man' | 'woman';
+    seeking?: 'man' | 'woman';
+    date_of_birth?: string;
+    latitude?: number;
+    longitude?: number;
+    location_skipped?: boolean;
+    rules_accepted?: boolean;
+    about_me?: string;
+    current_work?: string;
+    school?: string;
+    looking_for?: string[];
+    pets?: string[];
+    children?: string;
+    astrological_sign?: string;
+    religion?: string;
+    education?: string;
+    height?: string;
+    body_type?: string;
+    exercise?: string;
+    drink?: string;
+    smoker?: string;
+    marijuana?: string;
+    photos?: ProfilePhotoUpdate[];
+}
+
+export type FullProfileUpdateResponse = ProfileUpdateResponse;
 
 export interface ProfileUpdateResponse {
     user_id: string;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   DashboardIcon,
   MatchesIcon,
@@ -14,6 +14,8 @@ import { Discover } from "@/pages/Discover";
 import { Profile } from "@/pages/Profile";
 import { Settings } from "@/pages/Settings";
 import { EditProfile } from "@/pages/EditProfile";
+import EditProfileItemSelector from "@/pages/EditProfile/pages/EditProfileItemSelector/EditProfileItemSelector";
+import EditProfileHeight from "@/pages/EditProfile/pages/EditProfileHeight/EditProfileHeight";
 import type { DashboardLayoutProps, DashboardScreen } from "@interfaces";
 import {
   DEFAULT_DASHBOARD_SCREEN,
@@ -40,6 +42,11 @@ const DashboardLayout = ({
   onScreenChange,
 }: DashboardLayoutProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const selectorItem = useMemo(() => {
+    const match = location.pathname.match(/^\/edit\/(.+)$/);
+    return match?.[1] ?? null;
+  }, [location.pathname]);
   const [internalActiveScreen, setInternalActiveScreen] =
     useState<DashboardScreen>(DEFAULT_DASHBOARD_SCREEN);
 
@@ -67,6 +74,7 @@ const DashboardLayout = ({
   };
 
   const showBackButton = shouldShowBackButton(activeScreen);
+  const shouldHideDashboardHeader = activeScreen === DashboardScreenEnum.EDIT && Boolean(selectorItem);
 
   const renderContent = () => {
     switch (activeScreen) {
@@ -86,7 +94,13 @@ const DashboardLayout = ({
       case DashboardScreenEnum.SETTINGS:
         return <Settings />;
       case DashboardScreenEnum.EDIT:
-        return (
+        return selectorItem ? (
+          selectorItem === "height" ? (
+            <EditProfileHeight />
+          ) : (
+            <EditProfileItemSelector />
+          )
+        ) : (
           <EditProfile
             onDone={() => handleScreenChange(DashboardScreenEnum.PROFILE)}
             onPreview={() => {
@@ -112,7 +126,8 @@ const DashboardLayout = ({
 
   return (
     <div className="dashboard-layout">
-      
+
+      {!shouldHideDashboardHeader && (
         <div className="dashboard-head">
           {isDiscoverScreen ? (
             <>
@@ -148,7 +163,7 @@ const DashboardLayout = ({
             </>
           )}
         </div>
-      
+      )}
 
       {/* Content area - changes based on activeScreen */}
       <div className="dashboard-content-wrapper">{renderContent()}</div>

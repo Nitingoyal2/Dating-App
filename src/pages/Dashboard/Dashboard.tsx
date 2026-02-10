@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '@components/DashboardLayout';
 import { Routes, DashboardScreen } from '@/types';
 import type { DashboardScreen as DashboardScreenType } from '@interfaces';
@@ -24,6 +24,9 @@ const Dashboard = () => {
       case Routes.EDIT:
         return DashboardScreen.EDIT
       default:
+        if (matchPath({ path: Routes.EDIT_ITEM }, location.pathname)) {
+          return DashboardScreen.EDIT;
+        }
         return DashboardScreen.DISCOVER;
     }
   };
