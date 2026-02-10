@@ -45,13 +45,10 @@ const EditProfile = ({ onDone, onPreview }: EditProfileProps) => {
         return (
           <FormField
             name="dob"
-            type="select"
+            type="input"
+            inputType="date"
             label="My Birthday"
             value={birthday}
-            options={Array.from({ length: 100 }, (_, i) => {
-              const year = new Date().getFullYear() - i;
-              return { label: year.toString(), value: year.toString() };
-            })}
             onChange={setBirthday}
             placeholder="Add your birthday"
           />
