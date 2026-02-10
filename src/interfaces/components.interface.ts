@@ -156,4 +156,3 @@ export interface CommonSelectorProps<T extends string | number> {
   value?: T | T[];
   onChange?: (val: T | T[]) => void;
 }
-

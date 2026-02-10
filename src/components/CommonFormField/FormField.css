@@ -1,0 +1,285 @@
+.edit-profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  .edit-profile-birthday {
+    cursor: pointer;
+    input {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: #000;
+      width: 100%;
+    }
+    input:focus {
+      outline: none;
+    }
+  }
+}
+.edit-profile-field-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+}
+.edit-profile-field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.about-view-box {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #00000050;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.about-view-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 95%;
+}
+.edit-profile-edit-icon-about {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.edit-profile-edit-icon-about:hover {
+  color: #000;
+}
+.edit-profile-error {
+  margin-top: 2px;
+  color: #ff2c29;
+  font-size: 12px;
+}
+
+.has-error {
+  outline: 1px solid #ff2c29;
+}
+/* Select Field */
+
+.edit-profile-select {
+  width: 100%;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 40px 14px 16px;
+  font-size: 14px;
+  color: #000;
+  appearance: none; /* remove native arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.edit-profile-select option {
+  font-size: 14px;
+  color: #000;
+  background: #f5f5f5;
+}
+
+/* Focus state */
+.edit-profile-select:focus {
+  outline: none;
+  box-shadow: none;
+  background: #f5f5f5;
+}
+
+/* Wrapper to place custom arrow */
+.edit-profile-field {
+  position: relative;
+}
+
+/* Custom dropdown arrow */
+.edit-profile-field.is-select::after {
+  content: "›";
+  position: absolute;
+  right: 16px;
+  top: 50px;
+  transform: translateY(-50%) rotate(90deg);
+  font-size: 18px;
+  color: #999;
+  pointer-events: none;
+}
+
+/* Placeholder option color */
+.edit-profile-select option[value=""] {
+  color: #999;
+}
+/* Select Field */
+
+.edit-profile-select {
+  width: 100%;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 40px 14px 16px;
+  font-size: 14px;
+  color: #000;
+  appearance: none; /* remove native arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Focus state */
+.edit-profile-select:focus {
+  outline: none;
+  box-shadow: none;
+  background: #f5f5f5;
+}
+
+/* Wrapper to place custom arrow */
+.edit-profile-field {
+  position: relative;
+}
+
+/* Custom dropdown arrow */
+.edit-profile-field.is-select::after {
+  content: "›";
+  position: absolute;
+  right: 16px;
+  top: 50px;
+  transform: translateY(-50%) rotate(90deg);
+  font-size: 18px;
+  color: #999;
+  pointer-events: none;
+}
+
+/* Placeholder option color */
+.edit-profile-select option[value=""] {
+  color: #999;
+}
+
+.edit-profile-input {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  color: #000;
+  width: 100%;
+  resize: none;
+}
+.edit-profile-input:focus {
+  background: #f5f5f5;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.edit-profile-textarea-wrapper {
+  position: relative;
+}
+
+.edit-profile-textarea {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 40px 14px 16px;
+  font-size: 14px;
+  color: #000;
+  width: 100%;
+  resize: none;
+}
+
+.edit-profile-textarea:focus {
+  background: #f5f5f5;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.edit-profile-radio {
+  font-size: 14px;
+  color: #000;
+  text-transform: capitalize;
+}
+
+.radio-view-text {
+  text-transform: capitalize;
+}
+
+.edit-profile-field-value {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #000;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.edit-profile-field-value-wrapper {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 14px 16px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.edit-profile-field-value-wrapper .edit-profile-field-value {
+  background: none;
+  padding: 0;
+  flex: 1;
+}
+
+.edit-profile-gender-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 1.5vw, 24px);
+  padding: 14px 16px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.edit-profile-radio .ant-radio-inner {
+  border-color: #999;
+}
+
+.edit-profile-radio.ant-radio-checked .ant-radio-inner {
+  border-color: #ff2c29;
+  background-color: #ff2c29;
+}
+
+.edit-profile-char-count {
+  font-size: 12px;
+  color: #999;
+}
+
+.edit-profile-checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(12px, 1.5vw, 24px);
+  padding: 14px 16px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.edit-profile-checkbox {
+  font-size: 14px;
+  color: #000;
+  text-transform: capitalize;
+}
+
+.edit-profile-checkbox .ant-checkbox-inner {
+  border-color: #999;
+  border-radius: 4px; /* square but soft */
+}
