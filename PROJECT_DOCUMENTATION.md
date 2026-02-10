@@ -30,17 +30,18 @@
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| React | 19.x | UI Framework |
-| TypeScript | 5.x | Type Safety |
-| Vite | 7.x | Build Tool & Dev Server |
-| React Router DOM | 7.x | Client-side Routing |
-| Redux Toolkit | 2.x | State Management |
-| React Redux | 9.x | React bindings for Redux |
-| **Ant Design** | 5.x | UI Component Library |
-| **@ant-design/icons** | 5.x | Icon Library |
-| **dayjs** | 1.x | Date manipulation |
-| **Axios** | 1.x | HTTP Client |
-| **react-phone-input-2** | 2.x | Phone number input |
+| React | 19.2.0 | UI Framework |
+| TypeScript | 5.9.3 | Type Safety |
+| Vite | 7.2.4 | Build Tool & Dev Server |
+| React Router DOM | 7.13.0 | Client-side Routing |
+| Redux Toolkit | 2.11.2 | State Management |
+| React Redux | 9.2.0 | React bindings for Redux |
+| **Redux Persist** | 6.0.0 | State Persistence |
+| **Ant Design** | 6.2.3 | UI Component Library |
+| **@ant-design/icons** | 6.1.0 | Icon Library |
+| **dayjs** | 1.11.19 | Date manipulation |
+| **Axios** | 1.13.4 | HTTP Client |
+| **react-phone-input-2** | 2.15.1 | Phone number input |
 
 ---
 
@@ -63,15 +64,25 @@ dating-app/
 │   │   ├── AntdProvider/     # Ant Design theme provider
 │   │   ├── AuthLayout/       # Auth pages layout (back btn, title, form)
 │   │   ├── Button/           # Reusable button component (PrimaryButton)
+│   │   ├── CommonDatePicker/ # Date picker component
+│   │   ├── CommonImageUpload/ # Image upload component
+│   │   ├── CommonSelector/   # Selector/dropdown component
+│   │   ├── CommonTextArea/   # Text area component
 │   │   ├── ConfirmModal/     # Reusable confirmation modal
+│   │   ├── DashboardCard/    # Dashboard card component
+│   │   ├── DashboardLayout/  # Dashboard layout wrapper
 │   │   ├── Layout/           # Main app layout (phone frame + side panel)
 │   │   ├── Spinner/          # Custom logo-based loading spinner
 │   │   ├── SuccessScreen/    # Success/celebration screen
-│   │   └── ThemeToggle/     # Theme switcher component
+│   │   └── ThemeToggle/      # Theme switcher component
 │   │
 │   ├── constants/            # Centralized constants & messages
 │   │   ├── index.ts          # Exports all constants
-│   │   └── messages.ts       # ValidationMessages for forms & toasts
+│   │   ├── messages.ts       # ValidationMessages for forms & toasts
+│   │   ├── navigation.ts     # Dashboard navigation helpers & screen titles
+│   │   ├── profile.ts        # Profile action configs & progress calculation
+│   │   ├── settings.ts       # Settings section configs & item labels
+│   │   └── editProfile.ts    # Edit profile section configs & item labels
 │   │
 │   ├── data/                 # Static data files
 │   │   ├── index.ts          # Exports all data
@@ -182,6 +193,15 @@ dating-app/
 │   ├── App.tsx               # Root component
 │   ├── App.css               # App-level styles
 │   └── index.css             # Global styles, fonts & CSS variables
+│
+├── docs/                     # Additional documentation
+│   └── pages/                # Page-specific documentation
+│       ├── README.md         # Docs index
+│       ├── Dashboard.md      # Dashboard page documentation
+│       ├── Discover.md       # Discover page documentation
+│       ├── EditProfile.md    # Edit profile page documentation
+│       ├── Profile.md        # Profile page documentation
+│       └── Settings.md       # Settings page documentation
 │
 ├── index.html                # HTML template
 ├── vite.config.ts            # Vite configuration + aliases
@@ -1653,6 +1673,72 @@ import { HeartIcon, ProstoLogo, WarningIcon } from '@svg';
    }
    ```
 4. Export page from `pages/index.ts`
+
+---
+
+## 🌐 CORS Configuration (Backend on Different System)
+
+### Problem
+
+If your **backend is running on a different physical system** (e.g., `http://192.168.1.154:4005`) than your frontend (e.g., `http://localhost:5173`), you'll encounter CORS errors.
+
+### Solution
+
+**CORS must be configured on the NestJS backend**, not the frontend. See [BACKEND_API_SPEC.md](./BACKEND_API_SPEC.md#-cors-configuration-nestjs-backend) for detailed configuration instructions.
+
+**Key Points:**
+- Vite proxy won't work when backend is on a different machine
+- Configure `app.enableCors()` in NestJS `main.ts`
+- Allow frontend origin (e.g., `http://localhost:5173`)
+- Restart backend after configuration changes
+
+---
+
+## 💾 State Persistence (Redux Persist)
+
+The app uses **redux-persist** to persist Redux state across page refreshes.
+
+### Configuration
+
+```typescript
+// store/index.ts
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // localStorage
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'], // Only persist auth slice
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+});
+
+export const persistor = persistStore(store);
+```
+
+### Persisted State
+
+- **Auth State**: User data, token, authentication status
+- **App State**: Theme preference (light/dark/default)
+
+### Usage
+
+```typescript
+// main.tsx
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store';
+
+<Provider store={store}>
+  <PersistGate loading={<Spinner />} persistor={persistor}>
+    <App />
+  </PersistGate>
+</Provider>
+```
 
 ---
 

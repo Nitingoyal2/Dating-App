@@ -11,7 +11,7 @@ const Api = axios.create({
 
 // Default headers
 Api.defaults.headers.post['Content-Type'] = 'application/json';
-
+Api.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
 // Request interceptor - Add auth token to requests
 Api.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {

@@ -33,13 +33,16 @@
 
 ## 🛠 Tech Stack
 
-| Technology | Purpose |
-|------------|---------|
-| ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white) | UI Framework |
-| ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white) | Type Safety |
-| ![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white) | Build Tool |
-| ![Redux](https://img.shields.io/badge/Redux_Toolkit-2-764ABC?logo=redux&logoColor=white) | State Management |
-| ![React Router](https://img.shields.io/badge/React_Router-7-CA4245?logo=reactrouter&logoColor=white) | Routing |
+| Technology | Version | Purpose |
+|------------|---------|---------||
+| ![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=white) | 19.2.0 | UI Framework |
+| ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white) | 5.9.3 | Type Safety |
+| ![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite&logoColor=white) | 7.2.4 | Build Tool |
+| ![Redux](https://img.shields.io/badge/Redux_Toolkit-2.11-764ABC?logo=redux&logoColor=white) | 2.11.2 | State Management |
+| ![React Router](https://img.shields.io/badge/React_Router-7.13-CA4245?logo=reactrouter&logoColor=white) | 7.13.0 | Routing |
+| ![Ant Design](https://img.shields.io/badge/Ant_Design-6.2-0170FE?logo=antdesign&logoColor=white) | 6.2.3 | UI Components |
+| ![Axios](https://img.shields.io/badge/Axios-1.13-5A29E4?logo=axios&logoColor=white) | 1.13.4 | HTTP Client |
+| ![Redux Persist](https://img.shields.io/badge/Redux_Persist-6.0-764ABC?logo=redux&logoColor=white) | 6.0.0 | State Persistence |
 
 ---
 
@@ -89,22 +92,48 @@
 ```
 src/
 ├── components/     # Reusable UI components
-│   ├── Layout      # Main app layout (phone frame)
-│   └── AuthLayout  # Auth pages layout
+│   ├── Layout/     # Main app layout (phone frame)
+│   ├── AuthLayout/ # Auth pages layout
+│   ├── DashboardLayout/ # Dashboard container
+│   ├── Button/     # Custom buttons
+│   ├── Spinner/    # Loading spinner
+│   ├── ConfirmModal/ # Confirmation dialogs
+│   ├── SuccessScreen/ # Success/celebration screen
+│   ├── ThemeToggle/ # Theme switcher
+│   ├── AntdProvider/ # Ant Design theme provider
+│   ├── CommonSelector/ # Selector/dropdown component
+│   ├── DashboardCard/ # Dashboard card component
+│   └── Common*/    # Common form components
 ├── pages/          # Page components
 │   ├── Splash/     # Loading screen
 │   ├── Home/       # Landing page
-│   ├── Login/      # Login form
-│   ├── Register/   # Registration form
-│   ├── ForgotPassword/
-│   └── Dashboard/  # Main app (protected)
+│   ├── LoginSetup/ # Login with OTP
+│   ├── ProfileSetup/ # 9-step registration
+│   ├── ForgotPassword/ # Password recovery
+│   ├── Dashboard/  # Main app (protected)
+│   ├── Discover/   # Swipe profiles
+│   ├── Profile/    # User profile
+│   ├── EditProfile/ # Edit profile
+│   ├── Settings/   # App settings
+│   ├── TermsOfService/ # Terms of Service
+│   ├── PrivacyPolicy/ # Privacy Policy
+│   └── NotFound/   # 404 page
 ├── routes/         # Routing configuration
 ├── store/          # Redux state management
 │   └── slices/     # Redux slices
-├── types/          # TypeScript types & enums
+├── services/       # API services
+│   ├── api/        # API endpoints
+│   └── interceptor.ts # Axios config
+├── interfaces/     # TypeScript interfaces
+├── types/          # TypeScript enums
+├── constants/      # App constants & messages
+├── data/           # Static data
+├── hooks/          # Custom hooks
+├── assets/         # Images & media
 └── utils/          # Utilities
     └── svg/        # SVG icon components
 ```
+
 
 ---
 
@@ -119,6 +148,11 @@ This includes:
 - Redux state management guide
 - How to add new features
 - Code examples and patterns
+
+### Additional Documentation
+
+- **[BACKEND_API_SPEC.md](./BACKEND_API_SPEC.md)** - Backend API specification with endpoints and examples
+- **[docs/pages/](./docs/pages/)** - Detailed documentation for individual pages (Dashboard, Discover, Profile, EditProfile, Settings)
 
 ---
 
@@ -138,9 +172,17 @@ This includes:
 |-------|--------|
 | `/` | Public |
 | `/login` | Non-authenticated only |
-| `/register` | Non-authenticated only |
+| `/profile-setup` | Public |
 | `/forgot-password` | Non-authenticated only |
+| `/terms-of-service` | Public |
+| `/privacy-policy` | Public |
 | `/dashboard` | Authenticated only |
+| `/discover` | Authenticated only |
+| `/profile` | Authenticated only |
+| `/edit` | Authenticated only |
+| `/settings` | Authenticated only |
+| `/matches` | Authenticated only |
+| `/chat` | Authenticated only |
 
 ---
 

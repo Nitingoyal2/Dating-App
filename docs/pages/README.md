@@ -88,9 +88,9 @@ navigate(Routes.PROFILE);
 
 ## 🔗 Related Documentation
 
-- [PROJECT_DOCUMENTATION.md](../../PROJECT_DOCUMENTATION.md) - Main project documentation
-- [Constants Documentation](../../src/constants/README.md) - Constants structure
-- [Types Documentation](../../src/types/README.md) - Type definitions
+- [PROJECT_DOCUMENTATION.md](../../PROJECT_DOCUMENTATION.md) - Complete project documentation
+- [BACKEND_API_SPEC.md](../../BACKEND_API_SPEC.md) - Backend API specification
+- [README.md](../../README.md) - Project overview and setup guide
 
 ## 📞 Need Help?
 
@@ -101,3 +101,7 @@ If you can't find what you're looking for:
 3. Check related constants in `src/constants/`
 4. Review type definitions in `src/types/`
 
+---
+
+**Last Updated**: February 9, 2026  
+**Version**: 1.0.0

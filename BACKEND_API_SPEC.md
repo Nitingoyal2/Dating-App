@@ -1,8 +1,8 @@
 # Backend API Specification - Prosto Dating App
 
 > **Project**: Prosto Dating App  
-> **Version**: 3.3.0  
-> **Date**: February 2026
+> **Version**: 3.4.0  
+> **Date**: February 9, 2026
 
 ---
 
@@ -798,6 +798,41 @@ Authorization: Bearer {refresh_token}
 
 ---
 
+## 🌐 HTTP Headers & CORS Configuration
+
+### Request Headers
+
+All API requests from the frontend include the following headers:
+
+**Default Headers** (set in `interceptor.ts`):
+```
+Content-Type: application/json
+Access-Control-Allow-Origin: *
+```
+
+**Authentication Header** (added automatically for authenticated requests):
+```
+Authorization: Bearer {access_token}
+```
+
+The Axios interceptor automatically adds the `Authorization` header to all requests when a user is logged in. The token is retrieved from the Redux store.
+
+### CORS Configuration
+
+The frontend is configured to allow cross-origin requests with:
+- `Access-Control-Allow-Origin: *` header on POST requests
+- Timeout: 60 seconds (60000ms)
+- Base URL: Configured via `VITE_API_BASE_URL` environment variable
+
+### Auto-Logout on 401
+
+The response interceptor automatically handles 401 Unauthorized errors by:
+1. Dispatching the `logout()` action to clear Redux state
+2. Redirecting to `/login` page (except from `/`, `/login`, or `/profile-setup`)
+
+This ensures users are automatically logged out when their session expires or token becomes invalid.
+
+---
 ## 🗃️ Database Schema
 
 ### `draft_profiles` Table
@@ -1259,7 +1294,74 @@ export const ValidationMessages = {
 
 ---
 
+## 🌐 CORS Configuration (NestJS Backend)
+
+### Problem
+
+If your **backend is running on a different physical system** (e.g., `http://192.168.1.154:4005`) than your frontend (e.g., `http://localhost:5173`), you'll encounter CORS (Cross-Origin Resource Sharing) errors when making API requests.
+
+### Solution
+
+Configure CORS in your NestJS backend's `main.ts` file:
+
+```typescript
+// backend/src/main.ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  // Enable CORS
+  app.enableCors({
+    origin: 'http://localhost:5173', // Your Vite dev server URL
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
+  await app.listen(4005);
+}
+bootstrap();
+```
+
+### Multiple Origins
+
+If you need to allow multiple frontend origins:
+
+```typescript
+app.enableCors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://192.168.1.XXX:5173', // Your frontend machine IP
+  ],
+  credentials: true,
+});
+```
+
+### Development Only (Allow All)
+
+For development purposes only (not recommended for production):
+
+```typescript
+app.enableCors({
+  origin: '*', // Allow all origins
+  credentials: true,
+});
+```
+
+### Important Notes
+
+- **Backend and Frontend on Different Systems**: CORS must be configured on the backend
+- **Vite Proxy Won't Work**: Proxy only works when backend is on the same machine
+- **Check Frontend Port**: Make sure to use the correct Vite dev server port (usually 5173)
+- **Restart Backend**: After changing CORS config, restart your NestJS server
+
+---
+
 ## 📝 Changelog
+
 
 ### v3.5.0 (February 2026)
 - **Frontend**: All interfaces centralized in `src/interfaces/` folder

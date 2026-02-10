@@ -22,4 +22,8 @@ export default defineConfig({
       '@constants': path.resolve(__dirname, './src/constants'),
     },
   },
+  server: {
+    host: true, // Expose to network
+    port: 5173, // Default Vite port (you can change this)
+  },
 })
