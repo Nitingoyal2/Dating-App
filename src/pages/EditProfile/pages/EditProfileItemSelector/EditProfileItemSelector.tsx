@@ -7,7 +7,7 @@ import { ArrowLeftIcon } from "@/utils/svg";
 import Spinner from "@/components/Spinner/Spinner";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { updateUser } from "@store/slices";
-import { getUserDetails, updateUserProfileApi } from "@/services";
+import { getUserDetails, updateUserProfileWithFormDataApi } from "@/services";
 import type { ProfileUpdateRequest } from "@interfaces";
 import "./EditProfileItemSelector.css";
 
@@ -85,7 +85,18 @@ const EditProfileItemSelector = () => {
 
     try {
       setIsSaving(true);
-      await updateUserProfileApi(user.id, payload);
+      
+      // Use FormData for consistency
+      const formData = new FormData();
+      if (value !== undefined) {
+        if (Array.isArray(value)) {
+          value.forEach((val) => formData.append(field, val));
+        } else {
+          formData.append(field, String(value));
+        }
+      }
+      
+      await updateUserProfileWithFormDataApi(user.id, formData);
       dispatch(updateUser(payload as unknown as Partial<typeof user>));
       const refreshed = await getUserDetails(user.id);
       dispatch(updateUser(refreshed.data as unknown as Partial<typeof user>));

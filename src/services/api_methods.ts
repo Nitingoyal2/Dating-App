@@ -93,3 +93,21 @@ export const postFormDataApi = async <T = unknown>(url: string, formData: FormDa
     }
 };
 
+// PATCH with FormData (for file uploads)
+export const patchFormDataApi = async <T = unknown>(url: string, formData: FormData): Promise<T> => {
+    try {
+        const result = await Api.patch(url, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        if (result.status === 200 || result.status === 201) {
+            return result.data;
+        }
+        throw new Error(result?.data?.message || `Unexpected status: ${result.status}`);
+    } catch (e: unknown) {
+        const error = e as { response?: { data?: { message?: string } } };
+        throw new Error(error?.response?.data?.message || 'API Request Failed');
+    }
+};
+

@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from "@/utils/svg";
 import Spinner from "@/components/Spinner/Spinner";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { updateUser } from "@store/slices";
-import { getUserDetails, updateUserProfileApi } from "@/services";
+import { getUserDetails, updateUserProfileWithFormDataApi } from "@/services";
 import "./EditProfileHeight.css";
 
 const toFeetInches = (totalInches: number) => {
@@ -47,7 +47,12 @@ const EditProfileHeight = () => {
     const total = toTotalInches(feet, inches);
     try {
       setIsSaving(true);
-      await updateUserProfileApi(user.id, { height: String(total) });
+      
+      // Use FormData for consistency
+      const formData = new FormData();
+      formData.append('height', String(total));
+      
+      await updateUserProfileWithFormDataApi(user.id, formData);
       dispatch(updateUser({ height: String(total) } as unknown as Partial<typeof user>));
       const refreshed = await getUserDetails(user.id);
       dispatch(updateUser(refreshed.data as unknown as Partial<typeof user>));

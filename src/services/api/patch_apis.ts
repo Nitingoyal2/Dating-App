@@ -1,4 +1,4 @@
-import { patchApi } from "../api_methods";
+import { patchApi, patchFormDataApi } from "../api_methods";
 import type {
     ApiResponse,
     FullProfileUpdateRequest,
@@ -36,6 +36,17 @@ export const updateUserProfileApi = async (
     const response = await patchApi<ApiResponse<FullProfileUpdateResponse>>(
         FULL_PROFILE_UPDATE_API.replace('{userId}', userId),
         data
+    );
+    return response.data;
+};
+
+export const updateUserProfileWithFormDataApi = async (
+    userId: string,
+    formData: FormData
+): Promise<FullProfileUpdateResponse> => {
+    const response = await patchFormDataApi<ApiResponse<FullProfileUpdateResponse>>(
+        FULL_PROFILE_UPDATE_API.replace('{userId}', userId),
+        formData
     );
     return response.data;
 };

@@ -19,7 +19,7 @@ import ImageUpload from "@/components/CommonImageUpload/ImageUpload";
 import FormField from "@/components/CommonFormField";
 import Spinner from "@/components/Spinner/Spinner";
 import { updateUser } from "@store/slices";
-import { getUserDetails, updateUserProfileApi } from "@/services";
+import { getUserDetails, updateUserProfileApi, userPhotoDeleteApi, updateUserProfileWithFormDataApi } from "@/services";
 import { ArrowRightIcon } from "@/utils/svg";
 import { message } from "antd";
 
@@ -43,6 +43,7 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
   const [birthday, setBirthday] = useState<string>("");
   const [school, setSchool] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
+  const [originalPhotos, setOriginalPhotos] = useState<UploadedPhoto[]>([]);
 
   const editProfileSections = getAllEditProfileSections();
 
@@ -65,12 +66,12 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
         }
 
         if (userData.photos?.length) {
-          setPhotos(
-            userData.photos.map((p) => ({
-              id: p.id,
-              url: p.url,
-            })),
-          );
+          const userPhotos = userData.photos.map((p) => ({
+            id: p.id,
+            url: p.url,
+          }));
+          setPhotos(userPhotos);
+          setOriginalPhotos(userPhotos);
         }
       }
     } catch (error) {
@@ -110,33 +111,77 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
       return;
     }
 
-
-    const genderValue =
-      gender === "man" || gender === "woman" ? gender : undefined;
-
-    const payload: ProfileUpdateRequest = {
-      gender: genderValue,
-      current_work: currentWork || undefined,
-      school: school || undefined,
-      date_of_birth: birthday || undefined,
-    };
-
-    const fullPayload = {
-      ...payload,
-      about_me: aboutMe || undefined,
-      photos: validPhotos?.map((p, index) => ({
-        url: p.url,
-        order: index,
-      })),
-    };
-
     try {
       setIsSaving(true);
-      await updateUserProfileApi(user.id, fullPayload);
-      dispatch(updateUser(fullPayload as unknown as Partial<typeof user>));
+
+      // Step 1: Find photos that were removed (exist in originalPhotos but not in current photos)
+      const removedPhotos = originalPhotos.filter(
+        (originalPhoto) => 
+          originalPhoto.id && 
+          !photos.some((currentPhoto) => currentPhoto.id === originalPhoto.id)
+      );
+
+      // Step 2: Delete removed photos
+      for (const removedPhoto of removedPhotos) {
+        if (removedPhoto.id) {
+          await userPhotoDeleteApi(user.id, removedPhoto.id);
+        }
+      }
+
+      // Step 3: Find new photos (have file property)
+      const newPhotos = photos.filter((p) => p.file);
+      
+      // Step 4: Prepare form data
+      const formData = new FormData();
+      
+      // Add new photo files
+      newPhotos.forEach((photo) => {
+        if (photo.file) {
+          formData.append(`photos`, photo.file);
+        }
+      });
+
+      // Add other profile fields
+      const genderValue = gender === "man" || gender === "woman" ? gender : undefined;
+      
+      if (genderValue) formData.append('gender', genderValue);
+      if (currentWork) formData.append('current_work', currentWork);
+      if (school) formData.append('school', school);
+      if (birthday) formData.append('date_of_birth', birthday);
+      if (aboutMe) formData.append('about_me', aboutMe);
+
+      // Step 5: Update profile with FormData if there are new photos, otherwise use regular API
+      if (newPhotos.length > 0) {
+        await updateUserProfileWithFormDataApi(user.id, formData);
+      } else {
+        // Use regular API for non-photo updates
+        const payload: ProfileUpdateRequest = {
+          gender: genderValue,
+          current_work: currentWork || undefined,
+          school: school || undefined,
+          date_of_birth: birthday || undefined,
+        };
+
+        const fullPayload = {
+          ...payload,
+          about_me: aboutMe || undefined,
+          photos: validPhotos?.map((p, index) => ({
+            url: p.url,
+            order: index,
+          })),
+        };
+
+        await updateUserProfileApi(user.id, fullPayload);
+      }
+
+      // Step 6: Refresh user data
       const refreshed = await getUserDetails(user.id);
       dispatch(updateUser(refreshed.data as unknown as Partial<typeof user>));
+      
       onDone?.();
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      message.error("Failed to update profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
