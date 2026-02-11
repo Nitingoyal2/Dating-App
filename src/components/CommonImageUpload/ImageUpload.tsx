@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { PlusOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
 import { message } from "antd";
 import type {
@@ -10,7 +10,7 @@ import "./ImageUpload.css";
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
-  photos, // Expects UploadedPhoto[]
+  photos,
   maxPhotos = 6,
   onChange,
   onPreview,
@@ -23,15 +23,25 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const isInternalDrag = useRef(false);
 
+  /* ---------------- cleanup object urls ---------------- */
+
+  useEffect(() => {
+    return () => {
+      photos.forEach((p) => {
+        if (p.file) URL.revokeObjectURL(p.url);
+      });
+    };
+  }, []);
+
+  /* ---------------- validation ---------------- */
+
   const validateFile = (file: File): string | null => {
-    if (!file.type.startsWith("image/")) {
-      return "Only image files are allowed";
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return "Image must be smaller than 5MB";
-    }
+    if (!file.type.startsWith("image/")) return "Only image files are allowed";
+    if (file.size > MAX_FILE_SIZE) return "Image must be smaller than 5MB";
     return null;
   };
+
+  /* ---------------- reorder ---------------- */
 
   const reorderPhotos = (from: number, to: number) => {
     const updated = [...photos];
@@ -40,7 +50,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     onChange(updated);
   };
 
+  /* ---------------- file processing ---------------- */
+
   const processFiles = (files: FileList | File[]) => {
+    if (photos.length >= maxPhotos) {
+      message.warning("Maximum photos reached");
+      return;
+    }
+
     const remainingSlots = maxPhotos - photos.length;
     const filesToProcess = Array.from(files).slice(0, remainingSlots);
     const newPhotos: UploadedPhoto[] = [];
@@ -53,16 +70,22 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       }
 
       const url = URL.createObjectURL(file);
-      newPhotos.push({ url, file });
+      newPhotos.push({
+        id: crypto.randomUUID(),
+        url,
+        file,
+      });
     }
 
     if (newPhotos.length > 0) {
       onChange([...photos, ...newPhotos]);
       message.success(
-        `${newPhotos.length} photo${newPhotos.length > 1 ? "s" : ""} added`,
+        `${newPhotos.length} photo${newPhotos.length > 1 ? "s" : ""} added`
       );
     }
   };
+
+  /* ---------------- handlers ---------------- */
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -70,64 +93,65 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleRemove = (index: number) => {
+    const photo = photos[index];
+    if (photo.file) URL.revokeObjectURL(photo.url);
+    onChange(photos.filter((_, i) => i !== index));
+  };
+
+  const triggerPreview = (photo: UploadedPhoto) => {
+    onPreview ? onPreview(photo) : setPreviewPhoto(photo);
+  };
+
+  const closePreview = () => setPreviewPhoto(null);
+
+  /* ---------------- drag ---------------- */
+
   const handleDragOver = (e: React.DragEvent) => {
     if (isInternalDrag.current) return;
     e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+  const handleDragLeave = () => setIsDragging(false);
 
   const handleDrop = (e: React.DragEvent) => {
     if (isInternalDrag.current) {
       isInternalDrag.current = false;
       return;
     }
+
     e.preventDefault();
     setIsDragging(false);
-    if (!e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
 
-    processFiles(e.dataTransfer.files);
-  };
-
-  const handleRemove = (index: number) => {
-    const updated = photos.filter((_, i) => i !== index);
-    onChange(updated);
-  };
-
-  const triggerPreview = (photo: UploadedPhoto) => {
-    if (onPreview) {
-      onPreview(photo);
-    } else {
-      setPreviewPhoto(photo);
+    if (e.dataTransfer.files?.length) {
+      processFiles(e.dataTransfer.files);
     }
   };
 
-  const closePreview = () => {
-    setPreviewPhoto(null);
-  };
+  /* ---------------- slots ---------------- */
 
   const renderSlots = () => {
     const slots = photos.map((photo, index) => (
       <div
-        key={`photo-${index}-${photo.id || index}`}
+        key={photo.id || photo.url}
         className="image-upload-slot filled"
         draggable
         onDragStart={(e) => {
           isInternalDrag.current = true;
           setDragIndex(index);
           e.dataTransfer.effectAllowed = "move";
-          e.dataTransfer.setData("text/plain", "drag");
+        }}
+        onDragEnd={() => {
+          setDragIndex(null);
+          isInternalDrag.current = false;
         }}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
-          e.stopPropagation(); // 🚨 THIS IS THE KEY
+          e.stopPropagation();
 
           if (dragIndex === null || dragIndex === index) return;
-
           reorderPhotos(dragIndex, index);
           setDragIndex(null);
           isInternalDrag.current = false;
@@ -135,10 +159,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       >
         <img src={photo.url} alt={`Photo ${index + 1}`} />
 
-        {/* Preview Overlay */}
         <div
           className="image-upload-overlay"
+          role="button"
+          tabIndex={0}
           onClick={() => triggerPreview(photo)}
+          onKeyDown={(e) => e.key === "Enter" && triggerPreview(photo)}
         >
           <EyeFilled />
         </div>
@@ -156,42 +182,24 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       </div>
     ));
 
-    // Add ONE empty slot if we haven't reached max photos
     if (photos.length < maxPhotos) {
       slots.push(
         <div
           key="add-slot"
           className="image-upload-slot"
           onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-          }}
-          onDrop={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // Ignore internal image reordering
-            if (isInternalDrag.current) {
-              isInternalDrag.current = false;
-              return;
-            }
-
-            if (!e.dataTransfer.files || e.dataTransfer.files.length === 0)
-              return;
-            setIsDragging(false);
-            processFiles(e.dataTransfer.files);
-          }}
         >
           <span className="image-upload-add">
             <PlusOutlined />
           </span>
-        </div>,
+        </div>
       );
     }
 
     return slots;
   };
+
+  /* ---------------- render ---------------- */
 
   return (
     <div className="image-upload-container">
