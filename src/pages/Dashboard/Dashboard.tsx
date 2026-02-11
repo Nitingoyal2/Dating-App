@@ -1,7 +1,7 @@
-import { matchPath, useLocation, useNavigate } from 'react-router-dom';
-import { DashboardLayout } from '@components/DashboardLayout';
-import { Routes, DashboardScreen } from '@/types';
-import type { DashboardScreen as DashboardScreenType } from '@interfaces';
+import { matchPath, useLocation, useNavigate } from "react-router-dom";
+import { DashboardLayout } from "@components/DashboardLayout";
+import { Routes, DashboardScreen } from "@/types";
+import type { DashboardScreen as DashboardScreenType } from "@interfaces";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -13,6 +13,8 @@ const Dashboard = () => {
       case Routes.DASHBOARD:
       case Routes.DISCOVER:
         return DashboardScreen.DISCOVER;
+      case Routes.GLOBAL:
+        return DashboardScreen.Global;
       case Routes.PROFILE:
         return DashboardScreen.PROFILE;
       case Routes.SETTINGS:
@@ -22,7 +24,7 @@ const Dashboard = () => {
       case Routes.CHAT:
         return DashboardScreen.CHAT;
       case Routes.EDIT:
-        return DashboardScreen.EDIT
+        return DashboardScreen.EDIT;
       default:
         if (matchPath({ path: Routes.EDIT_ITEM }, location.pathname)) {
           return DashboardScreen.EDIT;
@@ -38,6 +40,7 @@ const Dashboard = () => {
     // Map screen to route
     const screenToRouteMap: Record<DashboardScreenType, string> = {
       [DashboardScreen.DISCOVER]: Routes.DASHBOARD,
+      [DashboardScreen.Global]: Routes.GLOBAL,
       [DashboardScreen.PROFILE]: Routes.PROFILE,
       [DashboardScreen.SETTINGS]: Routes.SETTINGS,
       [DashboardScreen.MATCHES]: Routes.MATCHES,
@@ -52,8 +55,12 @@ const Dashboard = () => {
     }
   };
 
-  return <DashboardLayout activeScreen={activeScreen} onScreenChange={handleScreenChange} />;
+  return (
+    <DashboardLayout
+      activeScreen={activeScreen}
+      onScreenChange={handleScreenChange}
+    />
+  );
 };
 
 export default Dashboard;
-

@@ -25,10 +25,12 @@ import {
 } from "@constants";
 import { DashboardScreen as DashboardScreenEnum, Routes } from "@/types";
 import "./DashboardStyle.css";
+import Global from "@/pages/Global";
 
 // Map dashboard screens to routes
 const screenToRoute: Record<DashboardScreen, string> = {
   [DashboardScreenEnum.DISCOVER]: Routes.DASHBOARD,
+  [DashboardScreenEnum.Global]: Routes.GLOBAL,
   [DashboardScreenEnum.PROFILE]: Routes.PROFILE,
   [DashboardScreenEnum.SETTINGS]: Routes.SETTINGS,
   [DashboardScreenEnum.MATCHES]: Routes.MATCHES,
@@ -74,12 +76,15 @@ const DashboardLayout = ({
   };
 
   const showBackButton = shouldShowBackButton(activeScreen);
-  const shouldHideDashboardHeader = activeScreen === DashboardScreenEnum.EDIT && Boolean(selectorItem);
+  const shouldHideDashboardHeader =
+    activeScreen === DashboardScreenEnum.EDIT && Boolean(selectorItem);
 
   const renderContent = () => {
     switch (activeScreen) {
       case DashboardScreenEnum.DISCOVER:
         return <Discover />;
+      case DashboardScreenEnum.Global:
+        return <Global />;
       case DashboardScreenEnum.PROFILE:
         return (
           <Profile
@@ -94,20 +99,18 @@ const DashboardLayout = ({
       case DashboardScreenEnum.SETTINGS:
         return <Settings />;
       case DashboardScreenEnum.EDIT:
-        return selectorItem ? (
-          selectorItem === "height" ? (
-            <EditProfileHeight />
-          ) : (
-            <EditProfileItemSelector />
-          )
-        ) : (
-          <EditProfile
-            onDone={() => handleScreenChange(DashboardScreenEnum.PROFILE)}
-            onPreview={() => {
-              // TODO: Implement preview functionality
-              console.log("Preview clicked");
-            }}
-          />
+        return (
+          selectorItem ?
+            selectorItem === "height" ?
+              <EditProfileHeight />
+            : <EditProfileItemSelector />
+          : <EditProfile
+              onDone={() => handleScreenChange(DashboardScreenEnum.PROFILE)}
+              onPreview={() => {
+                // TODO: Implement preview functionality
+                console.log("Preview clicked");
+              }}
+            />
         );
       case DashboardScreenEnum.MATCHES:
       case DashboardScreenEnum.EXPLORE:
@@ -126,10 +129,9 @@ const DashboardLayout = ({
 
   return (
     <div className="dashboard-layout">
-
       {!shouldHideDashboardHeader && (
         <div className="dashboard-head">
-          {isDiscoverScreen ? (
+          {isDiscoverScreen ?
             <>
               <div className="dashboard-header-slot"></div>
               <div className="dashboard-header-logo">
@@ -147,8 +149,7 @@ const DashboardLayout = ({
                 </button>
               </div>
             </>
-          ) : (
-            <>
+          : <>
               <div className="dashboard-header-slot">
                 {showBackButton && (
                   <button className="header-back-btn" onClick={handleBack}>
@@ -161,7 +162,7 @@ const DashboardLayout = ({
               </div>
               <div className="dashboard-header-slot"></div>
             </>
-          )}
+          }
         </div>
       )}
 
@@ -177,9 +178,9 @@ const DashboardLayout = ({
           <DashboardIcon
             size={24}
             color={
-              activeScreen === DashboardScreenEnum.DISCOVER
-                ? "#E94057"
-                : "#ADAFBB"
+              activeScreen === DashboardScreenEnum.DISCOVER ?
+                "#E94057"
+              : "#ADAFBB"
             }
           />
         </button>
@@ -190,9 +191,9 @@ const DashboardLayout = ({
           <MatchesIcon
             size={24}
             color={
-              activeScreen === DashboardScreenEnum.MATCHES
-                ? "#E94057"
-                : "#ADAFBB"
+              activeScreen === DashboardScreenEnum.MATCHES ?
+                "#E94057"
+              : "#ADAFBB"
             }
           />
         </button>
@@ -203,9 +204,9 @@ const DashboardLayout = ({
           <ExploreIcon
             size={24}
             color={
-              activeScreen === DashboardScreenEnum.EXPLORE
-                ? "#E94057"
-                : "#ADAFBB"
+              activeScreen === DashboardScreenEnum.EXPLORE ?
+                "#E94057"
+              : "#ADAFBB"
             }
           />
         </button>
@@ -227,9 +228,9 @@ const DashboardLayout = ({
           <ProfileIcon
             size={24}
             color={
-              activeScreen === DashboardScreenEnum.PROFILE
-                ? "#E94057"
-                : "#ADAFBB"
+              activeScreen === DashboardScreenEnum.PROFILE ?
+                "#E94057"
+              : "#ADAFBB"
             }
           />
         </button>

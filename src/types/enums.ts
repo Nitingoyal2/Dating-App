@@ -1,3 +1,5 @@
+import Global from "@/pages/Global";
+
 // Route paths
 export const Routes = {
   // Public routes
@@ -17,6 +19,7 @@ export const Routes = {
   DISCOVER: '/discover',
   EDIT: '/edit',
   EDIT_ITEM: '/edit/:item',
+  GLOBAL: '/global',
 } as const;
 
 export type Routes = (typeof Routes)[keyof typeof Routes];
@@ -108,6 +111,7 @@ export type ProfileStatus = (typeof ProfileStatus)[keyof typeof ProfileStatus];
 export const DashboardScreen = {
   DISCOVER: 'discover',
   MATCHES: 'matches',
+  Global: 'global',
   EXPLORE: 'explore',
   CHAT: 'chat',
   PROFILE: 'profile',

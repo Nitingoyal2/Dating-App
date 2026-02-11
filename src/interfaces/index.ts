@@ -6,7 +6,7 @@ export type {
   ForgotPasswordFormData,
   LoginPayload,
   RegisterPayload,
-} from './auth.interface';
+} from "./auth.interface";
 
 // Common interfaces
 export type {
@@ -14,10 +14,11 @@ export type {
   ApiResponse,
   PaginatedResponse,
   NavigationHandler,
-} from './common.interface';
+  UserData
+} from "./common.interface";
 
 // Layout interfaces
-export type { LayoutProps } from './layout.interface';
+export type { LayoutProps } from "./layout.interface";
 
 // Route interfaces
 export type {
@@ -25,7 +26,7 @@ export type {
   RouteParams,
   ProtectedRouteProps,
   PublicRouteProps,
-} from './routes.interface';
+} from "./routes.interface";
 
 // Store interfaces
 export type {
@@ -34,7 +35,7 @@ export type {
   AppState,
   NotificationState,
   LoginSuccessPayload,
-} from './store.interface';
+} from "./store.interface";
 
 // Page interfaces
 export type {
@@ -59,7 +60,7 @@ export type {
   PrivacySection,
   StepEmailSentProps,
   StepVerifyOtpProps,
-} from './pages.interface';
+} from "./pages.interface";
 
 // API interfaces
 export type {
@@ -95,7 +96,7 @@ export type {
   ForgotPasswordResponse,
   ForgotPasswordVerifyRequest,
   ForgotPasswordVerifyResponse,
-} from './api.interface';
+} from "./api.interface";
 
 // Component interfaces
 export type {
@@ -121,7 +122,7 @@ export type {
   CommonSelectorProps,
   SelectorType,
   SelectorItem,
-} from './components.interface';
+} from "./components.interface";
 
 // CommonImageUpload interfaces
 export type { ImageUploadProps } from "./imageUpload.interface";

@@ -13,6 +13,7 @@ import type { DashboardScreen as DashboardScreenType } from '@interfaces';
 export const ScreenTitles = {
     [DashboardScreen.DISCOVER]: 'Discover',
     [DashboardScreen.MATCHES]: 'Matches',
+    [DashboardScreen.Global]: 'Global',
     [DashboardScreen.EXPLORE]: 'Explore',
     [DashboardScreen.CHAT]: 'Messages',
     [DashboardScreen.PROFILE]: 'My Profile',

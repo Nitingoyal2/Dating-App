@@ -37,11 +37,30 @@ export interface User {
   [key: string]: unknown; // Allow additional fields from API
 }
 
+export interface UserData {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  avatarUrl: string;
+  age: number;
+  gender: string;
+}
+
+export interface ApiMeta {
+  timestamp: string; // ISO date string
+  path: string;
+  version: string;
+  requestId: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
   error?: string;
+  meta?: ApiMeta;
 }
 
 export interface PaginatedResponse<T> {
