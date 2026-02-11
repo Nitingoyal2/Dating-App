@@ -2,6 +2,7 @@ import React from "react";
 import "./CommonSelector.css";
 import { CheckIcon } from "@/utils/svg";
 import type { CommonSelectorProps } from "@/interfaces";
+import { CheckOutlined } from "@ant-design/icons";
 
 const CommonSelector = <T extends string | number>({
   data,
@@ -10,9 +11,9 @@ const CommonSelector = <T extends string | number>({
   onChange,
 }: CommonSelectorProps<T>) => {
   const isChecked = (id: T): boolean =>
-    type === "checkbox"
-      ? Array.isArray(value) && value.includes(id)
-      : value === id;
+    type === "checkbox" ?
+      Array.isArray(value) && value.includes(id)
+    : value === id;
 
   const handleClick = (id: T) => {
     if (!onChange) return;
@@ -20,9 +21,9 @@ const CommonSelector = <T extends string | number>({
     if (type === "checkbox") {
       const current = Array.isArray(value) ? value : [];
       onChange(
-        current.includes(id)
-          ? current.filter((v) => v !== id)
-          : [...current, id]
+        current.includes(id) ?
+          current.filter((v) => v !== id)
+        : [...current, id],
       );
     } else {
       onChange(id);
@@ -45,7 +46,7 @@ const CommonSelector = <T extends string | number>({
 
           {type === "checkbox" && (
             <span className={`checkbox ${isChecked(item.id) ? "active" : ""}`}>
-              <CheckIcon size={10} />
+              <CheckOutlined style={{ fontSize: "10px" }} />
             </span>
           )}
         </div>
