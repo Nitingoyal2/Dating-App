@@ -1,5 +1,4 @@
 import { SuccessIcon } from '@/utils/svg';
-import { CheckCircleOutlined } from '@ant-design/icons';
 import AuthLayout from '@components/AuthLayout';
 import { PrimaryButton } from '@components/Button';
 import type { StepEmailSentProps } from '@interfaces';

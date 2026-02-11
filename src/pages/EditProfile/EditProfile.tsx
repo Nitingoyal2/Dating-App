@@ -28,11 +28,6 @@ const EditProfile = ({ onDone }: EditProfileProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const toFeetInches = (totalInches: number) => {
-    const feet = Math.floor(totalInches / 12);
-    const inches = totalInches % 12;
-    return { feet, inches };
-  };
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   // Initialize photos with existing user photos

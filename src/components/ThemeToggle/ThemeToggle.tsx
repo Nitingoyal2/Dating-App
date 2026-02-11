@@ -5,7 +5,7 @@ import { SunIcon, MoonIcon, MonitorIcon } from '@svg';
 import './ThemeToggle.css';
 
 export const ThemeToggle = ({ showLabel = true, variant = 'buttons' }: ThemeToggleProps) => {
-  const { theme, effectiveTheme, changeTheme, isDark } = useTheme();
+  const { theme, changeTheme, isDark } = useTheme();
 
   if (variant === 'icons') {
     return (

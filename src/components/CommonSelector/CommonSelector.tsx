@@ -1,6 +1,4 @@
-import React from "react";
 import "./CommonSelector.css";
-import { CheckIcon } from "@/utils/svg";
 import type { CommonSelectorProps } from "@/interfaces";
 import { CheckOutlined } from "@ant-design/icons";
 

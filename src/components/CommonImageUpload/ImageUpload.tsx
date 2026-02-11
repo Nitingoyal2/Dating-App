@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { PlusOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
+import { CloseOutlined, EyeFilled } from "@ant-design/icons";
 import { message } from "antd";
 import type {
   UploadedPhoto,
@@ -124,7 +124,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
           e.preventDefault();
-          e.stopPropagation(); // 🚨 THIS IS THE KEY
+          e.stopPropagation(); 
 
           if (dragIndex === null || dragIndex === index) return;
 
